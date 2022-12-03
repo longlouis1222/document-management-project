@@ -14,7 +14,7 @@ const login = () => {
   console.log('Login func from Login Component')
   store.dispatch('login', { username: username.value, password: password.value })
 
-  // store.commit('setUser', 'Long Louis')
+  // store.commit('setUser', 'Kết Louis')
 }
 
 const goToSignUp = () => {

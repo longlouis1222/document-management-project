@@ -48,7 +48,7 @@
           </DocsExample>
           <p class="text-medium-emphasis small">
             Once again, this spinner is built with <code>currentColor</code>, so
-            you can easily change its appearance. Here it is in blue, along with
+            you can easily change its appearance. Here it is in blue, aKết with
             the supported variants.
           </p>
           <DocsExample href="components/spinner.html#growing-spinner">

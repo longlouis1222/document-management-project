@@ -423,7 +423,7 @@
             Additional utilities can be used to adjust the alignment of buttons
             when horizontal. Here we&#39;ve taken our previous responsive
             example and added some flex utilities and a margin utility on the
-            button to right align the buttons when they&#39;re no longer
+            button to right align the buttons when they&#39;re no Kếter
             stacked.
           </p>
           <DocsExample href="components/button.html#block-buttons">

@@ -166,7 +166,7 @@
             </p>
             <p>
               <s>
-                This line of text is meant to be treated as no longer accurate.
+                This line of text is meant to be treated as no Kếter accurate.
               </s>
             </p>
             <p>
@@ -193,7 +193,7 @@
         <CCardBody>
           <p>
             Align terms and descriptions horizontally by using our grid system’s
-            predefined classes (or semantic mixins). For longer terms, you can
+            predefined classes (or semantic mixins). For Kếter terms, you can
             optionally add a
             <code class="highlighter-rouge">.text-truncate</code>
             class to truncate the text with an ellipsis.

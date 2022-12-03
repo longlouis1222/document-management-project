@@ -19,7 +19,7 @@ export default [
       },
       {
         path: '/admin/user-management/user-list',
-        name: 'User List',
+        name: 'Danh sách Quản lý',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
@@ -27,10 +27,58 @@ export default [
           import(/* webpackChunkName: "user-list" */ '@/views/admin/UserManagement/UserList.vue'),
       },
       {
-        path: '/employer/employer-account/employer-account-info',
-        name: 'Tài khoản nhà tuyển dụng',
+        path: '/admin/falcuty-management/falcuty-list',
+        name: 'Quản lý Khoa',
         component: () =>
-          import(/* webpackChunkName: "user-list" */ '@/views/Employer/EmployerAccount/EmployerAccountInfo.vue'),
+          import('@/views/admin/FalcutyManagement/FalcutyList.vue'),
+      },
+      {
+        path: '/admin/specialized-management/specialized-list',
+        name: 'Quản lý Chuyên ngành',
+        component: () =>
+          import('@/views/admin/SpecializedManagement/SpecializedList.vue'),
+      },
+      {
+        path: '/admin/training-system-management/training-system-list',
+        name: 'Quản lý Hệ đào tạo',
+        component: () =>
+          import('@/views/admin/TrainingSystemManagement/TrainingSystemList.vue'),
+      },
+      {
+        path: '/admin/year-management/year-list',
+        name: 'Quản lý Niên khóa',
+        component: () =>
+          import('@/views/admin/YearManagement/YearList.vue'),
+      },
+      {
+        path: '/admin/class-management/class-list',
+        name: 'Quản lý Lớp',
+        component: () =>
+          import('@/views/admin/ClassManagement/ClassList.vue'),
+      },
+      {
+        path: '/admin/teacher-management/teacher-list',
+        name: 'Quản lý Giáo viên',
+        component: () =>
+          import('@/views/admin/TeacherManagement/TeacherList.vue'),
+      },
+      {
+        path: '/admin/board-management/board-list',
+        name: 'Quản lý Hội đồng',
+        component: () =>
+          import('@/views/admin/BoardManagement/BoardList.vue'),
+      },
+      {
+        path: '/admin/student-management/student-list',
+        name: 'Quản lý Sinh viên',
+        component: () =>
+          import('@/views/admin/StudentManagement/StudentList.vue'),
+      },
+      {
+        path: '/admin/graduation-project-management/graduation-project-list',
+        name: 'Quản lý Đồ án',
+        component: () =>
+          import('@/views/admin/GraduationProjectManagement/GraduationProjectList.vue'),
       },
       {
         path: '/theme',

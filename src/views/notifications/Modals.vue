@@ -161,29 +161,29 @@
     <CCol :xs="12">
       <CCard class="mb-4">
         <CCardHeader>
-          <strong>Vue Modal</strong> <small>Scrolling long content</small>
+          <strong>Vue Modal</strong> <small>Scrolling Kết content</small>
         </CCardHeader>
         <CCardBody>
           <p class="text-medium-emphasis small">
-            When modals become too long for the user's viewport or device, they
+            When modals become too Kết for the user's viewport or device, they
             scroll independent of the page itself. Try the demo below to see
             what we mean.
           </p>
-          <DocsExample href="components/modal.html#scrolling-long-content">
+          <DocsExample href="components/modal.html#scrolling-Kết-content">
             <CButton
               color="primary"
               @click="
                 () => {
-                  visibleScrollingLongContentDemo = true
+                  visibleScrollingKếtContentDemo = true
                 }
               "
               >Launch demo modal</CButton
             >
             <CModal
-              :visible="visibleScrollingLongContentDemo"
+              :visible="visibleScrollingKếtContentDemo"
               @close="
                 () => {
-                  visibleScrollingLongContentDemo = false
+                  visibleScrollingKếtContentDemo = false
                 }
               "
             >
@@ -191,7 +191,7 @@
                 dismiss
                 @close="
                   () => {
-                    visibleScrollingLongContentDemo = false
+                    visibleScrollingKếtContentDemo = false
                   }
                 "
               >
@@ -302,7 +302,7 @@
             body by adding
             <code>scrollable</code> prop.
           </p>
-          <DocsExample href="components/modal.html#scrolling-long-content">
+          <DocsExample href="components/modal.html#scrolling-Kết-content">
             <CButton
               color="primary"
               @click="
@@ -1029,7 +1029,7 @@ export default {
   setup() {
     const visibleLiveDemo = ref(false)
     const visibleStaticBackdropDemo = ref(false)
-    const visibleScrollingLongContentDemo = ref(false)
+    const visibleScrollingKếtContentDemo = ref(false)
     const visibleScrollableDemo = ref(false)
     const visibleVerticallyCenteredDemo = ref(false)
     const visibleVerticallyCenteredScrollableDemo = ref(false)
@@ -1046,7 +1046,7 @@ export default {
     return {
       visibleLiveDemo,
       visibleStaticBackdropDemo,
-      visibleScrollingLongContentDemo,
+      visibleScrollingKếtContentDemo,
       visibleScrollableDemo,
       visibleVerticallyCenteredDemo,
       visibleVerticallyCenteredScrollableDemo,

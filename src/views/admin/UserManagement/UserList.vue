@@ -1,44 +1,44 @@
 <script setup>
 const tableData = [
   {
-    account: 'longlouis',
+    account: 'Kết Nguyễn',
     password: '********',
-    firstname: 'Long',
+    firstname: 'Kết',
     lastname: 'Nguyen',
-    username: 'Nguyễn Huy Long',
-    dateOfbirth: '12/02/2000'
+    username: 'Nguyễn Viết Kết',
+    dateOfbirth: '29/06/2000'
   },
   {
-    account: 'longlouis',
+    account: 'Kết Nguyễn',
     password: '********',
-    firstname: 'Long',
+    firstname: 'Kết',
     lastname: 'Nguyen',
-    username: 'Nguyễn Huy Long',
-    dateOfbirth: '12/02/2000'
+    username: 'Nguyễn Viết Kết',
+    dateOfbirth: '29/06/2000'
   },
   {
-    account: 'longlouis',
+    account: 'Kết Nguyễn',
     password: '********',
-    firstname: 'Long',
+    firstname: 'Kết',
     lastname: 'Nguyen',
-    username: 'Nguyễn Huy Long',
-    dateOfbirth: '12/02/2000'
+    username: 'Nguyễn Viết Kết',
+    dateOfbirth: '29/06/2000'
   },
   {
-    account: 'longlouis',
+    account: 'Kết Nguyễn',
     password: '********',
-    firstname: 'Long',
+    firstname: 'Kết',
     lastname: 'Nguyen',
-    username: 'Nguyễn Huy Long',
-    dateOfbirth: '12/02/2000'
+    username: 'Nguyễn Viết Kết',
+    dateOfbirth: '29/06/2000'
   },
   {
-    account: 'longlouis',
+    account: 'Kết Nguyễn',
     password: '********',
-    firstname: 'Long',
+    firstname: 'Kết',
     lastname: 'Nguyen',
-    username: 'Nguyễn Huy Long',
-    dateOfbirth: '12/02/2000'
+    username: 'Nguyễn Viết Kết',
+    dateOfbirth: '29/06/2000'
   },
 ]
 </script>
@@ -56,8 +56,23 @@ const tableData = [
         <el-table-column prop="password" label="Mật khẩu" width="180" />
         <el-table-column prop="firstname" label="Tên" />
         <el-table-column prop="lastname" label="Họ" />
-        <el-table-column prop="username" label="Tên đầy đủ" />
-        <el-table-column prop="dateOfbirth" label="Ngày sinh" />
+        <el-table-column prop="username" label="Tên đầy đủ" min-width="200"/>
+        <el-table-column prop="dateOfbirth" label="Ngày sinh" min-width="100" />
+        <el-table-column fixed="right" align="center" label="Thao tác" width="180">
+          <template #default>
+            <div class="d-flex">
+              <CButton color="secondary" variant="outline" class="me-2"
+                ><CIcon icon="cilFindInPage"
+              /></CButton>
+              <CButton color="info" variant="outline" class="me-2"
+                ><CIcon icon="cilPencil"
+              /></CButton>
+              <CButton color="danger" variant="outline"
+                ><CIcon icon="cilTrash"
+              /></CButton>
+            </div>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
   </div>

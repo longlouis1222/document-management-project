@@ -1,12 +1,13 @@
 <script setup>
 import ValidService from '../../service/ValidService'
 import { ElNotification } from 'element-plus'
-import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, reactive, onMounted } from 'vue'
+import {  useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { FormInstance } from 'element-plus'
 
 const ruleFormRef = ref(FormInstance)
+const route = useRoute()
 const router = useRouter()
 const store = useStore()
 
@@ -31,12 +32,12 @@ const activeAccount = async (formEl) => {
       try {
         console.log('Active Account func from Active Account Component', dataForm.value.code)
         store.dispatch('activeAccount', { code: dataForm.value.code})
-        ElNotification({
-          title: 'Success',
-          message: `Kích hoạt tài khoản thành công`,
-          type: 'success',
-          duration: 3000,
-        })
+        // ElNotification({
+        //   title: 'Success',
+        //   message: `Kích hoạt tài khoản thành công`,
+        //   type: 'success',
+        //   duration: 3000,
+        // })
       } catch (e) {
         ElNotification({
           title: 'Error',
@@ -47,6 +48,7 @@ const activeAccount = async (formEl) => {
       } finally {
         setTimeout(() => {
           loadingBtn.value = false
+          isVerifyAccount.value = true
         }, 1500)
       }
     } else loadingBtn.value = false
@@ -56,6 +58,12 @@ const activeAccount = async (formEl) => {
 const backToLogin = () => {
   router.push({ name: 'Login'})
 }
+
+onMounted(() => {
+  if (route.query.code) {
+    dataForm.value.code = route.query.code
+  }
+})
 </script>
 
 <template>
@@ -91,15 +99,15 @@ const backToLogin = () => {
         <!-- end row -->
         <div class="login-container position-relative">
           <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6 col-xl-5">
+            <div class="col-md-8 col-lg-6" :class="isVerifyAccount == false ? 'col-xl-6' : 'col-xl-5'">
               <div class="card mt-4">
-                <div v-if="isVerifyAccount" class="card-body p-4">
+                <div v-if="!isVerifyAccount" class="card-body p-4">
                   <div class="mt-2 text-center">
                     <h5 class="mb-4">KÍCH HOẠT TÀI KHOẢN</h5>
                     <p :class="{ active: true }">
-                      Mã xác thực sẽ được gửi vào tài khoản email đã đăng ký
+                      Mã xác thực đã được gửi vào hộp thư email bạn đã đăng ký
                       <br />
-                      Vui lòng nhập Email bạn đã đăng ký tài khoản.
+                      Vui lòng kiểm tra email và làm theo hướng dẫn.
                     </p>
                   </div>
 
@@ -113,7 +121,7 @@ const backToLogin = () => {
                       label-position="top"
                       @submit.prevent
                     >
-                      <el-form-item label="Code" prop="code">
+                      <el-form-item label="Mã xác thực" prop="code">
                         <el-input
                           type="text"
                           v-model="dataForm.value.code"
@@ -122,8 +130,8 @@ const backToLogin = () => {
                           :disabled="!isVerifyAccount"
                         />
                       </el-form-item>
-                      <div class="d-flex justify-content-between">
-                        <el-form-item class="mb-0 w-48">
+                      <!-- <div class="d-flex justify-content-between"> -->
+                        <!-- <el-form-item class="mb-0 w-48">
                           <el-button
                             type="button"
                             style="height: 36px"
@@ -134,8 +142,8 @@ const backToLogin = () => {
                           >
                             Quay lại
                           </el-button>
-                        </el-form-item>
-                        <el-form-item class="mb-0 w-48">
+                        </el-form-item> -->
+                        <el-form-item class="mb-0 w-100">
                           <el-button
                             type="primary"
                             style="height: 36px"
@@ -145,10 +153,10 @@ const backToLogin = () => {
                             native-type="submit"
                             :loading="loadingBtn"
                           >
-                            Gửi
+                            Xác nhận
                           </el-button>
                         </el-form-item>
-                      </div>
+                      <!-- </div> -->
                     </el-form>
                   </div>
                 </div>
@@ -159,7 +167,7 @@ const backToLogin = () => {
                       Kích hoạt tài khoản thành công !
                     </h5>
                     <img
-                      class="w-75"
+                      class="w-50"
                       src="../../../src/assets/gifs/checker-3.gif"
                       alt="mail..."
                     />

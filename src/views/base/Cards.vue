@@ -499,7 +499,7 @@
                     <CCardText>
                       This is a wider card with supporting text below as a
                       natural lead-in to additional content. This content is a
-                      little bit longer.
+                      little bit Kếter.
                     </CCardText>
                     <CCardText>
                       <small class="text-medium-emphasis"
@@ -516,7 +516,7 @@
                     <CCardText>
                       This is a wider card with supporting text below as a
                       natural lead-in to additional content. This content is a
-                      little bit longer.
+                      little bit Kếter.
                     </CCardText>
                     <CCardText>
                       <small class="text-medium-emphasis"
@@ -694,7 +694,7 @@
                   <CCardText>
                     This is a wider card with supporting text below as a natural
                     lead-in to additional content. This content is a little bit
-                    longer.
+                    Kếter.
                   </CCardText>
                   <CCardText>
                     <small class="text-medium-emphasis"
@@ -724,7 +724,7 @@
                   <CCardTitle>Card title</CCardTitle>
                   <CCardText>
                     This is a wider card with supporting text below as a natural
-                    lead-in to additional content. This card has even longer
+                    lead-in to additional content. This card has even Kếter
                     content than the first to show that equal height action.
                   </CCardText>
                   <CCardText>
@@ -749,7 +749,7 @@
                   <CCardText>
                     This is a wider card with supporting text below as a natural
                     lead-in to additional content. This content is a little bit
-                    longer.
+                    Kếter.
                   </CCardText>
                 </CCardBody>
                 <CCardFooter>
@@ -779,7 +779,7 @@
                   <CCardTitle>Card title</CCardTitle>
                   <CCardText>
                     This is a wider card with supporting text below as a natural
-                    lead-in to additional content. This card has even longer
+                    lead-in to additional content. This card has even Kếter
                     content than the first to show that equal height action.
                   </CCardText>
                 </CCardBody>
@@ -820,7 +820,7 @@
                     <CCardText>
                       This is a wider card with supporting text below as a
                       natural lead-in to additional content. This content is a
-                      little bit longer.
+                      little bit Kếter.
                     </CCardText>
                   </CCardBody>
                   <CCardFooter>
@@ -838,7 +838,7 @@
                     <CCardText>
                       This is a wider card with supporting text below as a
                       natural lead-in to additional content. This content is a
-                      little bit longer.
+                      little bit Kếter.
                     </CCardText>
                   </CCardBody>
                   <CCardFooter>
@@ -856,7 +856,7 @@
                     <CCardText>
                       This is a wider card with supporting text below as a
                       natural lead-in to additional content. This content is a
-                      little bit longer.
+                      little bit Kếter.
                     </CCardText>
                   </CCardBody>
                   <CCardFooter>
@@ -874,7 +874,7 @@
                     <CCardText>
                       This is a wider card with supporting text below as a
                       natural lead-in to additional content. This content is a
-                      little bit longer.
+                      little bit Kếter.
                     </CCardText>
                   </CCardBody>
                   <CCardFooter>
@@ -900,7 +900,7 @@
                     <CCardText>
                       This is a wider card with supporting text below as a
                       natural lead-in to additional content. This content is a
-                      little bit longer.
+                      little bit Kếter.
                     </CCardText>
                   </CCardBody>
                   <CCardFooter>
@@ -918,7 +918,7 @@
                     <CCardText>
                       This is a wider card with supporting text below as a
                       natural lead-in to additional content. This content is a
-                      little bit longer.
+                      little bit Kếter.
                     </CCardText>
                   </CCardBody>
                   <CCardFooter>
@@ -936,7 +936,7 @@
                     <CCardText>
                       This is a wider card with supporting text below as a
                       natural lead-in to additional content. This content is a
-                      little bit longer.
+                      little bit Kếter.
                     </CCardText>
                   </CCardBody>
                   <CCardFooter>
@@ -954,7 +954,7 @@
                     <CCardText>
                       This is a wider card with supporting text below as a
                       natural lead-in to additional content. This content is a
-                      little bit longer.
+                      little bit Kếter.
                     </CCardText>
                   </CCardBody>
                   <CCardFooter>

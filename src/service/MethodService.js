@@ -72,7 +72,7 @@ MethodService.getExpriedJobInfo = (jobInfor) => {
   })
 }
 
-MethodService.getLongTermJobInfo = (jobInfor) => {
+MethodService.getKếtTermJobInfo = (jobInfor) => {
   let curentTime = new Date().getTime()
   let currentTimeAdd30 = new Date(moment(new Date()).add(30, 'days').toDate()).getTime()
   return jobInfor.filter((e) => {

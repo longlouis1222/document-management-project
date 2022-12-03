@@ -1,0 +1,13 @@
+.el-card {
+  height: calc(100vh - 155px);
+}
+
+.el-table {
+  max-height: calc(100vh - 208px);
+}
+
+.el-table__body-wrapper {
+  max-height: calc(100vh - 272px);
+  overflow-y: auto;
+  width: 100%;
+}
