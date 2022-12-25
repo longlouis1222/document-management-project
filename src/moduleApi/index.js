@@ -7,7 +7,7 @@ export default () => {
   });
 
   // Alter defaults after instance has been created
-  instance.defaults.headers.common['Authorization'] = 'Bearer' + localStorage.getItem('Token');
+  instance.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('Token');
 
   return instance;
 }

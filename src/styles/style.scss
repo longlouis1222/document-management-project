@@ -3,6 +3,7 @@
 
 $enable-ltr: true;
 $enable-rtl: true;
+@import "elementui";
 
 // Import styles
 @import "~@coreui/coreui/scss/coreui";
@@ -12,7 +13,6 @@ $enable-rtl: true;
 
 @import "layout";
 @import "example";
-@import "elementui";
 
 //Scrollbar
 @import "scrollbar";

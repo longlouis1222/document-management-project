@@ -3,14 +3,14 @@ import MethodService from '@/service/MethodService'
 import { ElNotification, ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { FormInstance } from 'element-plus'
-import UserApi from '@/moduleApi/modules/UserApi'
+import WorkplaceApi from '@/moduleApi/modules/WorkplaceApi'
 import { useRouter, useRoute } from 'vue-router'
 
-import modelData from './UserModel'
+import modelData from './WorkplaceModel'
 
 const router = useRouter()
 const route = useRoute()
-const moduleName = 'Danh sách quản lý'
+
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const formData = reactive(MethodService.copyObject(modelData.dataForm))
@@ -22,8 +22,6 @@ const formSearchValid = reactive(
   MethodService.copyObject(tableRules.dataSearch.valid),
 )
 
-const componentKey = ref(0)
-const statusList = modelData.statusList
 const dialogModel = ref(false)
 const viewMode = ref('create')
 
@@ -41,15 +39,15 @@ const submitForm = async (formEl) => {
     if (valid) {
       try {
         if (viewMode.value === 'create') {
-          const userApiRes = await UserApi.create(formData)
-          if (userApiRes.status === 200) {
-            console.log('create', userApiRes)
+          const workplaceApiRes = await WorkplaceApi.create(formData)
+          if (workplaceApiRes.status === 200) {
+            console.log('create', workplaceApiRes)
           }
         } else if (viewMode.value === 'update') {
           console.log('Update data', formData)
-          const userApiRes = await UserApi.update(formData)
-          if (userApiRes.status === 200) {
-            console.log('Update', userApiRes)
+          const workplaceApiRes = await WorkplaceApi.update(formData)
+          if (workplaceApiRes.status === 200) {
+            console.log('Update', workplaceApiRes)
             dialogModel.value = false
           }
         }
@@ -71,8 +69,8 @@ const submitFormSearch = async (formEl) => {
       try {
         tableRules.filters = formSearchData
         console.log('tableRules.filters', tableRules.filters)
-        tableRules.skip = 0
-        tableRules.page = 1
+        tableRules.skip = 0;
+        tableRules.page = 1;
         await getList()
       } catch (error) {
         console.log(error)
@@ -92,48 +90,37 @@ const getList = async () => {
     ...tableRules.filters,
   }
   router.replace({
-    name: 'Danh sách Quản lý',
+    name: 'Quản lý đơn vị',
     query: {
       ...dataFilter,
     },
   })
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
-  const userApiRes = await UserApi.list(filter)
-  if (userApiRes.status === 200) {
-    tableRules.data = await changeData(userApiRes.data.data.data)
-    tableRules.total = userApiRes.data.data.totalElements
-    console.log('getList', userApiRes)
+  const workplaceApiRes = await WorkplaceApi.list(filter)
+  if (workplaceApiRes.status === 200) {
+    tableRules.data = workplaceApiRes.data.data.data
+    tableRules.total = workplaceApiRes.data.data.totalElements
+    console.log('getList', workplaceApiRes)
   }
 }
 
-const changeData = (data) => {
-  data.forEach((e) => {
-    e.status_name =
-      e.status == 1 ? 'Đã kích hoạt' : e.status == 0 ? 'Chưa kích hoạt' : 'Khóa'
-  })
-  return data
-}
-
-const updateItem = async (rowData) => {
+const updateItem = (rowData) => {
   viewMode.value = 'update'
   console.log('formData', formData)
   console.log(rowData)
+  dialogModel.value = true
   formData.id = rowData.id
-  formData.username = rowData.username
+  formData.name = rowData.name
   formData.email = rowData.email
-  formData.status = formData.status == 1 ? -1 : 1
-  const userApiRes = await UserApi.update(formData)
-  if (userApiRes.status === 200) {
-    await getList()
-    componentKey.value++
-  }
+  formData.phoneNumber = rowData.phoneNumber
+  formData.address = rowData.address
 }
 
 const getItemById = async (rowData) => {
   console.log('rowData', rowData)
-  const userApiRes = await UserApi.findById(rowData.id)
-  if (userApiRes.status === 200) {
-    console.log('getItemById', userApiRes)
+  const workplaceApiRes = await WorkplaceApi.findById(rowData.id)
+  if (workplaceApiRes.status === 200) {
+    console.log('getItemById', workplaceApiRes)
   }
 }
 
@@ -144,10 +131,10 @@ const deleteItem = async (rowData) => {
     // autofocus: false,
     confirmButtonText: 'Đồng ý',
     callback: async () => {
-      const userApiRes = await UserApi.delete(rowData.id)
-      if (userApiRes.status === 200) {
+      const workplaceApiRes = await WorkplaceApi.delete(rowData.id)
+      if (workplaceApiRes.status === 200) {
         await getList()
-        console.log(userApiRes)
+        console.log(workplaceApiRes)
       }
 
       ElMessage({
@@ -195,14 +182,14 @@ onMounted(async () => {
       <template #header>
         <div class="card-header">
           <div class="d-flex justify-content-between">
-            <h4>Danh sách Quản lý</h4>
+            <h4>Danh sách đơn vị</h4>
             <div>
               <CButton color="primary" class="me-2" @click="toggleSearchBox"
                 ><CIcon icon="cilSearch" class="me-2" /> Tra cứu</CButton
               >
-              <!-- <CButton color="primary" @click="openDialogAddItem"
+              <CButton color="primary" @click="openDialogAddItem"
                 >Thêm mới</CButton
-              > -->
+              >
             </div>
           </div>
         </div>
@@ -225,35 +212,36 @@ onMounted(async () => {
               status-icon
             >
               <b-row>
-                <b-col md="4">
-                  <el-form-item label="Têm người dùng" prop="">
+                <b-col md="3">
+                  <el-form-item label="Tên đơn vị" prop="name">
                     <el-input
-                      v-model="formSearchData.username"
+                      v-model="formSearchData.name"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
-                  <el-form-item label="Email" prop="">
+                <b-col md="3">
+                  <el-form-item label="Email" prop="email">
                     <el-input
                       v-model="formSearchData.email"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
-                  <el-form-item label="Trạng thái" prop="">
-                    <el-select
-                      v-model="formSearchData.status"
-                      placeholder="chọn"
-                    >
-                      <el-option
-                        v-for="item in statusList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
+                <b-col md="3">
+                  <el-form-item label="Số điện thoại" prop="phoneNumber">
+                    <el-input
+                      v-model="formSearchData.phoneNumber"
+                      autocomplete="off"
+                    />
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Địa chỉ" prop="address">
+                    <el-input
+                      v-model="formSearchData.address"
+                      autocomplete="off"
+                    />
                   </el-form-item>
                 </b-col>
               </b-row>
@@ -267,11 +255,11 @@ onMounted(async () => {
         </b-collapse>
       </div>
 
-      <el-table :data="tableRules.data" style="width: 100%">
-        <el-table-column prop="username" label="Tên người dùng" />
-        <el-table-column prop="email" label="Email" />
-        <el-table-column prop="listRole" label="Quyền hạn" />
-        <el-table-column prop="status_name" label="Trạng thái" />
+      <el-table :data="tableRules.data">
+        <el-table-column prop="name" label="Nơi làm việc" width="180" />
+        <el-table-column prop="email" label="Email" width="150" />
+        <el-table-column prop="phoneNumber" label="Số điện thoại" />
+        <el-table-column prop="address" label="Địa chỉ" />
         <el-table-column
           fixed="right"
           align="center"
@@ -279,7 +267,7 @@ onMounted(async () => {
           width="180"
         >
           <template #default="scope">
-            <div>
+            <div class="d-flex">
               <!-- <CButton color="secondary" variant="outline" class="me-2"
                 ><CIcon icon="cilFindInPage"
               /></CButton> -->
@@ -289,20 +277,8 @@ onMounted(async () => {
                 class="me-2"
                 size="sm"
                 @click="updateItem(scope.row)"
-                v-if="
-                  scope.row.status_name == 'Đã kích hoạt' ||
-                  scope.row.status_name == 'Khóa'
-                "
-                :key="componentKey"
-              >
-                <CIcon
-                  :icon="
-                    scope.row.status_name == 'Đã kích hoạt'
-                      ? 'cilLockLocked'
-                      : 'cilLockUnlocked'
-                  "
-                />
-              </CButton>
+                ><CIcon icon="cilPencil"
+              /></CButton>
               <CButton
                 color="danger"
                 variant="outline"
@@ -330,6 +306,56 @@ onMounted(async () => {
         />
       </div>
     </el-card>
+
+    <!-- Start dialog -->
+    <el-dialog
+      v-model="dialogModel"
+      title="Thêm mới đơn vị"
+      :close-on-click-modal="false"
+      :close-on-press-escape="true"
+      width="80%"
+    >
+      <el-form
+        ref="ruleFormRef"
+        :model="formData"
+        :rules="formValid"
+        label-width="140px"
+        label-position="top"
+        class="demo-ruleForm"
+        status-icon
+      >
+        <b-row>
+          <b-col md="3">
+            <el-form-item label="Tên đơn vị" prop="name">
+              <el-input v-model="formData.name" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+          <b-col md="3">
+            <el-form-item label="Email" prop="email">
+              <el-input v-model="formData.email" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+          <b-col md="3">
+            <el-form-item label="Số điện thoại" prop="phoneNumber">
+              <el-input v-model="formData.phoneNumber" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+          <b-col md="3">
+            <el-form-item label="Địa chỉ" prop="address">
+              <el-input v-model="formData.address" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+        </b-row>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <CButton color="primary" @click="submitForm(ruleFormRef)">{{
+            viewMode === 'create' ? 'Thêm mới' : 'Cập nhật'
+          }}</CButton>
+        </span>
+      </template>
+    </el-dialog>
+    <!-- End dialog -->
   </div>
 </template>
 

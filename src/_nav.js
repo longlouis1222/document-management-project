@@ -4,10 +4,10 @@ export default [
     name: 'Dashboard',
     to: '/dashboard',
     icon: 'cil-speedometer',
-    badge: {
-      color: 'primary',
-      text: 'NEW',
-    },
+    // badge: {
+    //   color: 'primary',
+    //   text: 'NEW',
+    // },
   },
   {
     component: 'CNavItem',
@@ -23,22 +23,17 @@ export default [
   },
   {
     component: 'CNavItem',
-    name: 'Quản lý Chuyên ngành',
-    to: '/admin/specialized-management/specialized-list',
+    name: 'Quản lý Đơn vị',
+    to: '/admin/workplace-management/workplace-list',
     icon: 'cilVector',
   },
-  {
-    component: 'CNavItem',
-    name: 'Quản lý Hệ đào tạo',
-    to: '/admin/training-system-management/training-system-list',
-    icon: 'cilWeightlifitng',
-  },
-  {
-    component: 'CNavItem',
-    name: 'Quản lý Niên khóa',
-    to: '/admin/year-management/year-list',
-    icon: 'cilWindowRestore',
-  },
+
+  // {
+  //   component: 'CNavItem',
+  //   name: 'Quản lý Niên khóa',
+  //   to: '/admin/year-management/year-list',
+  //   icon: 'cilWindowRestore',
+  // },
   {
     component: 'CNavItem',
     name: 'Quản lý Lớp',

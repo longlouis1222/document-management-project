@@ -43,7 +43,7 @@ export default createStore({
           )
           commit('SET_CURRENT_USER', VueJwtDecode.decode(res.data.token))
           localStorage.setItem('Token', res.data.token)
-          router.push({ name: 'Home' })
+          router.push({ name: 'Quản lý đơn vị' })
         }
       } catch (error) {
         console.log(error)
@@ -99,13 +99,13 @@ export default createStore({
       }
     },
 
-    async activeAccount(credentials) {
+    async activeAccount({ commit }, credentials) {
       try {
         console.log('activeAccount from Action store...')
         const res = await AuthService.activeAccount(credentials)
         if (res.status) {
           console.log('activeAccount RES', res)
-          router.push({ name: 'Login' })
+          // router.push({ name: 'Login' })
         }
       } catch (error) {
         console.log(error)

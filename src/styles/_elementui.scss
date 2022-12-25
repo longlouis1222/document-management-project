@@ -1,13 +1,27 @@
-.el-card {
-  height: calc(100vh - 155px);
+.el-select, .el-date-editor {
+  width: 100% !important;
 }
+
+.el-date-editor.el-input, .el-date-editor.el-input__wrapper {
+  width: 100%;
+}
+
+// .el-card {
+//   height: calc(100vh - 155px);
+// }
 
 .el-table {
-  max-height: calc(100vh - 208px);
+  height: calc(100vh - 320px) !important;
+  .cell {
+    word-break: break-word !important;
+  }
 }
 
-.el-table__body-wrapper {
-  max-height: calc(100vh - 272px);
-  overflow-y: auto;
-  width: 100%;
+// .el-table__inner-wrapper {
+//   height: calc(100vh - 285px);
+//   overflow-y: auto;
+//   width: 100%;
+// }
+.el-dialog__footer {
+  text-align: center !important;
 }

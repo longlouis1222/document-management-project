@@ -1,32 +1,57 @@
 <script setup>
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
 const backToPrev = () => {
-  router.go(-1);
+  router.go(-1)
 }
-
 </script>
 
 <template>
-  <div class="min-vh-100 d-flex flex-row align-items-center">
+  <div
+    class="min-vh-100 d-flex flex-row align-items-center"
+    style="background: #d8765d"
+  >
     <CContainer>
-      <CRow class="justify-content-center">
-        <CCol :md="6">
-          <div class="clearfix">
-            <h1 class="float-start display-3 me-4">404</h1>
-            <h4 class="pt-3">Oops! You're lost.</h4>
-            <p class="text-medium-emphasis float-start">
-              The page you are looking for was not found.
-            </p>
-          </div>
-          <CInputGroup class="input-prepend">
-            <CButton color="primary" variant="outline" @click="backToPrev"><CIcon icon="cil-arrow-left"/> Go back</CButton>
-          </CInputGroup>
-        </CCol>
-      </CRow>
+      <div class="w-100 h-100 text-center">
+        <img src="../../assets/gifs/404-doc.gif" alt="404" style="width: 80%" />
+        <CInputGroup class="input-prepend" style="">
+          <CButton @click="backToPrev"
+            ><CIcon icon="cil-arrow-left" /> Go back</CButton
+          >
+        </CInputGroup>
+      </div>
     </CContainer>
-    <img src="../../assets/gifs/404.gif" alt="404" style="padding-right: 110px;">
   </div>
 </template>
+
+<style scoped>
+.input-group {
+  position: fixed;
+  top: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.input-prepend {
+  background-color:#44c767;
+	-moz-border-radius:16px;
+	-webkit-border-radius:16px;
+	border-radius:16px;
+	border:4px solid #18ab29;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:arial;
+	font-size:17px;
+  width: 10vw;
+	padding:18px 15px;
+	text-decoration:none;
+	text-shadow:1px 0px 8px #2f6627;
+}
+
+.input-prepend:hover {
+  background-color:#5cbf2a;
+}
+</style>

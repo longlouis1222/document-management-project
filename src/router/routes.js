@@ -33,23 +33,24 @@ export default [
           import('@/views/admin/FalcutyManagement/FalcutyList.vue'),
       },
       {
-        path: '/admin/specialized-management/specialized-list',
-        name: 'Quản lý Chuyên ngành',
+        path: '/admin/workplace-management/workplace-list',
+        name: 'Quản lý đơn vị',
         component: () =>
-          import('@/views/admin/SpecializedManagement/SpecializedList.vue'),
+          import('@/views/admin/WorkplaceManagement/WorkplaceList.vue'),
       },
-      {
-        path: '/admin/training-system-management/training-system-list',
-        name: 'Quản lý Hệ đào tạo',
-        component: () =>
-          import('@/views/admin/TrainingSystemManagement/TrainingSystemList.vue'),
-      },
-      {
-        path: '/admin/year-management/year-list',
-        name: 'Quản lý Niên khóa',
-        component: () =>
-          import('@/views/admin/YearManagement/YearList.vue'),
-      },
+
+      // {
+      //   path: '/admin/training-system-management/training-system-list',
+      //   name: 'Quản lý Hệ đào tạo',
+      //   component: () =>
+      //     import('@/views/admin/TrainingSystemManagement/TrainingSystemList.vue'),
+      // },
+      // {
+      //   path: '/admin/year-management/year-list',
+      //   name: 'Quản lý Niên khóa',
+      //   component: () =>
+      //     import('@/views/admin/YearManagement/YearList.vue'),
+      // },
       {
         path: '/admin/class-management/class-list',
         name: 'Quản lý Lớp',

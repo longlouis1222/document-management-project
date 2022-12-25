@@ -89,8 +89,8 @@
         </CCard>
       </CCol>
     </CRow>
-    <WidgetsStatsD />
-    <CRow>
+    <!-- <WidgetsStatsD /> -->
+    <!-- <CRow>
       <CCol :md="12">
         <CCard class="mb-4">
           <CCardHeader> Traffic &amp; Sales </CCardHeader>
@@ -264,7 +264,7 @@
           </CCardBody>
         </CCard>
       </CCol>
-    </CRow>
+    </CRow> -->
   </div>
 </template>
 

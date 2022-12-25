@@ -31,7 +31,7 @@ const goToForgotPassword = () => {
 </script>
 
 <template>
-  <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
+  <div class="bg-light min-vh-100 d-flex flex-row align-items-center background-custom">
     <CContainer>
       <CRow class="justify-content-center">
         <CCol :md="8">
@@ -106,3 +106,9 @@ const goToForgotPassword = () => {
     </CContainer>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.background-custom {
+  background: url("@/assets/images/login-bgc.jpg")
+}
+</style>

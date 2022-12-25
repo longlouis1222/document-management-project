@@ -1,7 +1,14 @@
 // Here you can add other styles
+ul li {
+  list-style: none;
+}
 .w-45 {
   width: 45%;
 }
 .w-48 {
   width: 48%;
+}
+.b-shadow {
+  box-shadow: 0 0 4px 0px #515151;
+  border-radius: 4px;
 }
