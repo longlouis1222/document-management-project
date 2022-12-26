@@ -99,7 +99,11 @@ export default createStore({
       }
     },
 
+<<<<<<< HEAD
     async activeAccount({ commit }, credentials) {
+=======
+    async activeAccount({commit}, credentials) {
+>>>>>>> 77f5656 (fix page 404)
       try {
         console.log('activeAccount from Action store...')
         const res = await AuthService.activeAccount(credentials)
