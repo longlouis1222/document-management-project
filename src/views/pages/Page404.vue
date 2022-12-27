@@ -54,8 +54,4 @@ const backToPrev = () => {
 .input-prepend:hover {
   background-color:#5cbf2a;
 }
-<<<<<<< HEAD
 </style>
-=======
-</style>
->>>>>>> 77f5656 (fix page 404)
