@@ -42,13 +42,13 @@ const submitForm = async (formEl) => {
     if (valid) {
       try {
         if (viewMode.value === 'create') {
-          const userApiRes = await UserApi.create(formData)
+          const userApiRes = await FacultyApi.create(formData)
           if (userApiRes.status === 200) {
             console.log('create', userApiRes)
           }
         } else if (viewMode.value === 'update') {
           console.log('Update data', formData)
-          const userApiRes = await UserApi.update(formData)
+          const userApiRes = await FacultyApi.update(formData)
           if (userApiRes.status === 200) {
             console.log('Update', userApiRes)
             dialogModel.value = false
@@ -312,6 +312,56 @@ onMounted(async () => {
         />
       </div>
     </el-card>
+
+    <!-- Start dialog -->
+    <el-dialog
+      v-model="dialogModel"
+      title="Thêm mới khoa"
+      :close-on-click-modal="false"
+      :close-on-press-escape="true"
+      width="80%"
+    >
+      <el-form
+        ref="ruleFormRef"
+        :model="formData"
+        :rules="formValid"
+        label-width="140px"
+        label-position="top"
+        class="demo-ruleForm"
+        status-icon
+      >
+        <b-row>
+          <b-col md="3">
+            <el-form-item label="Tên khoa" prop="name">
+              <el-input v-model="formData.name" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+          <b-col md="3">
+            <el-form-item label="Mã khoa" prop="code">
+              <el-input v-model="formData.code" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+          <b-col md="3">
+            <el-form-item label="Chuyên ngành" prop="specialization">
+              <el-input v-model="formData.specialization" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+          <b-col md="3">
+            <el-form-item label="Địa chỉ" prop="address">
+              <el-input v-model="formData.address" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+        </b-row>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <CButton color="primary" @click="submitForm(ruleFormRef)">{{
+            viewMode === 'create' ? 'Thêm mới' : 'Cập nhật'
+          }}</CButton>
+        </span>
+      </template>
+    </el-dialog>
+    <!-- End dialog -->
   </div>
 </template>
 
