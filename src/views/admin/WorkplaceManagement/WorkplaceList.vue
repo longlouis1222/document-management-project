@@ -1,10 +1,10 @@
 <script setup>
 import MethodService from '@/service/MethodService'
-import { ElNotification, ElMessageBox, ElMessage } from 'element-plus'
-import { ref, reactive, onMounted } from 'vue'
-import { FormInstance } from 'element-plus'
 import WorkplaceApi from '@/moduleApi/modules/WorkplaceApi'
+import { ElMessageBox, ElMessage } from 'element-plus'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { FormInstance } from 'element-plus'
 
 import modelData from './WorkplaceModel'
 
@@ -69,8 +69,8 @@ const submitFormSearch = async (formEl) => {
       try {
         tableRules.filters = formSearchData
         console.log('tableRules.filters', tableRules.filters)
-        tableRules.skip = 0;
-        tableRules.page = 1;
+        tableRules.skip = 0
+        tableRules.page = 1
         await getList()
       } catch (error) {
         console.log(error)
@@ -261,13 +261,12 @@ onMounted(async () => {
         <el-table-column prop="phoneNumber" label="Số điện thoại" />
         <el-table-column prop="address" label="Địa chỉ" />
         <el-table-column
-          fixed="right"
           align="center"
           label="Thao tác"
           width="180"
         >
           <template #default="scope">
-            <div class="d-flex">
+            <div class="">
               <!-- <CButton color="secondary" variant="outline" class="me-2"
                 ><CIcon icon="cilFindInPage"
               /></CButton> -->

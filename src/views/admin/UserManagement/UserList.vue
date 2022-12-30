@@ -272,12 +272,7 @@ onMounted(async () => {
         <el-table-column prop="email" label="Email" />
         <el-table-column prop="listRole" label="Quyền hạn" />
         <el-table-column prop="status_name" label="Trạng thái" />
-        <el-table-column
-          fixed="right"
-          align="center"
-          label="Thao tác"
-          width="180"
-        >
+        <el-table-column label="Thao tác" align="center">
           <template #default="scope">
             <div>
               <!-- <CButton color="secondary" variant="outline" class="me-2"

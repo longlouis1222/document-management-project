@@ -3,18 +3,18 @@ let model = {}
 
 // dữ liệu form
 model.dataForm = {
-    name: null,
-    specialization: null,
-    code: null,
-    address: null,
+  code: null,
+  name: null,
+  specialization: null,
+  workplaceId: null,
 }
 
 // validation form
 model.validForm = {
-    name: [ValidService.required],
-    specialization: [ValidService.required],
-    code: [ValidService.required],
-    address: [ValidService.required],
+  code: [ValidService.required],
+  name: [ValidService.required],
+  specialization: [ValidService.required],
+  workplaceId: [ValidService.requiredChange],
 }
 
 model.dataFormOther = {}
@@ -40,22 +40,22 @@ model.tableRules = {
     recordSelected: [],
     dataSearch: {
         value: {
-            name: '',
-            specialization: '',
-            code: '',
-            address: '',
+          code: '',
+          name: '',
+          specialization: '',
+          workplaceId: '',
         },
         valid: {
-            name: [],
-            specialization: [],
-            code: [],
-            address: [],
+          code: [],
+          name: [],
+          specialization: [],
+          workplaceId: [],
         },
         operator: {
-            name: '',
-            specialization: '',
-            code: '',
-            address: '',
+          code: '',
+          name: '',
+          specialization: '',
+          workplaceId: '',
         },
     },
 }
