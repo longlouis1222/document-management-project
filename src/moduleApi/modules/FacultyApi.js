@@ -1,4 +1,4 @@
-import Api from '..'
+import Api from '../../moduleApi'
 
 export default {
   list(data) {
