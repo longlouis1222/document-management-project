@@ -1,19 +1,24 @@
 <script setup>
 import MethodService from '@/service/MethodService'
+import DataService from '@/service/DataService'
+
 import { ElNotification, ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
-import { FormInstance } from 'element-plus'
-import UserApi from '@/moduleApi/modules/UserApi'
 import { useRouter, useRoute } from 'vue-router'
+
+import UserApi from '@/moduleApi/modules/UserApi'
+import TeacherApi from '@/moduleApi/modules/TeacherApi'
+import StudentApi from '@/moduleApi/modules/StudentApi'
+import { FormInstance } from 'element-plus'
 
 import modelData from './UserModel'
 
 const router = useRouter()
 const route = useRoute()
-const moduleName = 'Danh sách quản lý'
+const moduleName = 'Danh sách Quản lý'
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
-const formData = reactive(MethodService.copyObject(modelData.dataForm))
+const formData = reactive({ value: MethodService.copyObject(modelData.dataForm)})
 const formValid = reactive(MethodService.copyObject(modelData.validForm))
 const formSearchData = reactive(
   MethodService.copyObject(tableRules.dataSearch.value),
@@ -23,9 +28,14 @@ const formSearchValid = reactive(
 )
 
 const componentKey = ref(0)
-const statusList = modelData.statusList
+const typeUserList = DataService.typeUserList
 const dialogModel = ref(false)
 const viewMode = ref('create')
+
+const teacherList = reactive({ value: []})
+const studentList = reactive({ value: []})
+const dynamicList = reactive({ value: []})
+
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -41,13 +51,13 @@ const submitForm = async (formEl) => {
     if (valid) {
       try {
         if (viewMode.value === 'create') {
-          const userApiRes = await UserApi.create(formData)
+          const userApiRes = await UserApi.create(formData.value)
           if (userApiRes.status === 200) {
             console.log('create', userApiRes)
           }
         } else if (viewMode.value === 'update') {
-          console.log('Update data', formData)
-          const userApiRes = await UserApi.update(formData)
+          console.log('Update data', formData.value)
+          const userApiRes = await UserApi.update(formData.value)
           if (userApiRes.status === 200) {
             console.log('Update', userApiRes)
             dialogModel.value = false
@@ -92,7 +102,7 @@ const getList = async () => {
     ...tableRules.filters,
   }
   router.replace({
-    name: 'Danh sách Quản lý',
+    name: moduleName,
     query: {
       ...dataFilter,
     },
@@ -122,7 +132,7 @@ const updateItem = async (rowData) => {
   formData.username = rowData.username
   formData.email = rowData.email
   formData.status = formData.status == 1 ? -1 : 1
-  const userApiRes = await UserApi.update(formData)
+  const userApiRes = await UserApi.update(formData.value)
   if (userApiRes.status === 200) {
     await getList()
     componentKey.value++
@@ -182,9 +192,32 @@ const fn_tableSortChange = (column, tableSort) => {
   // getService();
 }
 
+const getListTeacher = async () => {
+  const teacherApiRes = await TeacherApi.list()
+  if (teacherApiRes.status === 200) {
+    // teacherList.value = teacherApiRes.data.data.data
+    dynamicList.value = teacherApiRes.data.data.data
+  }
+}
+
+const getStudentTeacher = async () => {
+  const studentApiRes = await StudentApi.list()
+  if (studentApiRes.status === 200) {
+    // studentList.value = studentApiRes.data.data.data
+    dynamicList.value = studentApiRes.data.data.data
+
+  }
+}
+
+const changeType = () => {
+  if (formData.value.type == 'LECTURE') {
+    getListTeacher()
+  } else {
+    getStudentTeacher()
+  }
+}
+
 onMounted(async () => {
-  // tableRules.total = tableData.length
-  // console.log('tableRules.showFormSearch', tableRules.showFormSearch)
   await getList()
 })
 </script>
@@ -200,9 +233,9 @@ onMounted(async () => {
               <CButton color="primary" class="me-2" @click="toggleSearchBox"
                 ><CIcon icon="cilSearch" class="me-2" /> Tra cứu</CButton
               >
-              <!-- <CButton color="primary" @click="openDialogAddItem"
+              <CButton color="primary" @click="openDialogAddItem"
                 >Thêm mới</CButton
-              > -->
+              >
             </div>
           </div>
         </div>
@@ -272,6 +305,11 @@ onMounted(async () => {
         <el-table-column prop="email" label="Email" />
         <el-table-column prop="listRole" label="Quyền hạn" />
         <el-table-column prop="status_name" label="Trạng thái" />
+        <el-table-column prop="type" label="Loại tài khoản">
+          <template #default="scope">
+            {{ scope.row.type == 'LECTURE' ? 'Giáo viên' : scope.row.type == 'STUDENT' ? 'Sinh viên' : 'Khác' }}
+          </template>
+        </el-table-column>
         <el-table-column label="Thao tác" align="center">
           <template #default="scope">
             <div>
@@ -325,6 +363,89 @@ onMounted(async () => {
         />
       </div>
     </el-card>
+
+    <!-- Start dialog -->
+    <el-dialog
+      v-model="dialogModel"
+      title="Thêm mới đồ án"
+      :close-on-click-modal="false"
+      :close-on-press-escape="true"
+      width="80%"
+    >
+      <el-form
+        ref="ruleFormRef"
+        :model="formData.value"
+        :rules="formValid"
+        label-width="140px"
+        label-position="top"
+        class="demo-ruleForm"
+        status-icon
+      >
+        <b-row>
+          <b-col md="4">
+            <el-form-item label="Loại tài khoản" prop="type">
+              <el-select
+                v-model="formData.value.type"
+                placeholder="chọn"
+                filterable
+                @change="changeType"
+              >
+                <el-option
+                  v-for="item in typeUserList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </b-col>
+          <b-col md="4" v-if="formData.value.type">
+            <el-form-item :label="formData.value.type == 'LECTURE' ? 'Giáo viên' : 'Sinh viên'" prop="studentOrLectureId">
+              <el-select
+                v-model="formData.value.studentOrLectureId"
+                placeholder="chọn"
+                filterable
+              >
+                <el-option
+                  v-for="item in dynamicList.value"
+                  :key="item.id"
+                  :label="item.userInfoDTO.fullName"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Email" prop="email">
+              <el-input v-model="formData.value.email" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Tên người dùng" prop="username">
+              <el-input v-model="formData.value.username" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Mật khẩu" prop="password">
+              <el-input type="password" v-model="formData.value.password" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Nhập lại mật khẩu" prop="confirmPassword">
+              <el-input type="password" v-model="formData.value.confirmPassword" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+        </b-row>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <CButton color="primary" @click="submitForm(ruleFormRef)">{{
+            viewMode === 'create' ? 'Thêm mới' : 'Cập nhật'
+          }}</CButton>
+        </span>
+      </template>
+    </el-dialog>
+    <!-- End dialog -->
   </div>
 </template>
 

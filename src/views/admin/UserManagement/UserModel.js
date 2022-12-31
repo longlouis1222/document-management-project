@@ -4,6 +4,11 @@ let model = {}
 // dữ liệu form
 model.dataForm = {
   email: null,
+  type: null,
+  username: null,
+  password: null,
+  confirmPassword: null,
+  studentOrLectureId: null,
   listRole: null,
   status: null,
 }
@@ -11,6 +16,11 @@ model.dataForm = {
 // validation form
 model.validForm = {
   email: [ValidService.required],
+  type: [ValidService.requiredChange],
+  username: [ValidService.required],
+  password: [ValidService.required],
+  confirmPassword: [ValidService.required],
+  studentOrLectureId: [ValidService.requiredChange],
   listRole: [ValidService.required],
   status: [ValidService.required],
 }

@@ -53,7 +53,7 @@ const tableData = [
           <span>Danh sách thông tin khoa</span>
         </div>
       </template>
-      <el-table :data="tableData" height="250" style="width: 100%">
+      <el-table :data="tableData" style="width: 100%">
         <el-table-column prop="name" label="Tên hội đồng" min-width="120" />
         <el-table-column prop="chairman" label="Chủ tịch" min-width="120" />
         <el-table-column prop="secretary" label="Thư ký" min-width="120"/>

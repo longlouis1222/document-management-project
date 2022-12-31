@@ -49,7 +49,7 @@ export default [
   {
     component: 'CNavItem',
     name: 'Quản lý Hội đồng',
-    to: '/admin/board-management/board-list',
+    to: '/admin/assembly-management/assembly-list',
     icon: 'cilObjectGroup',
   },
   {

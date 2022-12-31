@@ -64,10 +64,10 @@ export default [
           import('@/views/admin/TeacherManagement/TeacherList.vue'),
       },
       {
-        path: '/admin/board-management/board-list',
+        path: '/admin/assembly-management/assembly-list',
         name: 'Quản lý Hội đồng',
         component: () =>
-          import('@/views/admin/BoardManagement/BoardList.vue'),
+          import('@/views/admin/AssemblyManagement/AssemblyList.vue'),
       },
       {
         path: '/admin/student-management/student-list',

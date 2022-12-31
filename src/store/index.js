@@ -43,7 +43,7 @@ export default createStore({
           )
           commit('SET_CURRENT_USER', VueJwtDecode.decode(res.data.token))
           localStorage.setItem('Token', res.data.token)
-          router.push({ name: 'Quản lý đơn vị' })
+          router.push({ name: 'Dashboard' })
         }
       } catch (error) {
         console.log(error)
