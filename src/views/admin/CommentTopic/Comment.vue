@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <div>
     <div id="main-content" class="container">
       <div class="row">
@@ -71,8 +71,8 @@
 </template>
 
 <script>
-import SockJS from 'sockjs-client'
-import Stomp from 'webstomp-client'
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 
 export default {
   name: 'websocketdemo',
@@ -92,16 +92,16 @@ export default {
       }
     },
     connect() {
-      this.socket = new SockJS('http://localhost:8084/api/v1/manager-project-app')
+      this.socket = new SockJS(process.env.VUE_APP_API + 'manager-project-app')
       this.stompClient = Stomp.over(this.socket)
-      this.stompClient.connect(
-        {},
-        (frame) => {
+      this.stompClient.connect({},(frame) => {
           this.connected = true
           console.log(frame)
-          this.stompClient.subscribe('/topic/messages', (tick) => {
+          this.stompClient.subscribe(process.env.VUE_APP_API + 'topic/messages/18', (tick) => {
             console.log(tick)
-            const data = this.received_messages.push(JSON.parse(tick.body).content)
+            const data = this.received_messages.push(
+              JSON.parse(tick.body).name,
+            )
             console.log(data)
           })
         },
@@ -128,4 +128,4 @@ export default {
 </script>
 
 <style scoped>
-</style> -->
+</style>
