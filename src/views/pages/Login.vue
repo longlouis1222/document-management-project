@@ -39,8 +39,8 @@ const goToForgotPassword = () => {
             <CCard class="p-4">
               <CCardBody>
                 <CForm>
-                  <h1>Login</h1>
-                  <p class="text-medium-emphasis">Sign In to your account</p>
+                  <h1>Đăng nhập</h1>
+                  <p class="text-medium-emphasis">Chào bạn đến với nền tảng quản lý đồ án</p>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
                       <CIcon icon="cil-user" />
@@ -64,8 +64,8 @@ const goToForgotPassword = () => {
                   </CInputGroup>
                   <CRow>
                     <CCol :xs="6">
-                      <!-- <CButton color="primary" class="px-4"> Login </CButton> -->
-                      <el-button type="primary" @click="login">Login</el-button>
+                      <CButton color="primary" @click="login" class="px-4"> Đăng nhập </CButton>
+                      <!-- <el-button type="primary" @click="login">Login</el-button> -->
                     </CCol>
                     <CCol :xs="6" class="text-right">
                       <CButton
@@ -73,15 +73,16 @@ const goToForgotPassword = () => {
                         class="px-0"
                         @click="goToForgotPassword"
                       >
-                        Forgot password?
+                        Quên mật khẩu?
                       </CButton>
                     </CCol>
                   </CRow>
                 </CForm>
               </CCardBody>
             </CCard>
-            <CCard class="text-white bg-primary py-5" style="width: 44%">
-              <CCardBody class="text-center">
+            <CCard class="text-white bg-primary py-5" style="width: 38%">
+              <img src="@/assets/images/logo-KT.png" alt="logo-KT.png" style="width: 50%; border-radius: 8px;" class="m-auto" />
+              <!-- <CCardBody class="text-center">
                 <div>
                   <h2>Sign up</h2>
                   <p>
@@ -98,7 +99,7 @@ const goToForgotPassword = () => {
                     Register Now!
                   </CButton>
                 </div>
-              </CCardBody>
+              </CCardBody> -->
             </CCard>
           </CCardGroup>
         </CCol>
