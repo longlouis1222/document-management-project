@@ -38,6 +38,12 @@ export default [
         component: () =>
           import('@/views/admin/WorkplaceManagement/WorkplaceList.vue'),
       },
+      {
+        path: '/admin/comment-topic',
+        name: 'Quản lý bình luận',
+        component: () =>
+          import('@/views/admin/CommentTopic/Comment.vue'),
+      },
 
       // {
       //   path: '/admin/training-system-management/training-system-list',
