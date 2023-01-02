@@ -30,6 +30,7 @@ const formSearchValid = reactive(
 )
 
 const componentKey = ref(0)
+const statusList = modelData.statusList
 const typeUserList = DataService.typeUserList
 const dialogModel = ref(false)
 const viewMode = ref('create')
@@ -47,7 +48,7 @@ const openDialogAddItem = () => {
   setTimeout(() => {
     formData.value.username = ''
     formData.value.password = ''
-  }, 1700);
+  }, 1700)
 }
 
 const submitForm = async (formEl) => {
@@ -293,27 +294,40 @@ onMounted(async () => {
               status-icon
             >
               <b-row>
-                <b-col md="4">
-                  <el-form-item label="Tên người dùng" prop="">
-                    <el-input
-                      v-model="formSearchData.username"
-                      autocomplete="off"
-                    />
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
+                <b-col md="3">
                   <el-form-item label="Email" prop="">
-                    <el-input
-                      v-model="formSearchData.email"
-                      autocomplete="off"
-                    />
+                    <el-input v-model="formSearchData.email" clearable />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
+                <b-col md="3">
+                  <el-form-item label="Tên người dùng" prop="">
+                    <el-input v-model="formSearchData.username" clearable />
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Loại tài khoản" prop="">
+                    <el-select
+                      v-model="formSearchData.type"
+                      placeholder="chọn"
+                      clearable
+                      filterable
+                    >
+                      <el-option
+                        v-for="item in typeUserList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
                   <el-form-item label="Trạng thái" prop="">
                     <el-select
                       v-model="formSearchData.status"
                       placeholder="chọn"
+                      clearable
+                      filterable
                     >
                       <el-option
                         v-for="item in statusList"
@@ -339,7 +353,18 @@ onMounted(async () => {
         <el-table-column prop="username" label="Tên người dùng" />
         <el-table-column prop="email" label="Email" min-width="160px" />
         <el-table-column prop="listRole" label="Quyền hạn" />
-        <el-table-column prop="status_name" label="Trạng thái" align="center" />
+        <el-table-column prop="status_name" label="Trạng thái" align="center">
+          <template #default="scope">
+            <span
+              :class="{
+                'bold fw-medium': true,
+                'text-success': scope.row.status_name == 'Đã kích hoạt',
+                'text-danger': scope.row.status_name == 'Khóa',
+              }"
+              >{{ scope.row.status_name }}</span
+            >
+          </template>
+        </el-table-column>
         <el-table-column prop="type" label="Loại tài khoản" align="center">
           <template #default="scope">
             {{
