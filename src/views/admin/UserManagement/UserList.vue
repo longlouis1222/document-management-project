@@ -231,7 +231,7 @@ const changeAccountStatus = async (rowData) => {
   try {
     const dataUpdate = {
       id: rowData.id,
-      // status: rowData.status == 1 ? false : true,
+      status: rowData.status == 1 ? false : true,
     }
     const userApiRes = await UserApi.inactiveAccount(dataUpdate)
     if (userApiRes.status == 200) {
