@@ -2,7 +2,7 @@ import Api from '../../moduleApi'
 
 export default {
   list(data) {
-    return Api().get(data == null ? 'faculties' : `faculties?${data}`)
+    return Api().get(!data ? 'faculties' : `faculties?${data}`)
   },
   create(data) {
     return Api().post('faculties', data)

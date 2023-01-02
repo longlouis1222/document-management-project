@@ -19,13 +19,11 @@ const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const formData = reactive({
   value: MethodService.copyObject(modelData.dataForm),
 })
-const formValid = reactive(MethodService.copyObject(modelData.validForm))
+const formValid = modelData.validForm
 const formSearchData = reactive(
-  MethodService.copyObject(tableRules.dataSearch.value),
+  { value: MethodService.copyObject(tableRules.dataSearch.value) }
 )
-const formSearchValid = reactive(
-  MethodService.copyObject(tableRules.dataSearch.valid),
-)
+const formSearchValid = tableRules.dataSearch.valid
 
 const topicStatusList = DataService.topicStatusList
 
@@ -89,7 +87,7 @@ const submitFormSearch = async (formEl) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       try {
-        tableRules.filters = formSearchData
+        tableRules.filters = formSearchData.value
         tableRules.skip = 0
         tableRules.page = 1
         await getList()
@@ -236,7 +234,7 @@ onMounted(async () => {
           <el-card>
             <el-form
               ref="ruleFormRef"
-              :model="formSearchData"
+              :model="formSearchData.value"
               :rules="formSearchValid"
               label-width="140px"
               label-position="top"
@@ -248,15 +246,23 @@ onMounted(async () => {
                 <b-col md="4">
                   <el-form-item label="Tên đồ án" prop="name">
                     <el-input
-                      v-model="formSearchData.name"
+                      v-model="formSearchData.value.name"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
                 <b-col md="4">
-                  <el-form-item label="Điểm" prop="score">
+                  <el-form-item label="Điểm phản biện" prop="scoreCounterArgument">
                     <el-input
-                      v-model="formSearchData.score"
+                      v-model="formSearchData.value.scoreCounterArgument"
+                      autocomplete="off"
+                    />
+                  </el-form-item>
+                </b-col>
+                <b-col md="4">
+                  <el-form-item label="Điểm hướng dẫn" prop="scoreGuide">
+                    <el-input
+                      v-model="formSearchData.value.scoreGuide"
                       autocomplete="off"
                     />
                   </el-form-item>
@@ -264,9 +270,10 @@ onMounted(async () => {
                 <b-col md="4">
                   <el-form-item label="Trạng thái" prop="status">
                     <el-select
-                      v-model="formSearchData.status"
+                      v-model="formSearchData.value.status"
                       placeholder="chọn"
                       filterable
+                      clearable
                     >
                       <el-option
                         v-for="item in topicStatusList"
@@ -280,17 +287,35 @@ onMounted(async () => {
                 <b-col md="4">
                   <el-form-item label="Số lượng sinh viên" prop="stdNumber">
                     <el-input
-                      v-model="formSearchData.stdNumber"
+                      v-model="formSearchData.value.stdNumber"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
                 <b-col md="4">
-                  <el-form-item label="Giáo viên" prop="lecturerId">
+                  <el-form-item label="Giáo viên phản biện" prop="lecturerCounterArgumentId">
                     <el-select
-                      v-model="formSearchData.lecturerId"
+                      v-model="formSearchData.value.lecturerCounterArgumentId"
                       placeholder="chọn"
                       filterable
+                      clearable
+                    >
+                      <el-option
+                        v-for="item in teacherList.value"
+                        :key="item.id"
+                        :label="item.userInfoDTO.fullName"
+                        :value="item.id"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="4">
+                  <el-form-item label="Giáo viên hướng dẫn" prop="lecturerGuideDTO">
+                    <el-select
+                      v-model="formSearchData.value.lecturerGuideDTO"
+                      placeholder="chọn"
+                      filterable
+                      clearable
                     >
                       <el-option
                         v-for="item in teacherList.value"
@@ -304,17 +329,17 @@ onMounted(async () => {
                 <b-col md="4">
                   <el-form-item label="Năm" prop="year">
                     <el-date-picker
-                      v-model="formSearchData.year"
+                      v-model="formSearchData.value.year"
                       type="year"
                       format="YYYY"
                       placeholder="Chọn"
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="12">
+                <b-col md="4">
                   <el-form-item label="Mô tả" prop="description">
                     <el-input
-                      v-model="formSearchData.description"
+                      v-model="formSearchData.value.description"
                       autocomplete="off"
                     />
                   </el-form-item>
@@ -332,8 +357,10 @@ onMounted(async () => {
 
       <el-table :data="tableRules.data" style="width: 100%">
         <el-table-column prop="name" label="Tên đề tài" width="150" />
-        <el-table-column prop="lecturerId" label="Giáo viên" width="120" />
-        <el-table-column prop="score" label="Điểm" min-width="60" />
+        <el-table-column prop="lecturerCounterArgumentDTO.fullName" label="Giáo viên phản biện" width="120" />
+        <el-table-column prop="lecturerGuideDTO.fullName" label="Giáo viên hướng dẫn" width="120" />
+        <el-table-column prop="scoreCounterArgument" label="Điểm phản biện" min-width="100" />
+        <el-table-column prop="scoreGuide" label="Điểm hướng dẫn" min-width="100" />
         <el-table-column prop="status" label="Trạng thái" min-width="100" />
         <el-table-column
           prop="stdNumber"
@@ -410,8 +437,19 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Điểm" prop="score">
-              <el-input v-model="formData.value.score" autocomplete="off" />
+            <el-form-item label="Điểm phản biện" prop="scoreCounterArgument">
+              <el-input
+                v-model="formData.value.scoreCounterArgument"
+                autocomplete="off"
+              />
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Điểm hướng dẫn" prop="scoreGuide">
+              <el-input
+                v-model="formData.value.scoreGuide"
+                autocomplete="off"
+              />
             </el-form-item>
           </b-col>
           <b-col md="4">
@@ -436,9 +474,25 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Giáo viên" prop="lecturerId">
+            <el-form-item label="Giáo viên hướng dẫn" prop="lecturerGuideId">
               <el-select
-                v-model="formData.value.lecturerId"
+                v-model="formData.value.lecturerGuideId"
+                placeholder="chọn"
+                filterable
+              >
+                <el-option
+                  v-for="item in teacherList.value"
+                  :key="item.id"
+                  :label="item.userInfoDTO.fullName"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Giáo viên phản biện" prop="lecturerCounterArgumentId">
+              <el-select
+                v-model="formData.value.lecturerCounterArgumentId"
                 placeholder="chọn"
                 filterable
               >
@@ -461,7 +515,7 @@ onMounted(async () => {
               />
             </el-form-item>
           </b-col>
-          <b-col md="12">
+          <b-col md="4">
             <el-form-item label="Mô tả" prop="description">
               <el-input
                 v-model="formData.value.description"

@@ -3,14 +3,16 @@ let model = {}
 
 // dữ liệu form
 model.dataForm = {
-  lecturerId: null,
+  idLectures: null,
+  nameAssembly: null,
   score: null,
   topicId: null,
 }
 
 // validation form
 model.validForm = {
-  lecturerId: [ValidService.requiredChange],
+  idLectures: [ValidService.requiredChange],
+  nameAssembly: [ValidService.required],
   score: [ValidService.required],
   topicId: [ValidService.requiredChange],
 }
@@ -33,10 +35,10 @@ model.tableRules = {
   recordSelected: [],
   dataSearch: {
     value: {
-      code: '',
-      name: '',
-      facultyId: '',
-      stdNumber: '',
+      lecturerIds: '',
+      nameAssembly: '',
+      score: '',
+      topicId: '',
     },
     valid: {
       code: [],
@@ -45,10 +47,10 @@ model.tableRules = {
       stdNumber: [],
     },
     operator: {
-      code: '',
-      name: '',
-      facultyId: '',
-      stdNumber: '',
+      lecturerIds: '',
+      nameAssembly: '',
+      score: '',
+      topicId: '',
     },
   },
 }

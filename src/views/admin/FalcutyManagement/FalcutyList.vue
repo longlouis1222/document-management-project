@@ -11,23 +11,22 @@ import { FormInstance } from 'element-plus'
 import modelData from './FacultyModel'
 
 const router = useRouter()
-// const route = useRoute()
 const moduleName = 'Quản lý Khoa'
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
-const formData = reactive({ value: MethodService.copyObject(modelData.dataForm)})
+const formData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
 const formValid = reactive(MethodService.copyObject(modelData.validForm))
-const formSearchData = reactive(
-  MethodService.copyObject(tableRules.dataSearch.value),
-)
-const formSearchValid = reactive(
-  MethodService.copyObject(tableRules.dataSearch.valid),
-)
+const formSearchData = reactive({
+  value: MethodService.copyObject(tableRules.dataSearch.value),
+})
+const formSearchValid = tableRules.dataSearch.valid
 
 const componentKey = ref(0)
 const dialogModel = ref(false)
 const viewMode = ref('create')
-const workplaceList = reactive({ value: []})
+const workplaceList = reactive({ value: [] })
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -78,6 +77,7 @@ const submitForm = async (formEl) => {
 const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
+  viewMode.value = 'create'
 }
 
 const submitFormSearch = async (formEl) => {
@@ -85,7 +85,7 @@ const submitFormSearch = async (formEl) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       try {
-        tableRules.filters = formSearchData
+        tableRules.filters = formSearchData.value
         console.log('tableRules.filters', tableRules.filters)
         tableRules.skip = 0
         tableRules.page = 1
@@ -125,7 +125,7 @@ const getList = async () => {
 const changeData = (data) => {
   data.forEach((e) => {
     if (e.workplaceId) {
-      const o = workplaceList.value.find(w => w.id == e.workplaceId)
+      const o = workplaceList.value.find((w) => w.id == e.workplaceId)
       e.workplaceName = o ? o.name : ''
     }
   })
@@ -133,21 +133,20 @@ const changeData = (data) => {
 }
 
 const handle = (type, rowData) => {
+  viewMode.value = type
   if (type == 'update') {
-    viewMode.value = 'update'
     dialogModel.value = true
-    formData.value = rowData
+    getItemById(rowData.id)
   } else if (type == 'delete') {
-    viewMode.value = 'delete'
     deleteItem(rowData.id)
   }
 }
 
 const getItemById = async (id) => {
-  console.log('id', id)
-  const userApiRes = await FacultyApi.findById(id)
-  if (userApiRes.status === 200) {
-    console.log('getItemById', userApiRes)
+  const facultyApiRes = await FacultyApi.findById(id)
+  if (facultyApiRes.status === 200) {
+    console.log('getItemById', facultyApiRes)
+    formData.value = facultyApiRes.data.data
   }
 }
 
@@ -245,28 +244,44 @@ onMounted(async () => {
               @submit.prevent="submitFormSearch(ruleFormRef)"
             >
               <b-row>
-                <b-col md="4">
+                <b-col md="3">
                   <el-form-item label="Mã khoa" prop="">
                     <el-input
-                      v-model="formSearchData.code"
+                      v-model="formSearchData.value.code"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
+                <b-col md="3">
                   <el-form-item label="Tên khoa" prop="">
                     <el-input
-                      v-model="formSearchData.name"
+                      v-model="formSearchData.value.name"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
+                <b-col md="3">
                   <el-form-item label="Chuyên ngành" prop="">
                     <el-input
-                      v-model="formSearchData.specialization"
+                      v-model="formSearchData.value.specialization"
                       autocomplete="off"
                     />
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Đơn vị" prop="workplaceId">
+                    <el-select
+                      v-model="formSearchData.value.workplaceId"
+                      placeholder="chọn"
+                      clearable
+                    >
+                      <el-option
+                        v-for="item in workplaceList.value"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      />
+                    </el-select>
                   </el-form-item>
                 </b-col>
               </b-row>
@@ -285,11 +300,7 @@ onMounted(async () => {
         <el-table-column prop="code" label="Mã khoa" />
         <el-table-column prop="specialization" label="Chuyên ngành" />
         <el-table-column prop="workplaceName" label="Đơn vị" />
-        <el-table-column
-          align="center"
-          label="Thao tác"
-          width="180"
-        >
+        <el-table-column align="center" label="Thao tác" width="180">
           <template #default="scope">
             <div>
               <CButton
@@ -335,6 +346,7 @@ onMounted(async () => {
       :close-on-click-modal="false"
       :close-on-press-escape="true"
       width="80%"
+      @close="resetForm(ruleFormRef)"
     >
       <el-form
         ref="ruleFormRef"
@@ -358,7 +370,10 @@ onMounted(async () => {
           </b-col>
           <b-col md="3">
             <el-form-item label="Chuyên ngành" prop="specialization">
-              <el-input v-model="formData.value.specialization" autocomplete="off" />
+              <el-input
+                v-model="formData.value.specialization"
+                autocomplete="off"
+              />
             </el-form-item>
           </b-col>
           <b-col md="3">
