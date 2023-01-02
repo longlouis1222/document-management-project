@@ -3,7 +3,7 @@ let DataService = {}
 DataService.genderList = [
   {
     label: 'Nam',
-    value: 0
+    value: '0'
   },
   {
     label: 'Nữ',

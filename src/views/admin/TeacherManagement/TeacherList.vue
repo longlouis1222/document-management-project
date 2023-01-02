@@ -16,21 +16,21 @@ const router = useRouter()
 const moduleName = 'Quản lý Giáo viên'
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
-const formData = reactive({ value: MethodService.copyObject(modelData.dataForm)})
+const formData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
 const formValid = reactive(MethodService.copyObject(modelData.validForm))
-const formSearchData = reactive(
-  MethodService.copyObject(tableRules.dataSearch.value),
-)
-const formSearchValid = reactive(
-  MethodService.copyObject(tableRules.dataSearch.valid),
-)
+const formSearchData = reactive({
+  value: MethodService.copyObject(tableRules.dataSearch.value),
+})
+const formSearchValid = tableRules.dataSearch.valid
 
 const genderList = DataService.genderList
 const certificationList = DataService.certificationList
 
 const dialogModel = ref(false)
 const viewMode = ref('create')
-const facultyList = reactive({ value: []})
+const facultyList = reactive({ value: [] })
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -81,14 +81,14 @@ const submitForm = async (formEl) => {
 const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
+  viewMode.value = 'create'
 }
 
 const submitFormSearch = async (formEl) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
-    if (valid) {
       try {
-        tableRules.filters = formSearchData
+        tableRules.filters = formSearchData.value
         console.log('tableRules.filters', tableRules.filters)
         tableRules.skip = 0
         tableRules.page = 1
@@ -96,9 +96,6 @@ const submitFormSearch = async (formEl) => {
       } catch (error) {
         console.log(error)
       }
-    } else {
-      console.log('error submit!', fields)
-    }
   })
 }
 
@@ -127,25 +124,26 @@ const getList = async () => {
 
 const changeData = (data) => {
   data.forEach((e) => {
-    e.date_of_birth = MethodService.formatDate(e.userInfoDTO.dateOfBirth, 'date')
-    e.gender = e.userInfoDTO.gender == 0 ? 'Nam' : e.userInfoDTO.gender == 1 ? 'Nữ' : 'Khác'
+    e.date_of_birth = MethodService.formatDate(
+      e.userInfoDTO.dateOfBirth,
+      'date',
+    )
+    e.gender =
+      e.userInfoDTO.gender == 0
+        ? 'Nam'
+        : e.userInfoDTO.gender == 1
+        ? 'Nữ'
+        : 'Khác'
   })
   return data
 }
 
 const handle = (type, rowData) => {
+  viewMode.value = type
   if (type == 'update') {
-    viewMode.value = 'update'
     dialogModel.value = true
-    formData.value = rowData
-    formData.value.fullName = rowData.userInfoDTO.fullName
-    formData.value.gender = rowData.userInfoDTO.gender == 'Nam' ? 0 : rowData.userInfoDTO.gender == 'Nữ' ? 1 : 2
-    formData.value.dateOfBirth = rowData.userInfoDTO.dateOfBirth
-    formData.value.phoneNumber = rowData.userInfoDTO.phoneNumber
-    formData.value.address = rowData.userInfoDTO.address
-    formData.value.town = rowData.userInfoDTO.town
+    getItemById(rowData.id)
   } else if (type == 'delete') {
-    viewMode.value = 'delete'
     deleteItem(rowData.id)
   }
 }
@@ -154,7 +152,20 @@ const getItemById = async (id) => {
   console.log('id', id)
   const teacherApiRes = await TeacherApi.findById(id)
   if (teacherApiRes.status === 200) {
-    console.log('getItemById', teacherApiRes)
+    dialogModel.value = true
+    let res = teacherApiRes.data.data
+    formData.value = res
+    formData.value.fullName = res.userInfoDTO.fullName
+    formData.value.gender =
+      res.userInfoDTO.gender == 'Nam'
+        ? 0
+        : res.userInfoDTO.gender == 'Nữ'
+        ? 1
+        : 2
+    formData.value.dateOfBirth = res.userInfoDTO.dateOfBirth
+    formData.value.phoneNumber = res.userInfoDTO.phoneNumber
+    formData.value.address = res.userInfoDTO.address
+    formData.value.town = res.userInfoDTO.town
   }
 }
 
@@ -243,7 +254,7 @@ onMounted(async () => {
           <el-card>
             <el-form
               ref="ruleFormRef"
-              :model="formSearchData"
+              :model="formSearchData.value"
               :rules="formSearchValid"
               label-width="140px"
               label-position="top"
@@ -252,26 +263,97 @@ onMounted(async () => {
               @submit.prevent="submitFormSearch(ruleFormRef)"
             >
               <b-row>
-                <b-col md="4">
-                  <el-form-item label="Mã khoa" prop="">
+                <b-col md="3">
+                  <el-form-item label="Mã giáo viên" prop="">
                     <el-input
-                      v-model="formSearchData.code"
+                      v-model="formSearchData.value.codeLecture"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
-                  <el-form-item label="Tên khoa" prop="">
+                <b-col md="3">
+                  <el-form-item label="Họ và tên" prop="">
                     <el-input
-                      v-model="formSearchData.name"
+                      v-model="formSearchData.value.fullName"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
-                  <el-form-item label="Chuyên ngành" prop="">
+                <b-col md="3">
+                  <el-form-item label="Giới tính" prop="">
+                    <el-select
+                      v-model="formSearchData.value.gender"
+                      placeholder="chọn"
+                      filterable
+                      clearable
+                    >
+                      <el-option
+                        v-for="item in genderList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Ngày sinh" prop="">
+                    <el-date-picker
+                      v-model="formSearchData.value.dateOfBirth"
+                      type="date"
+                      placeholder="Chọn"
+                    />
+                  </el-form-item>
+                </b-col>
+              </b-row>
+
+              <b-row>
+                <b-col md="3">
+                  <el-form-item label="Địa chỉ" prop="">
                     <el-input
-                      v-model="formSearchData.specialization"
+                      v-model="formSearchData.value.address"
+                      autocomplete="off"
+                    />
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Bằng cấp" prop="">
+                    <el-select
+                      v-model="formSearchData.value.degree"
+                      placeholder="chọn"
+                      filterable
+                      clearable
+                    >
+                      <el-option
+                        v-for="item in certificationList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Đơn vị" prop="">
+                    <el-select
+                      v-model="formSearchData.value.facultyId"
+                      placeholder="chọn"
+                      filterable
+                      clearable
+                    >
+                      <el-option
+                        v-for="item in facultyList.value"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Quê quán" prop="">
+                    <el-input
+                      v-model="formSearchData.value.town"
                       autocomplete="off"
                     />
                   </el-form-item>
@@ -288,15 +370,56 @@ onMounted(async () => {
       </div>
 
       <el-table :data="tableRules.data" style="width: 100%">
-        <el-table-column prop="codeLecture" label="Mã giáo viên" min-width="150"/>
-        <el-table-column prop="userInfoDTO.fullName" label="Họ và tên" min-width="150" />
-        <el-table-column prop="gender" label="Giới tính" min-width="80" />
-        <el-table-column prop="date_of_birth" label="Ngày sinh" min-width="150" />
-        <el-table-column prop="userInfoDTO.address" label="Địa chỉ" min-width="150" />
+        <el-table-column
+          prop="codeLecture"
+          label="Mã giáo viên"
+          min-width="150"
+          align="center"
+        />
+        <el-table-column
+          prop="userInfoDTO.fullName"
+          label="Họ và tên"
+          min-width="150"
+        />
+        <el-table-column
+          prop="userInfoDTO.gender"
+          label="Giới tính"
+          min-width="80"
+          align="center"
+        >
+          <template #default="scope">
+            {{
+              scope.row.userInfoDTO.gender == 0
+                ? 'Nam'
+                : scope.row.userInfoDTO.gender == 1
+                ? 'Nữ'
+                : 'Khác'
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="date_of_birth"
+          label="Ngày sinh"
+          min-width="150"
+          align="center"
+        />
+        <el-table-column
+          prop="userInfoDTO.address"
+          label="Địa chỉ"
+          min-width="150"
+        />
         <el-table-column prop="degree" label="Bằng cấp" min-width="150" />
-        <el-table-column prop="facultyDTO.name" label="Đơn vị" min-width="150" />
+        <el-table-column
+          prop="facultyDTO.name"
+          label="Đơn vị"
+          min-width="150"
+        />
         <el-table-column prop="regency" label="Chức vụ" min-width="150" />
-        <el-table-column prop="userInfoDTO.town" label="Quê quán" min-width="150" />
+        <el-table-column
+          prop="userInfoDTO.town"
+          label="Quê quán"
+          min-width="150"
+        />
         <el-table-column
           fixed="right"
           align="center"
@@ -344,10 +467,11 @@ onMounted(async () => {
     <!-- Start dialog -->
     <el-dialog
       v-model="dialogModel"
-      title="Thêm mới Lớp"
+      title="Thêm mới giáo viên"
       :close-on-click-modal="false"
       :close-on-press-escape="true"
       width="80%"
+      @close="resetForm(ruleFormRef)"
     >
       <el-form
         ref="ruleFormRef"
@@ -361,7 +485,10 @@ onMounted(async () => {
         <b-row>
           <b-col md="3">
             <el-form-item label="Mã giáo viên" prop="codeLecture">
-              <el-input v-model="formData.value.codeLecture" autocomplete="off" />
+              <el-input
+                v-model="formData.value.codeLecture"
+                autocomplete="off"
+              />
             </el-form-item>
           </b-col>
           <b-col md="3">
@@ -398,7 +525,10 @@ onMounted(async () => {
         <b-row>
           <b-col md="3">
             <el-form-item label="Số điện thoại" prop="phoneNumber">
-              <el-input v-model="formData.value.phoneNumber" autocomplete="off" />
+              <el-input
+                v-model="formData.value.phoneNumber"
+                autocomplete="off"
+              />
             </el-form-item>
           </b-col>
           <b-col md="3">
