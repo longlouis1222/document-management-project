@@ -18,7 +18,9 @@ const route = useRoute()
 const moduleName = 'Danh sách Quản lý'
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
-const formData = reactive({ value: MethodService.copyObject(modelData.dataForm)})
+const formData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
 const formValid = reactive(MethodService.copyObject(modelData.validForm))
 const formSearchData = reactive(
   MethodService.copyObject(tableRules.dataSearch.value),
@@ -32,10 +34,9 @@ const typeUserList = DataService.typeUserList
 const dialogModel = ref(false)
 const viewMode = ref('create')
 
-const teacherList = reactive({ value: []})
-const studentList = reactive({ value: []})
-const dynamicList = reactive({ value: []})
-
+const teacherList = reactive({ value: [] })
+const studentList = reactive({ value: [] })
+const dynamicList = reactive({ value: [] })
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -43,6 +44,10 @@ const toggleSearchBox = () => {
 
 const openDialogAddItem = () => {
   dialogModel.value = true
+  setTimeout(() => {
+    formData.value.username = ''
+    formData.value.password = ''
+  }, 1700);
 }
 
 const submitForm = async (formEl) => {
@@ -54,6 +59,11 @@ const submitForm = async (formEl) => {
           const userApiRes = await UserApi.create(formData.value)
           if (userApiRes.status === 200) {
             console.log('create', userApiRes)
+            dialogModel.value = false
+            ElMessage({
+              message: 'Thêm mới thành công.',
+              type: 'success',
+            })
           }
         } else if (viewMode.value === 'update') {
           console.log('Update data', formData.value)
@@ -136,6 +146,7 @@ const updateItem = async (rowData) => {
   if (userApiRes.status === 200) {
     await getList()
     componentKey.value++
+    viewMode.value = 'create'
   }
 }
 
@@ -205,7 +216,6 @@ const getStudentTeacher = async () => {
   if (studentApiRes.status === 200) {
     // studentList.value = studentApiRes.data.data.data
     dynamicList.value = studentApiRes.data.data.data
-
   }
 }
 
@@ -214,6 +224,31 @@ const changeType = () => {
     getListTeacher()
   } else {
     getStudentTeacher()
+  }
+}
+
+const changeAccountStatus = async (rowData) => {
+  try {
+    const dataUpdate = {
+      id: rowData.id,
+      // status: rowData.status == 1 ? false : true,
+    }
+    const userApiRes = await UserApi.inactiveAccount(dataUpdate)
+    if (userApiRes.status == 200) {
+      ElMessage({
+        message: 'Cập nhật thành công.',
+        type: 'success',
+      })
+      await getList()
+      componentKey.value++
+      viewMode.value = 'create'
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage({
+      message: `${error.message}`,
+      type: 'error',
+    })
   }
 }
 
@@ -259,7 +294,7 @@ onMounted(async () => {
             >
               <b-row>
                 <b-col md="4">
-                  <el-form-item label="Têm người dùng" prop="">
+                  <el-form-item label="Tên người dùng" prop="">
                     <el-input
                       v-model="formSearchData.username"
                       autocomplete="off"
@@ -302,12 +337,18 @@ onMounted(async () => {
 
       <el-table :data="tableRules.data" style="width: 100%">
         <el-table-column prop="username" label="Tên người dùng" />
-        <el-table-column prop="email" label="Email" />
+        <el-table-column prop="email" label="Email" min-width="160px" />
         <el-table-column prop="listRole" label="Quyền hạn" />
-        <el-table-column prop="status_name" label="Trạng thái" />
-        <el-table-column prop="type" label="Loại tài khoản">
+        <el-table-column prop="status_name" label="Trạng thái" align="center" />
+        <el-table-column prop="type" label="Loại tài khoản" align="center">
           <template #default="scope">
-            {{ scope.row.type == 'LECTURE' ? 'Giáo viên' : scope.row.type == 'STUDENT' ? 'Sinh viên' : 'Khác' }}
+            {{
+              scope.row.type == 'LECTURE'
+                ? 'Giáo viên'
+                : scope.row.type == 'STUDENT'
+                ? 'Sinh viên'
+                : 'Khác'
+            }}
           </template>
         </el-table-column>
         <el-table-column label="Thao tác" align="center">
@@ -321,7 +362,7 @@ onMounted(async () => {
                 variant="outline"
                 class="me-2"
                 size="sm"
-                @click="updateItem(scope.row)"
+                @click="changeAccountStatus(scope.row)"
                 v-if="
                   scope.row.status_name == 'Đã kích hoạt' ||
                   scope.row.status_name == 'Khóa'
@@ -367,10 +408,10 @@ onMounted(async () => {
     <!-- Start dialog -->
     <el-dialog
       v-model="dialogModel"
-      title="Thêm mới đồ án"
+      title="Thêm mới người dùng"
       :close-on-click-modal="false"
       :close-on-press-escape="true"
-      width="80%"
+      width="35%"
     >
       <el-form
         ref="ruleFormRef"
@@ -382,7 +423,7 @@ onMounted(async () => {
         status-icon
       >
         <b-row>
-          <b-col md="4">
+          <b-col md="12">
             <el-form-item label="Loại tài khoản" prop="type">
               <el-select
                 v-model="formData.value.type"
@@ -399,8 +440,13 @@ onMounted(async () => {
               </el-select>
             </el-form-item>
           </b-col>
-          <b-col md="4" v-if="formData.value.type">
-            <el-form-item :label="formData.value.type == 'LECTURE' ? 'Giáo viên' : 'Sinh viên'" prop="studentOrLectureId">
+          <b-col md="12" v-if="formData.value.type">
+            <el-form-item
+              :label="
+                formData.value.type == 'LECTURE' ? 'Giáo viên' : 'Sinh viên'
+              "
+              prop="studentOrLectureId"
+            >
               <el-select
                 v-model="formData.value.studentOrLectureId"
                 placeholder="chọn"
@@ -415,24 +461,32 @@ onMounted(async () => {
               </el-select>
             </el-form-item>
           </b-col>
-          <b-col md="4">
+          <b-col md="12">
             <el-form-item label="Email" prop="email">
               <el-input v-model="formData.value.email" autocomplete="off" />
             </el-form-item>
           </b-col>
-          <b-col md="4">
+          <b-col md="12">
             <el-form-item label="Tên người dùng" prop="username">
               <el-input v-model="formData.value.username" autocomplete="off" />
             </el-form-item>
           </b-col>
-          <b-col md="4">
+          <b-col md="12">
             <el-form-item label="Mật khẩu" prop="password">
-              <el-input type="password" v-model="formData.value.password" autocomplete="off" />
+              <el-input
+                type="password"
+                v-model="formData.value.password"
+                autocomplete="off"
+              />
             </el-form-item>
           </b-col>
-          <b-col md="4">
+          <b-col md="12">
             <el-form-item label="Nhập lại mật khẩu" prop="confirmPassword">
-              <el-input type="password" v-model="formData.value.confirmPassword" autocomplete="off" />
+              <el-input
+                type="password"
+                v-model="formData.value.confirmPassword"
+                autocomplete="off"
+              />
             </el-form-item>
           </b-col>
         </b-row>

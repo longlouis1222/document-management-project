@@ -8,14 +8,14 @@
         <CIcon :icon="logo" height="48" alt="Logo" />
       </CHeaderBrand> -->
       <CHeaderNav class="d-none d-md-flex me-auto">
-        <CNavItem>
+        <!-- <CNavItem>
           <CNavLink href="/dashboard"> Dashboard </CNavLink>
         </CNavItem>
         <CNavItem>
           <CNavLink href="#">Users</CNavLink>
-        </CNavItem>
+        </CNavItem> -->
         <CNavItem>
-          <CNavLink href="#">Settings</CNavLink>
+          <!-- <CNavLink href="#">Settings</CNavLink> -->
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav>
@@ -24,7 +24,7 @@
             <CIcon class="mx-2" icon="cil-bell" size="lg" />
           </CNavLink>
         </CNavItem>
-        <CNavItem>
+        <!-- <CNavItem>
           <CNavLink href="#">
             <CIcon class="mx-2" icon="cil-list" size="lg" />
           </CNavLink>
@@ -33,7 +33,7 @@
           <CNavLink href="#">
             <CIcon class="mx-2" icon="cil-envelope-open" size="lg" />
           </CNavLink>
-        </CNavItem>
+        </CNavItem> -->
         <AppHeaderDropdownAccnt />
       </CHeaderNav>
     </CContainer>
