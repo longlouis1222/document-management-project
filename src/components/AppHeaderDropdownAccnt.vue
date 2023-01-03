@@ -1,5 +1,5 @@
 <template>
-  <CDropdown variant="nav-item">
+  <CDropdown>
     <CDropdownToggle placement="bottom-end" class="py-0" :caret="false">
       <CAvatar :src="avatar" size="md" />
     </CDropdownToggle>
@@ -7,7 +7,7 @@
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
         Account
       </CDropdownHeader>
-      <CDropdownItem>
+      <!-- <CDropdownItem>
         <CIcon icon="cil-bell" /> Updates
         <CBadge color="info" class="ms-auto">{{ itemsCount }}</CBadge>
       </CDropdownItem>
@@ -25,9 +25,9 @@
       </CDropdownItem>
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
         Settings
-      </CDropdownHeader>
-      <CDropdownItem> <CIcon icon="cil-user" /> Profile </CDropdownItem>
-      <CDropdownItem> <CIcon icon="cil-settings" /> Settings </CDropdownItem>
+      </CDropdownHeader> -->
+      <CDropdownItem @click="goToUserProfile"> <CIcon icon="cil-user" /> Profile </CDropdownItem>
+      <!-- <CDropdownItem> <CIcon icon="cil-settings" /> Settings </CDropdownItem>
       <CDropdownItem>
         <CIcon icon="cil-dollar" /> Payments
         <CBadge color="secondary" class="ms-auto">{{ itemsCount }}</CBadge>
@@ -35,11 +35,11 @@
       <CDropdownItem>
         <CIcon icon="cil-file" /> Projects
         <CBadge color="primary" class="ms-auto">{{ itemsCount }}</CBadge>
-      </CDropdownItem>
+      </CDropdownItem> -->
       <CDropdownDivider />
-      <CDropdownItem>
+      <!-- <CDropdownItem>
         <CIcon icon="cil-shield-alt" /> Lock Account
-      </CDropdownItem>
+      </CDropdownItem> -->
       <CDropdownItem @click="logout">
         <CIcon icon="cil-lock-locked" /> Logout
       </CDropdownItem>
@@ -50,11 +50,16 @@
 <script setup>
 import avatar from '@/assets/images/avatars/8.jpg'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
 const store = useStore()
-
+const router = useRouter()
 const logout = () => {
   console.log('Log out from App Header')
   store.dispatch('logout')
+}
+
+const goToUserProfile = () => {
+  router.push({ name: 'Thông tin tài khoản'})
 }
 </script>

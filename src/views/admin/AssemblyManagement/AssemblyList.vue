@@ -173,8 +173,8 @@ const deleteItem = async (id) => {
 }
 
 const getLectureList = async () => {
-  const topicApiRes = await TeacherApi.list()
-  if (topicApiRes.status === 200) {
+  const lectureApiRes = await TeacherApi.list()
+  if (lectureApiRes.status === 200) {
     lectureList.value = lectureApiRes.data.data.data
   }
 }
@@ -384,7 +384,7 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="12">
-            <el-form-item label="Mã khoa" prop="idLectures">
+            <el-form-item label="Giáo viên" prop="idLectures">
               <el-select
                 v-model="formData.value.idLectures"
                 placeholder="chọn"
@@ -394,7 +394,7 @@ onMounted(async () => {
                 <el-option
                   v-for="item in lectureList.value"
                   :key="item.id"
-                  :label="item.name"
+                  :label="item.userInfoDTO.fullName"
                   :value="item.id"
                 />
               </el-select>

@@ -88,6 +88,12 @@ export default [
           import('@/views/admin/GraduationProjectManagement/GraduationProjectList.vue'),
       },
       {
+        path: '/user-profile',
+        name: 'Thông tin tài khoản',
+        component: () =>
+          import('@/views/admin/UserProfile/UserProfile.vue'),
+      },
+      {
         path: '/theme',
         name: 'Theme',
         redirect: '/theme/typography',

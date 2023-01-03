@@ -36,5 +36,13 @@ export default {
 
   activeAccount(credentials) {
     return Api().get(`activation?code=${credentials.code}`)
-  }
+  },
+
+  getAccount() {
+    return Api().get('/account')
+  },
+
+  editUserInfo(data) {
+    return Api().post('/edit-user-info', data)
+  },
 }

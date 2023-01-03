@@ -43,6 +43,7 @@ export default createStore({
           )
           commit('SET_CURRENT_USER', VueJwtDecode.decode(res.data.token))
           localStorage.setItem('Token', res.data.token)
+          localStorage.setItem('uid', VueJwtDecode.decode(res.data.token).uid)
           router.push({ name: 'Dashboard' })
         }
       } catch (error) {
@@ -54,6 +55,7 @@ export default createStore({
       try {
         console.log('Log out from Action store ...')
         localStorage.removeItem('Token')
+        localStorage.removeItem('uid')
         commit('SET_CURRENT_USER', null)
         router.push({ name: 'Login' })
       } catch (error) {

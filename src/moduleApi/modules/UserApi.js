@@ -11,7 +11,7 @@ export default {
     return Api().put(`users/${data.id}`, data)
   },
   findById(id) {
-    return Api().get(`users/${id}`)
+    return Api().get(`users/get-by-id?ids=${id}`)
   },
   delete(id) {
     return Api().delete(`users/${id}`)
