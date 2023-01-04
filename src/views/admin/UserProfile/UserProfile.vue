@@ -341,22 +341,6 @@ onMounted(() => {
                 </el-radio-group>
               </el-form-item>
             </b-col>
-            <b-col md="7">
-              <el-form-item
-                label="Tình trạng hôn nhân"
-                prop="marriageStatus"
-              >
-                <el-radio-group
-                  v-model="formData.value.marriageStatus"
-                  class="ml-4"
-                >
-                  <el-radio label="marriaged" size="large"
-                    >Đã có gia đình</el-radio
-                  >
-                  <el-radio label="single" size="large">Độc thân</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </b-col>
           </b-row>
         </b-row>
 
