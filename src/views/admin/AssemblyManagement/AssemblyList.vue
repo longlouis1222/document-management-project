@@ -120,16 +120,19 @@ const getList = async () => {
   if (assemblyApiRes.status === 200) {
     tableRules.data = await changeData(assemblyApiRes.data.data.data)
     tableRules.total = assemblyApiRes.data.data.totalElements
-    console.log('getList', assemblyApiRes)
+    console.log('tableRules.data', tableRules.data)
   }
 }
 
 const changeData = (data) => {
   data.forEach((e) => {
-    // if (e.workplaceId) {
-    //   const o = lectureList.value.find((w) => w.id == e.workplaceId)
-    //   e.workplaceName = o ? o.name : ''
-    // }
+    if (e.lecturerDTOS && e.lecturerDTOS.length > 0) {
+      let a = []
+      e.lecturerDTOS.forEach(l => {
+        a.push(l.fullName)
+      })
+      e.lecture_name = a.join(', ')
+    }
   })
   return data
 }
@@ -314,7 +317,7 @@ onMounted(async () => {
 
       <el-table :data="tableRules.data" style="width: 100%">
         <el-table-column prop="nameAssembly" label="Tên hội đồng" min-width="120" />
-        <el-table-column prop="idLectures" label="Giáo viên" min-width="120" />
+        <el-table-column prop="lecture_name" label="Giáo viên" min-width="150" />
         <el-table-column prop="topicId" label="Đồ án" min-width="120" />
         <el-table-column prop="score" label="Điểm" />
         <el-table-column align="center" label="Thao tác" width="120">

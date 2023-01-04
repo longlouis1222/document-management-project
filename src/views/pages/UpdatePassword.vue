@@ -221,7 +221,7 @@ onMounted(() => {
   font-weight: 600;
 }
 .auth-one-bg {
-  background-image: url('@/assets/images/vue400.jpg');
+  background-image: url('@/assets/images/login-bgc.jpg');
   background-position: 50%;
   background-size: cover;
 }
@@ -246,17 +246,18 @@ onMounted(() => {
   background-color: #000;
 }
 .auth-one-bg .shape {
-  position: absolute;
+  /* position: absolute;
   bottom: 0;
   right: 0;
   left: 0;
   z-index: 1;
-  pointer-events: none;
+  pointer-events: none; */
 }
 .auth-one-bg .shape > svg {
   width: 100%;
   height: auto;
   fill: #fff;
+  transform: rotate(180deg)
 }
 .auth-page-wrapper .auth-page-content {
   padding-bottom: 60px;
