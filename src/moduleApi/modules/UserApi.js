@@ -14,7 +14,7 @@ export default {
     return Api().get(`users/get-by-id?ids=${id}`)
   },
   delete(id) {
-    return Api().delete(`users/${id}`)
+    return Api().delete(`users?ids=${id}`)
   },
   inactiveAccount(data) {
     return Api().get(`users/inactive?check=${data.status}&userId=${data.id}`)
