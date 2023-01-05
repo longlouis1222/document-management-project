@@ -67,7 +67,6 @@ const submitForm = async (formEl) => {
           }
         }
         resetForm(formEl)
-        viewMode.value = 'create'
         await getList()
       } catch (error) {
         console.log(error)

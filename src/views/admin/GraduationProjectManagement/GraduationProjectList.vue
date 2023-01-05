@@ -66,7 +66,6 @@ const submitForm = async (formEl) => {
           }
         }
         resetForm(formEl)
-        viewMode.value = 'create'
         await getList()
       } catch (error) {
         console.log(error)
@@ -80,6 +79,7 @@ const submitForm = async (formEl) => {
 const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
+  viewMode.value = 'create'
 }
 
 const submitFormSearch = async (formEl) => {
@@ -420,6 +420,7 @@ onMounted(async () => {
       :close-on-click-modal="false"
       :close-on-press-escape="true"
       width="80%"
+      @close="resetForm(ruleFormRef)"
     >
       <el-form
         ref="ruleFormRef"

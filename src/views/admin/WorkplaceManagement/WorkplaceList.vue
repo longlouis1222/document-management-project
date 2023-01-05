@@ -51,7 +51,7 @@ const submitForm = async (formEl) => {
             dialogModel.value = false
           }
         }
-        viewMode.value = 'create'
+        resetForm(formEl)
         await getList()
       } catch (error) {
         console.log(error)
@@ -60,6 +60,12 @@ const submitForm = async (formEl) => {
       console.log('error submit!', fields)
     }
   })
+}
+
+const resetForm = (formEl) => {
+  if (!formEl) return
+  formEl.resetFields()
+  viewMode.value = 'create'
 }
 
 const submitFormSearch = async (formEl) => {
@@ -170,8 +176,6 @@ const fn_tableSortChange = (column, tableSort) => {
 }
 
 onMounted(async () => {
-  // tableRules.total = tableData.length
-  // console.log('tableRules.showFormSearch', tableRules.showFormSearch)
   await getList()
 })
 </script>
@@ -313,6 +317,7 @@ onMounted(async () => {
       :close-on-click-modal="false"
       :close-on-press-escape="true"
       width="80%"
+      @close="resetForm(ruleFormRef)"
     >
       <el-form
         ref="ruleFormRef"
