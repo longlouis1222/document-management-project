@@ -3,6 +3,8 @@ import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
 import FacultyApi from '@/moduleApi/modules/FacultyApi'
 import StudentApi from '@/moduleApi/modules/StudentApi'
+import TopicApi from '@/moduleApi/modules/TopicApi'
+import ClassApi from '@/moduleApi/modules/ClassApi'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -31,7 +33,10 @@ const genderList = DataService.genderList
 
 const dialogModel = ref(false)
 const viewMode = ref('create')
+
 const facultyList = reactive({ value: [] })
+const classList = reactive({ value: [] })
+const topicList = reactive({ value: [] })
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -68,7 +73,6 @@ const submitForm = async (formEl) => {
           }
         }
         resetForm(formEl)
-        viewMode.value = 'create'
         await getList()
       } catch (error) {
         console.log(error)
@@ -82,6 +86,7 @@ const submitForm = async (formEl) => {
 const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
+  viewMode.value = 'create'
 }
 
 const submitFormSearch = async (formEl) => {
@@ -190,10 +195,24 @@ const deleteItem = async (id) => {
   })
 }
 
-const getListFaculty = async () => {
+const getFacultyList = async () => {
   const facultyApiRes = await FacultyApi.list()
   if (facultyApiRes.status === 200) {
     facultyList.value = facultyApiRes.data.data.data
+  }
+}
+
+const getTopicList = async () => {
+  const topicApiRes = await TopicApi.list()
+  if (topicApiRes.status === 200) {
+    topicList.value = topicApiRes.data.data.data
+  }
+}
+
+const getClassList = async () => {
+  const classApiRes = await ClassApi.list()
+  if (classApiRes.status === 200) {
+    classList.value = classApiRes.data.data.data
   }
 }
 
@@ -222,7 +241,9 @@ const fn_tableSortChange = (column, tableSort) => {
 }
 
 onMounted(async () => {
-  await getListFaculty()
+  await getFacultyList()
+  await getTopicList()
+  await getClassList()
   await getList()
 })
 </script>
@@ -370,6 +391,17 @@ onMounted(async () => {
           min-width="150"
         />
         <el-table-column
+          prop="classDTO.name"
+          label="Lớp"
+          min-width="150"
+        />
+        <el-table-column
+          prop="topicDTO.name"
+          label="Đề tài"
+          min-width="150"
+        />
+
+        <el-table-column
           fixed="right"
           align="center"
           label="Thao tác"
@@ -420,6 +452,7 @@ onMounted(async () => {
       :close-on-click-modal="false"
       :close-on-press-escape="true"
       width="80%"
+      @close="resetForm(ruleFormRef)"
     >
       <el-form
         ref="ruleFormRef"
@@ -431,7 +464,7 @@ onMounted(async () => {
         status-icon
       >
         <b-row>
-          <b-col md="3">
+          <b-col md="4">
             <el-form-item label="Mã sinh viên" prop="codeStudent">
               <el-input
                 v-model="formData.value.codeStudent"
@@ -439,12 +472,12 @@ onMounted(async () => {
               />
             </el-form-item>
           </b-col>
-          <b-col md="3">
+          <b-col md="4">
             <el-form-item label="Họ và tên" prop="fullName">
               <el-input v-model="formData.value.fullName" autocomplete="off" />
             </el-form-item>
           </b-col>
-          <b-col md="3">
+          <b-col md="4">
             <el-form-item label="Giới tính" prop="gender">
               <el-select
                 v-model="formData.value.gender"
@@ -460,7 +493,7 @@ onMounted(async () => {
               </el-select>
             </el-form-item>
           </b-col>
-          <b-col md="3">
+          <b-col md="4">
             <el-form-item label="Ngày sinh" prop="dateOfBirth">
               <el-date-picker
                 v-model="formData.value.dateOfBirth"
@@ -469,9 +502,7 @@ onMounted(async () => {
               />
             </el-form-item>
           </b-col>
-        </b-row>
-        <b-row>
-          <b-col md="3">
+          <b-col md="4">
             <el-form-item label="Số điện thoại" prop="phoneNumber">
               <el-input
                 v-model="formData.value.phoneNumber"
@@ -479,14 +510,46 @@ onMounted(async () => {
               />
             </el-form-item>
           </b-col>
-          <b-col md="3">
+          <b-col md="4">
             <el-form-item label="Địa chỉ" prop="address">
               <el-input v-model="formData.value.address" autocomplete="off" />
             </el-form-item>
           </b-col>
-          <b-col md="3">
+          <b-col md="4">
             <el-form-item label="Quê quán" prop="town">
               <el-input v-model="formData.value.town" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Lớp" prop="classId">
+              <el-select
+                v-model="formData.value.classId"
+                placeholder="chọn"
+                filterable
+              >
+                <el-option
+                  v-for="item in classList.value"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Đề tài" prop="topicId">
+              <el-select
+                v-model="formData.value.topicId"
+                placeholder="chọn"
+                filterable
+              >
+                <el-option
+                  v-for="item in topicList.value"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
             </el-form-item>
           </b-col>
         </b-row>
