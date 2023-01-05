@@ -132,7 +132,9 @@ const submitForm = async (formEl) => {
 const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
+  viewMode.value = 'create'
 }
+
 const imgSrc = ref('')
 
 // const _arrayBufferToBase64 = ( buffer ) => {

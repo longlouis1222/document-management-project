@@ -51,6 +51,12 @@ const openDialogAddItem = () => {
   }, 1700)
 }
 
+const resetForm = (formEl) => {
+  if (!formEl) return
+  formEl.resetFields()
+  viewMode.value = 'create'
+}
+
 const submitForm = async (formEl) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
@@ -74,7 +80,7 @@ const submitForm = async (formEl) => {
             dialogModel.value = false
           }
         }
-        viewMode.value = 'create'
+        resetForm(formEl)
         await getList()
       } catch (error) {
         console.log(error)
@@ -437,6 +443,7 @@ onMounted(async () => {
       :close-on-click-modal="false"
       :close-on-press-escape="true"
       width="35%"
+      @close="resetForm(ruleFormRef)"
     >
       <el-form
         ref="ruleFormRef"
