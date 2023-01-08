@@ -2,19 +2,16 @@
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
 
-import { ElNotification, ElMessageBox, ElMessage } from 'element-plus'
+import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import UserApi from '@/moduleApi/modules/UserApi'
-import TeacherApi from '@/moduleApi/modules/TeacherApi'
-import StudentApi from '@/moduleApi/modules/StudentApi'
 import { FormInstance } from 'element-plus'
 
 import modelData from './UserModel'
 
 const router = useRouter()
-const route = useRoute()
 const moduleName = 'Danh sách Quản lý'
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
@@ -35,8 +32,6 @@ const typeUserList = DataService.typeUserList
 const dialogModel = ref(false)
 const viewMode = ref('create')
 
-const teacherList = reactive({ value: [] })
-const studentList = reactive({ value: [] })
 const dynamicList = reactive({ value: [] })
 
 const toggleSearchBox = () => {
@@ -208,22 +203,6 @@ const fn_tableSortChange = (column, tableSort) => {
   tableSort = tableRules
   MethodService.tableSortChange(column, tableSort)
   // getService();
-}
-
-const getListTeacher = async () => {
-  const teacherApiRes = await TeacherApi.list()
-  if (teacherApiRes.status === 200) {
-    // teacherList.value = teacherApiRes.data.data.data
-    dynamicList.value = teacherApiRes.data.data.data
-  }
-}
-
-const getStudentTeacher = async () => {
-  const studentApiRes = await StudentApi.list()
-  if (studentApiRes.status === 200) {
-    // studentList.value = studentApiRes.data.data.data
-    dynamicList.value = studentApiRes.data.data.data
-  }
 }
 
 const changeType = () => {

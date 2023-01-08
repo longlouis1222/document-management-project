@@ -1,5 +1,6 @@
 <script setup>
 import MethodService from '@/service/MethodService'
+import DataService from '@/service/DataService'
 import WorkplaceApi from '@/moduleApi/modules/WorkplaceApi'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -8,9 +9,9 @@ import { FormInstance } from 'element-plus'
 
 import modelData from './WorkplaceModel'
 
-const router = useRouter()
-const route = useRoute()
+const defaultFilter = DataService.defaultFilter
 
+const router = useRouter()
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const formData = reactive(MethodService.copyObject(modelData.dataForm))

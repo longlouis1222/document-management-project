@@ -1,5 +1,6 @@
 <script setup>
 import MethodService from '@/service/MethodService'
+import DataService from '@/service/DataService'
 import FacultyApi from '@/moduleApi/modules/FacultyApi'
 import WorkplaceApi from '@/moduleApi/modules/WorkplaceApi'
 
@@ -9,6 +10,8 @@ import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
 import modelData from './FacultyModel'
+
+const defaultFilter = DataService.defaultFilter
 
 const router = useRouter()
 const moduleName = 'Quản lý Khoa'
@@ -170,7 +173,7 @@ const deleteItem = async (id) => {
 }
 
 const getListWorkplace = async () => {
-  const workplaceApiRes = await WorkplaceApi.list()
+  const workplaceApiRes = await WorkplaceApi.list(defaultFilter)
   if (workplaceApiRes.status === 200) {
     workplaceList.value = workplaceApiRes.data.data.data
   }

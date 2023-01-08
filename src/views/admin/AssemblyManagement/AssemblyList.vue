@@ -1,5 +1,6 @@
 <script setup>
 import MethodService from '@/service/MethodService'
+import DataService from '@/service/DataService'
 import AssemblyApi from '@/moduleApi/modules/AssemblyApi'
 import TeacherApi from '@/moduleApi/modules/TeacherApi'
 import TopicApi from '@/moduleApi/modules/TopicApi'
@@ -13,6 +14,8 @@ import modelData from './AssemblyModel'
 
 const router = useRouter()
 const moduleName = 'Quản lý Hội đồng'
+
+const defaultFilter = DataService.defaultFilter
 
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
@@ -177,14 +180,14 @@ const deleteItem = async (id) => {
 }
 
 const getLectureList = async () => {
-  const lectureApiRes = await TeacherApi.list()
+  const lectureApiRes = await TeacherApi.list(defaultFilter)
   if (lectureApiRes.status === 200) {
     lectureList.value = lectureApiRes.data.data.data
   }
 }
 
 const getTopicList = async () => {
-  const topicApiRes = await TopicApi.list()
+  const topicApiRes = await TopicApi.list(defaultFilter)
   if (topicApiRes.status === 200) {
     topicList.value = topicApiRes.data.data.data
   }
@@ -256,7 +259,7 @@ onMounted(async () => {
               @submit.prevent="submitFormSearch(ruleFormRef)"
             >
               <b-row>
-                <b-col md="3">
+                <b-col md="4">
                   <el-form-item label="Tên hội đồng" prop="nameAssembly">
                     <el-input
                       v-model="formSearchData.value.nameAssembly"
@@ -264,24 +267,7 @@ onMounted(async () => {
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="3">
-                  <el-form-item label="Mã khoa" prop="idLectures">
-                    <el-select
-                      v-model="formSearchData.value.idLectures"
-                      placeholder="chọn"
-                      multiple
-                      filterable
-                    >
-                      <el-option
-                        v-for="item in lectureList.value"
-                        :key="item.id"
-                        :label="item.facultyDTO.code"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="3">
+                <b-col md="4">
                   <el-form-item label="Đồ án" prop="topicId">
                     <el-select
                       v-model="formSearchData.value.topicId"
@@ -297,7 +283,7 @@ onMounted(async () => {
                     </el-select>
                   </el-form-item>
                 </b-col>
-                <b-col md="3">
+                <b-col md="4">
                   <el-form-item label="Điểm" prop="score">
                     <el-input
                       v-model="formSearchData.value.score"
@@ -319,7 +305,7 @@ onMounted(async () => {
       <el-table :data="tableRules.data" style="width: 100%">
         <el-table-column prop="nameAssembly" label="Tên hội đồng" min-width="120" />
         <el-table-column prop="lecture_name" label="Giáo viên" min-width="150" />
-        <el-table-column prop="topicId" label="Đồ án" min-width="120" />
+        <el-table-column prop="topicDTO.name" label="Đồ án" min-width="120" />
         <el-table-column prop="score" label="Điểm" />
         <el-table-column align="center" label="Thao tác" width="120">
           <template #default="scope">

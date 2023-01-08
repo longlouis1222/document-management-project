@@ -11,6 +11,7 @@ import { FormInstance } from 'element-plus'
 
 import modelData from './ClassModel'
 
+const defaultFilter = DataService.defaultFilter
 const router = useRouter()
 // const route = useRoute()
 const moduleName = 'Quản lý Lớp'
@@ -164,7 +165,7 @@ const deleteItem = async (id) => {
 }
 
 const getListFaculty = async () => {
-  const facultyApiRes = await FacultyApi.list()
+  const facultyApiRes = await FacultyApi.list(defaultFilter)
   if (facultyApiRes.status === 200) {
     facultyList.value = facultyApiRes.data.data.data
   }

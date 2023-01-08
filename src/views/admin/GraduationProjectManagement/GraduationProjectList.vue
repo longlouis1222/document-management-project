@@ -11,8 +11,9 @@ import { FormInstance } from 'element-plus'
 
 import modelData from './GraduationProjectModel'
 
+const defaultFilter = DataService.defaultFilter
+
 const router = useRouter()
-// const route = useRoute()
 const moduleName = 'Quản lý Đồ án'
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
@@ -170,7 +171,7 @@ const deleteItem = async (id) => {
 }
 
 const getListTeacher = async () => {
-  const teacherApiRes = await TeacherApi.list()
+  const teacherApiRes = await TeacherApi.list(defaultFilter)
   if (teacherApiRes.status === 200) {
     teacherList.value = teacherApiRes.data.data.data
   }
@@ -252,22 +253,6 @@ onMounted(async () => {
                   </el-form-item>
                 </b-col>
                 <b-col md="4">
-                  <el-form-item label="Điểm phản biện" prop="scoreCounterArgument">
-                    <el-input
-                      v-model="formSearchData.value.scoreCounterArgument"
-                      autocomplete="off"
-                    />
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item label="Điểm hướng dẫn" prop="scoreGuide">
-                    <el-input
-                      v-model="formSearchData.value.scoreGuide"
-                      autocomplete="off"
-                    />
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
                   <el-form-item label="Trạng thái" prop="status">
                     <el-select
                       v-model="formSearchData.value.status"
@@ -282,14 +267,6 @@ onMounted(async () => {
                         :value="item.value"
                       />
                     </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item label="Số lượng sinh viên" prop="stdNumber">
-                    <el-input
-                      v-model="formSearchData.value.stdNumber"
-                      autocomplete="off"
-                    />
                   </el-form-item>
                 </b-col>
                 <b-col md="4">
@@ -310,9 +287,9 @@ onMounted(async () => {
                   </el-form-item>
                 </b-col>
                 <b-col md="4">
-                  <el-form-item label="Giáo viên hướng dẫn" prop="lecturerGuideDTO">
+                  <el-form-item label="Giáo viên hướng dẫn" prop="lecturerGuideId">
                     <el-select
-                      v-model="formSearchData.value.lecturerGuideDTO"
+                      v-model="formSearchData.value.lecturerGuideId"
                       placeholder="chọn"
                       filterable
                       clearable

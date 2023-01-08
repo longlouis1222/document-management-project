@@ -13,8 +13,9 @@ import { FormInstance } from 'element-plus'
 
 import modelData from './StudentModel'
 
+const defaultFilter = DataService.defaultFilter
+
 const router = useRouter()
-// const route = useRoute()
 const moduleName = 'Quản lý Sinh viên'
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
@@ -195,21 +196,21 @@ const deleteItem = async (id) => {
 }
 
 const getFacultyList = async () => {
-  const facultyApiRes = await FacultyApi.list()
+  const facultyApiRes = await FacultyApi.list(defaultFilter)
   if (facultyApiRes.status === 200) {
     facultyList.value = facultyApiRes.data.data.data
   }
 }
 
 const getTopicList = async () => {
-  const topicApiRes = await TopicApi.list()
+  const topicApiRes = await TopicApi.list(defaultFilter)
   if (topicApiRes.status === 200) {
     topicList.value = topicApiRes.data.data.data
   }
 }
 
 const getClassList = async () => {
-  const classApiRes = await ClassApi.list()
+  const classApiRes = await ClassApi.list(defaultFilter)
   if (classApiRes.status === 200) {
     classList.value = classApiRes.data.data.data
   }

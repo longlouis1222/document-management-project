@@ -11,8 +11,9 @@ import { FormInstance } from 'element-plus'
 
 import modelData from './TeacherModel'
 
+const defaultFilter = DataService.defaultFilter
+
 const router = useRouter()
-// const route = useRoute()
 const moduleName = 'Quản lý Giáo viên'
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))

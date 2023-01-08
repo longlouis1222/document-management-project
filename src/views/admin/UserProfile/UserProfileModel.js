@@ -5,7 +5,7 @@ let model = {}
 model.dataForm = {
   address: null,
   authorities: [],
-  avatar: null,
+  avatar: [],
   dateOfBirth: null,
   email: null,
   fullName: null,
