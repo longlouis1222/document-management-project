@@ -35,19 +35,14 @@ model.tableRules = {
   recordSelected: [],
   dataSearch: {
     value: {
-      lecturerIds: '',
+      idLectures: '',
       nameAssembly: '',
       score: '',
       topicId: '',
     },
-    valid: {
-      code: [],
-      name: [],
-      facultyId: [],
-      stdNumber: [],
-    },
+    valid: {},
     operator: {
-      lecturerIds: '',
+      idLectures: '',
       nameAssembly: '',
       score: '',
       topicId: '',

@@ -21,13 +21,12 @@ const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const formData = reactive({
   value: MethodService.copyObject(modelData.dataForm),
 })
-const formValid = reactive(MethodService.copyObject(modelData.validForm))
-const formSearchData = reactive(
-  MethodService.copyObject(tableRules.dataSearch.value),
-)
-const formSearchValid = reactive(
-  MethodService.copyObject(tableRules.dataSearch.valid),
-)
+const formValid = modelData.validForm
+
+const formSearchData = reactive({
+  value: MethodService.copyObject(tableRules.dataSearch.value),
+})
+const formSearchValid = tableRules.dataSearch.valid
 
 const genderList = DataService.genderList
 
@@ -94,7 +93,7 @@ const submitFormSearch = async (formEl) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       try {
-        tableRules.filters = formSearchData
+        tableRules.filters = formSearchData.value
         tableRules.skip = 0
         tableRules.page = 1
         await getList()
@@ -276,7 +275,7 @@ onMounted(async () => {
           <el-card>
             <el-form
               ref="ruleFormRef"
-              :model="formSearchData"
+              :model="formSearchData.value"
               :rules="formSearchValid"
               label-width="140px"
               label-position="top"
@@ -288,7 +287,7 @@ onMounted(async () => {
                 <b-col md="3">
                   <el-form-item label="Mã sinh viên" prop="codeStudent">
                     <el-input
-                      v-model="formSearchData.codeStudent"
+                      v-model="formSearchData.value.codeStudent"
                       autocomplete="off"
                     />
                   </el-form-item>
@@ -296,7 +295,7 @@ onMounted(async () => {
                 <b-col md="3">
                   <el-form-item label="Họ và tên" prop="fullName">
                     <el-input
-                      v-model="formSearchData.fullName"
+                      v-model="formSearchData.value.fullName"
                       autocomplete="off"
                     />
                   </el-form-item>
@@ -304,7 +303,7 @@ onMounted(async () => {
                 <b-col md="3">
                   <el-form-item label="Giới tính" prop="gender">
                     <el-select
-                      v-model="formSearchData.gender"
+                      v-model="formSearchData.value.gender"
                       placeholder="chọn"
                       filterable
                     >
@@ -320,7 +319,7 @@ onMounted(async () => {
                 <b-col md="3">
                   <el-form-item label="Ngày sinh" prop="dateOfBirth">
                     <el-date-picker
-                      v-model="formSearchData.dateOfBirth"
+                      v-model="formSearchData.value.dateOfBirth"
                       type="date"
                       placeholder="Chọn"
                     />
@@ -331,7 +330,7 @@ onMounted(async () => {
                 <b-col md="3">
                   <el-form-item label="Số điện thoại" prop="phoneNumber">
                     <el-input
-                      v-model="formSearchData.phoneNumber"
+                      v-model="formSearchData.value.phoneNumber"
                       autocomplete="off"
                     />
                   </el-form-item>
@@ -339,7 +338,7 @@ onMounted(async () => {
                 <b-col md="3">
                   <el-form-item label="Địa chỉ" prop="address">
                     <el-input
-                      v-model="formSearchData.address"
+                      v-model="formSearchData.value.address"
                       autocomplete="off"
                     />
                   </el-form-item>
@@ -347,7 +346,7 @@ onMounted(async () => {
                 <b-col md="3">
                   <el-form-item label="Quê quán" prop="town">
                     <el-input
-                      v-model="formSearchData.town"
+                      v-model="formSearchData.value.town"
                       autocomplete="off"
                     />
                   </el-form-item>
@@ -390,16 +389,8 @@ onMounted(async () => {
           label="Quê quán"
           min-width="150"
         />
-        <el-table-column
-          prop="classDTO.name"
-          label="Lớp"
-          min-width="150"
-        />
-        <el-table-column
-          prop="topicDTO.name"
-          label="Đề tài"
-          min-width="150"
-        />
+        <el-table-column prop="classDTO.name" label="Lớp" min-width="150" />
+        <el-table-column prop="topicDTO.name" label="Đề tài" min-width="150" />
 
         <el-table-column
           fixed="right"

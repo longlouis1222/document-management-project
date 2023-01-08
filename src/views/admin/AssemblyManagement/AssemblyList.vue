@@ -20,6 +20,7 @@ const formData = reactive({
   value: MethodService.copyObject(modelData.dataForm),
 })
 const formValid = modelData.validForm
+
 const formSearchData = reactive({
   value: MethodService.copyObject(tableRules.dataSearch.value),
 })
@@ -246,7 +247,7 @@ onMounted(async () => {
           <el-card>
             <el-form
               ref="ruleFormRef"
-              :model="formSearchData"
+              :model="formSearchData.value"
               :rules="formSearchValid"
               label-width="140px"
               label-position="top"
@@ -274,7 +275,7 @@ onMounted(async () => {
                       <el-option
                         v-for="item in lectureList.value"
                         :key="item.id"
-                        :label="item.name"
+                        :label="item.facultyDTO.code"
                         :value="item.id"
                       />
                     </el-select>

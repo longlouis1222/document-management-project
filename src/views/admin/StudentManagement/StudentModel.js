@@ -61,12 +61,7 @@ model.tableRules = {
       topicId: '',
       town: '',
     },
-    valid: {
-      code: [],
-      name: [],
-      specialization: [],
-      workplaceId: [],
-    },
+    valid: {},
     operator: {
       address: '',
       avatar: '',
