@@ -1,6 +1,6 @@
 let DataService = {}
 
-DataService.defaultFilter = "limit=99999&page=0"
+DataService.defaultFilter = "size=99999&page=0"
 
 DataService.genderList = [
   {
