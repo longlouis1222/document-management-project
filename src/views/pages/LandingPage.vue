@@ -2,10 +2,11 @@
 import { useRouter } from 'vue-router'
 import AppFooter from '@/components/AppFooter.vue'
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
-// import AppFooterLanding from '@/components/AppFooterLanding.vue'
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const router = useRouter()
+
+const textSearch = ref('')
 
 const bannerList = [
   {
@@ -28,6 +29,10 @@ const backToPrev = () => {
 
 const goToDashboard = () => {
   router.push({ name: 'Dashboard' })
+}
+
+const search = () => {
+  console.log('Search...')
 }
 
 onMounted(() => {
@@ -71,7 +76,8 @@ onMounted(() => {
     <CContainer xl class="mt-4 company_recruitment_block">
       <b-row>
         <b-col md="8">
-          <h4>Danh sách đồ án</h4>
+          <h4 class="mb-3">Danh sách đồ án</h4>
+          <el-divider />
           <b-row>
             <b-col md="4">
               <CCard>
@@ -164,12 +170,18 @@ onMounted(() => {
         </b-col>
         <b-col md="4">
           <h4>Tìm kiếm</h4>
+          <el-divider />
+          <el-input
+            v-model="textSearch"
+            autocomplete="off"
+            @keyup.enter="search"
+          />
         </b-col>
       </b-row>
     </CContainer>
     <!-- End Company recruitment BLock -->
 
-    <!-- <AppFooter /> -->
+    <AppFooter />
   </div>
 </template>
 
