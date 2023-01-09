@@ -6,7 +6,7 @@ export default [
     path: '/',
     name: 'Home',
     component: DefaultLayout,
-    redirect: '/pages/login',
+    redirect: '/pages/landing-page',
     children: [
       {
         path: '/dashboard',
@@ -380,7 +380,11 @@ export default [
         name: 'UpdatePassword',
         component: () => import('@/views/pages/UpdatePassword'),
       },
-
+      {
+        path: 'landing-page',
+        name: 'Landing page',
+        component: () => import('@/views/pages/LandingPage'),
+      },
     ],
   },
 ]
