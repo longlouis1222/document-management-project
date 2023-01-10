@@ -204,7 +204,22 @@ const fn_tableSortChange = (column, tableSort) => {
   MethodService.tableSortChange(column, tableSort)
   // getService();
 }
+const getListTeacher = async () => {
+  const teacherApiRes = await TeacherApi.list()
+  if (teacherApiRes.status === 200) {
+    // teacherList.value = teacherApiRes.data.data.data
+    dynamicList.value = teacherApiRes.data.data.data
+  }
+}
 
+const getStudentTeacher = async () => {
+  const studentApiRes = await StudentApi.list()
+  if (studentApiRes.status === 200) {
+    // studentList.value = studentApiRes.data.data.data
+    dynamicList.value = studentApiRes.data.data.data
+
+  }
+}
 const changeType = () => {
   if (formData.value.type == 'LECTURE') {
     getListTeacher()
