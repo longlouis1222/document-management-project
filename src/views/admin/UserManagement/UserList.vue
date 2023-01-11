@@ -7,10 +7,13 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import UserApi from '@/moduleApi/modules/UserApi'
+import StudentApi from '@/moduleApi/modules/StudentApi'
+import TeacherApi from '@/moduleApi/modules/TeacherApi'
 import { FormInstance } from 'element-plus'
 
 import modelData from './UserModel'
 
+const defaultFilter = DataService.defaultFilter
 const router = useRouter()
 const moduleName = 'Danh sách Quản lý'
 const ruleFormRef = ref(FormInstance)
@@ -205,7 +208,7 @@ const fn_tableSortChange = (column, tableSort) => {
   // getService();
 }
 const getListTeacher = async () => {
-  const teacherApiRes = await TeacherApi.list()
+  const teacherApiRes = await TeacherApi.list(defaultFilter)
   if (teacherApiRes.status === 200) {
     // teacherList.value = teacherApiRes.data.data.data
     dynamicList.value = teacherApiRes.data.data.data
@@ -213,7 +216,7 @@ const getListTeacher = async () => {
 }
 
 const getStudentTeacher = async () => {
-  const studentApiRes = await StudentApi.list()
+  const studentApiRes = await StudentApi.list(defaultFilter)
   if (studentApiRes.status === 200) {
     // studentList.value = studentApiRes.data.data.data
     dynamicList.value = studentApiRes.data.data.data

@@ -44,13 +44,12 @@ export default [
         component: () =>
           import('@/views/admin/CommentTopic/Comment.vue'),
       },
-
-      // {
-      //   path: '/admin/training-system-management/training-system-list',
-      //   name: 'Quản lý Hệ đào tạo',
-      //   component: () =>
-      //     import('@/views/admin/TrainingSystemManagement/TrainingSystemList.vue'),
-      // },
+      {
+        path: '/admin/statistical-score-management/statistical-list',
+        name: 'Quản lý thống kê điểm đồ án',
+        component: () =>
+          import('@/views/admin/StatisticalScoreManagement/StatisticalList.vue'),
+      },
       // {
       //   path: '/admin/year-management/year-list',
       //   name: 'Quản lý Niên khóa',
