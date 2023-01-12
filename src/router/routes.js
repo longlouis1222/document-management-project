@@ -46,7 +46,7 @@ export default [
       },
       {
         path: '/admin/statistical-score-management/statistical-list',
-        name: 'Quản lý thống kê điểm đồ án',
+        name: 'Quản lý Thống kê điểm',
         component: () =>
           import('@/views/admin/StatisticalScoreManagement/StatisticalList.vue'),
       },
@@ -85,6 +85,12 @@ export default [
         name: 'Quản lý Đồ án',
         component: () =>
           import('@/views/admin/GraduationProjectManagement/GraduationProjectList.vue'),
+      },
+      {
+        path: '/admin/category-management/category-list',
+        name: 'Quản lý Chủ đề',
+        component: () =>
+          import('@/views/admin/CategoryManagement/CategoryList.vue'),
       },
       {
         path: '/user-profile',
