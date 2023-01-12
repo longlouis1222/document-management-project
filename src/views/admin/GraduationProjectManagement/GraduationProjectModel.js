@@ -11,6 +11,9 @@ model.dataForm = {
   status: null,
   stdNumber: null,
   year: null,
+  scoreProcessOne: null,
+  scoreProcessTwo: null,
+  categoryId: null,
 }
 
 // validation form
@@ -24,6 +27,8 @@ model.validForm = {
   status: [ValidService.requiredChange],
   stdNumber: [ValidService.required],
   year: [ValidService.requiredChange],
+  scoreProcessOne: [ValidService.required],
+  scoreProcessTwo: [ValidService.required],
 }
 
 model.tableRules = {
@@ -50,6 +55,9 @@ model.tableRules = {
       name: '',
       status: '',
       year: '',
+      scoreProcessOne: '',
+      scoreProcessTwo: '',
+      categoryId: '',
     },
     valid: {
     },
@@ -60,6 +68,9 @@ model.tableRules = {
       name: '',
       status: '',
       year: '',
+      scoreProcessOne: '',
+      scoreProcessTwo: '',
+      categoryId: '',
     },
   },
 }

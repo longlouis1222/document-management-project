@@ -1,30 +1,34 @@
 <script setup>
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
-import TopicApi from '@/moduleApi/modules/TopicApi'
+import FacultyApi from '@/moduleApi/modules/FacultyApi'
+import CategoryApi from '@/moduleApi/modules/CategoryApi'
+
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
-import modelData from './StatisticalScoreModel'
+import modelData from './CategoryModel'
 
 const defaultFilter = DataService.defaultFilter
-
 const router = useRouter()
+// const route = useRoute()
+const moduleName = 'Quản lý Chủ đề'
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
-const formData = reactive(MethodService.copyObject(modelData.dataForm))
+const formData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
 const formValid = reactive(MethodService.copyObject(modelData.validForm))
-const formSearchData = reactive(
-  MethodService.copyObject(tableRules.dataSearch.value),
-)
-const formSearchValid = reactive(
-  MethodService.copyObject(tableRules.dataSearch.valid),
-)
+const formSearchData = reactive({
+  value: MethodService.copyObject(tableRules.dataSearch.value),
+})
+const formSearchValid = tableRules.dataSearch.valid
 
 const dialogModel = ref(false)
 const viewMode = ref('create')
+const facultyList = reactive({ value: [] })
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -40,15 +44,23 @@ const submitForm = async (formEl) => {
     if (valid) {
       try {
         if (viewMode.value === 'create') {
-          const workplaceApiRes = await TopicApi.create(formData)
-          if (workplaceApiRes.status === 200) {
-            console.log('create', workplaceApiRes)
+          const categoryApiRes = await CategoryApi.create(formData.value)
+          if (categoryApiRes.status === 200) {
+            ElMessage({
+              message: 'Thêm mới thành công.',
+              type: 'success',
+            })
+            dialogModel.value = false
           }
         } else if (viewMode.value === 'update') {
-          console.log('Update data', formData)
-          const workplaceApiRes = await TopicApi.update(formData)
-          if (workplaceApiRes.status === 200) {
-            console.log('Update', workplaceApiRes)
+          console.log('Update data', formData.value)
+          const categoryApiRes = await CategoryApi.update(formData.value)
+          if (categoryApiRes.status === 200) {
+            console.log('Update', categoryApiRes)
+            ElMessage({
+              message: 'Cập nhật thành công.',
+              type: 'success',
+            })
             dialogModel.value = false
           }
         }
@@ -74,7 +86,7 @@ const submitFormSearch = async (formEl) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       try {
-        tableRules.filters = formSearchData
+        tableRules.filters = formSearchData.value
         console.log('tableRules.filters', tableRules.filters)
         tableRules.skip = 0
         tableRules.page = 1
@@ -97,59 +109,66 @@ const getList = async () => {
     ...tableRules.filters,
   }
   router.replace({
-    name: 'Quản lý Thống kê điểm',
+    name: moduleName,
     query: {
       ...dataFilter,
     },
   })
-  // const filter = MethodService.filterTable(JSON.stringify(dataFilter))
-  const topicApiRes = await TopicApi.getStatisticalScore()
-  if (topicApiRes.status === 200) {
-    tableRules.data = topicApiRes.data.data.data
-    tableRules.total = topicApiRes.data.data.totalElements
-    console.log('getList', topicApiRes)
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const categoryApiRes = await CategoryApi.list(filter)
+  if (categoryApiRes.status === 200) {
+    tableRules.data = await changeData(categoryApiRes.data.data.data)
+    tableRules.total = categoryApiRes.data.data.totalElements
+    console.log('getList', categoryApiRes)
   }
 }
 
-const updateItem = (rowData) => {
-  viewMode.value = 'update'
-  console.log('formData', formData)
-  console.log(rowData)
-  dialogModel.value = true
-  formData.id = rowData.id
-  formData.name = rowData.name
-  formData.email = rowData.email
-  formData.phoneNumber = rowData.phoneNumber
-  formData.address = rowData.address
+const changeData = (data) => {
+  data.forEach((e) => {})
+  return data
 }
 
-const getItemById = async (rowData) => {
-  console.log('rowData', rowData)
-  const workplaceApiRes = await TopicApi.findById(rowData.id)
-  if (workplaceApiRes.status === 200) {
-    console.log('getItemById', workplaceApiRes)
+const handle = (type, rowData) => {
+  viewMode.value = type
+  if (type == 'update') {
+    dialogModel.value = true
+    getItemById(rowData.id)
+  } else if (type == 'delete') {
+    deleteItem(rowData.id)
   }
 }
 
-const deleteItem = async (rowData) => {
-  console.log(rowData)
+const getItemById = async (id) => {
+  const categoryApiRes = await CategoryApi.findById(id)
+  if (categoryApiRes.status === 200) {
+    formData.value = categoryApiRes.data.data
+  }
+}
+
+const deleteItem = async (id) => {
   ElMessageBox.alert('Bạn có chắc muốn xóa bản ghi này ?', 'Cảnh báo', {
     // if you want to disable its autofocus
     // autofocus: false,
     confirmButtonText: 'Đồng ý',
     callback: async () => {
-      const workplaceApiRes = await TopicApi.delete(rowData.id)
-      if (workplaceApiRes.status === 200) {
+      const categoryApiRes = await CategoryApi.delete(id)
+      if (categoryApiRes.status === 200) {
+        ElMessage({
+          type: 'success',
+          message: `Xóa thành công`,
+        })
         await getList()
-        console.log(workplaceApiRes)
+        viewMode.value = 'create'
       }
-
-      ElMessage({
-        type: 'success',
-        message: `Xóa thành công`,
-      })
     },
   })
+}
+
+const getListFaculty = async () => {
+  const facultyApiRes = await FacultyApi.list(defaultFilter)
+  if (facultyApiRes.status === 200) {
+    facultyList.value = facultyApiRes.data.data.data
+  }
 }
 
 const fn_tableSizeChange = (limit) => {
@@ -177,6 +196,7 @@ const fn_tableSortChange = (column, tableSort) => {
 }
 
 onMounted(async () => {
+  await getListFaculty()
   await getList()
 })
 </script>
@@ -185,17 +205,15 @@ onMounted(async () => {
   <div>
     <el-card class="box-card">
       <template #header>
-        <div class="card-header">
-          <div class="d-flex justify-content-between">
-            <h4>Danh sách Thống kê điểm</h4>
-            <!-- <div>
-              <CButton color="primary" class="me-2" @click="toggleSearchBox"
-                ><CIcon icon="cilSearch" class="me-2" /> Tra cứu</CButton
-              >
-              <CButton color="primary" @click="openDialogAddItem"
-                >Thêm mới</CButton
-              >
-            </div> -->
+        <div class="d-flex justify-content-between">
+          <h4>Danh sách thông tin chủ đề</h4>
+          <div>
+            <CButton color="primary" class="me-2" @click="toggleSearchBox"
+              ><CIcon icon="cilSearch" class="me-2" />Tra cứu</CButton
+            >
+            <CButton color="primary" @click="openDialogAddItem"
+              >Thêm mới</CButton
+            >
           </div>
         </div>
       </template>
@@ -215,36 +233,21 @@ onMounted(async () => {
               label-position="top"
               class="demo-ruleForm"
               status-icon
+              @submit.prevent="submitFormSearch(ruleFormRef)"
             >
               <b-row>
-                <b-col md="3">
-                  <el-form-item label="Tên đơn vị" prop="name">
+                <b-col md="6">
+                  <el-form-item label="Mã chủ đề" prop="">
                     <el-input
-                      v-model="formSearchData.name"
+                      v-model="formSearchData.value.code"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="3">
-                  <el-form-item label="Email" prop="email">
+                <b-col md="6">
+                  <el-form-item label="Tên chủ đề" prop="">
                     <el-input
-                      v-model="formSearchData.email"
-                      autocomplete="off"
-                    />
-                  </el-form-item>
-                </b-col>
-                <b-col md="3">
-                  <el-form-item label="Số điện thoại" prop="phoneNumber">
-                    <el-input
-                      v-model="formSearchData.phoneNumber"
-                      autocomplete="off"
-                    />
-                  </el-form-item>
-                </b-col>
-                <b-col md="3">
-                  <el-form-item label="Địa chỉ" prop="address">
-                    <el-input
-                      v-model="formSearchData.address"
+                      v-model="formSearchData.value.name"
                       autocomplete="off"
                     />
                   </el-form-item>
@@ -260,49 +263,35 @@ onMounted(async () => {
         </b-collapse>
       </div>
 
-      <el-table :data="tableRules.data">
-        <el-table-column prop="nameClass" label="Lớp" width="180" />
-        <el-table-column prop="nameStudent" label="Sinh viên" width="150" />
-        <el-table-column prop="nameTopic" label="Chủ đề" />
-        <el-table-column prop="scoreAssembly" label="Hội đồng" />
-        <el-table-column prop="scoreCounterArgument" label="Điểm phản biện" />
-        <el-table-column prop="scoreGuide" label="Điểm hướng dẫn" />
-        <el-table-column prop="scoreProcessOne" label="Điểm kiểm tra tiến độ lần 1" />
-        <el-table-column prop="scoreProcessTwo" label="Điểm kiểm tra tiến độ lần 2" />
-        <el-table-column prop="scoreMedium" label="Điểm trung bình" />
-        <el-table-column prop="topicYear" label="Đề tài thuộc năm">
-          <template #default="scope">
-            {{ new Date(scope.row.topicYear).getFullYear() }}
-          </template>
-        </el-table-column>
-        <!-- <el-table-column
+      <el-table :data="tableRules.data" style="width: 100%">
+        <el-table-column prop="code" label="Mã chủ đề" />
+        <el-table-column prop="name" label="Tên chủ đề" min-width="180" />
+        <el-table-column
+          fixed="right"
           align="center"
           label="Thao tác"
-          width="180"
+          width="120"
         >
           <template #default="scope">
-            <div class=""> -->
-              <!-- <CButton color="secondary" variant="outline" class="me-2"
-                ><CIcon icon="cilFindInPage"
-              /></CButton> -->
-              <!-- <CButton
+            <div>
+              <CButton
                 color="info"
                 variant="outline"
                 class="me-2"
                 size="sm"
-                @click="updateItem(scope.row)"
+                @click="handle('update', scope.row)"
                 ><CIcon icon="cilPencil"
               /></CButton>
               <CButton
                 color="danger"
                 variant="outline"
                 size="sm"
-                @click="deleteItem(scope.row)"
+                @click="handle('delete', scope.row)"
                 ><CIcon icon="cilTrash"
               /></CButton>
             </div>
           </template>
-        </el-table-column> -->
+        </el-table-column>
       </el-table>
       <div class="d-flex justify-content-center mt-3 mb-3">
         <el-pagination
@@ -324,7 +313,7 @@ onMounted(async () => {
     <!-- Start dialog -->
     <el-dialog
       v-model="dialogModel"
-      title="Thêm mới đơn vị"
+      title="Thêm mới chủ đề"
       :close-on-click-modal="false"
       :close-on-press-escape="true"
       width="80%"
@@ -332,7 +321,7 @@ onMounted(async () => {
     >
       <el-form
         ref="ruleFormRef"
-        :model="formData"
+        :model="formData.value"
         :rules="formValid"
         label-width="140px"
         label-position="top"
@@ -340,24 +329,14 @@ onMounted(async () => {
         status-icon
       >
         <b-row>
-          <b-col md="3">
-            <el-form-item label="Tên đơn vị" prop="name">
-              <el-input v-model="formData.name" autocomplete="off" />
+          <b-col md="6">
+            <el-form-item label="Mã chủ đề" prop="code">
+              <el-input v-model="formData.value.code" autocomplete="off" />
             </el-form-item>
           </b-col>
-          <b-col md="3">
-            <el-form-item label="Email" prop="email">
-              <el-input v-model="formData.email" autocomplete="off" />
-            </el-form-item>
-          </b-col>
-          <b-col md="3">
-            <el-form-item label="Số điện thoại" prop="phoneNumber">
-              <el-input v-model="formData.phoneNumber" autocomplete="off" />
-            </el-form-item>
-          </b-col>
-          <b-col md="3">
-            <el-form-item label="Địa chỉ" prop="address">
-              <el-input v-model="formData.address" autocomplete="off" />
+          <b-col md="6">
+            <el-form-item label="Tên chủ đề" prop="name">
+              <el-input v-model="formData.value.name" autocomplete="off" />
             </el-form-item>
           </b-col>
         </b-row>

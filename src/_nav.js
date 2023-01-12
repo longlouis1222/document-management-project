@@ -69,6 +69,18 @@ export default [
     to: '/admin/graduation-project-management/graduation-project-list',
     icon: 'cilNewspaper',
   },
+  {
+    component: 'CNavItem',
+    name: 'Quản lý Thống kê điểm',
+    to: '/admin/statistical-score-management/statistical-list',
+    icon: 'cilNewspaper',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Quản lý Chủ đề',
+    to: '/admin/category-management/category-list',
+    icon: 'cilNewspaper',
+  },
   // {
   //   component: 'CNavTitle',
   //   name: 'Theme',

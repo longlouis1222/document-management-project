@@ -3,6 +3,7 @@ import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
 import TeacherApi from '@/moduleApi/modules/TeacherApi'
 import TopicApi from '@/moduleApi/modules/TopicApi'
+import CategoryApi from '@/moduleApi/modules/CategoryApi'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -31,6 +32,7 @@ const topicStatusList = DataService.topicStatusList
 const dialogModel = ref(false)
 const viewMode = ref('create')
 const teacherList = reactive({ value: [] })
+const categoryList = reactive({ value: [] })
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -177,6 +179,13 @@ const getListTeacher = async () => {
   }
 }
 
+const getListCategory = async () => {
+  const categoryApiRes = await CategoryApi.list(defaultFilter)
+  if (categoryApiRes.status === 200) {
+    categoryList.value = categoryApiRes.data.data.data
+  }
+}
+
 const fn_tableSizeChange = (limit) => {
   tableRules.limit = limit
   fn_tableChangeskip(1)
@@ -203,6 +212,7 @@ const fn_tableSortChange = (column, tableSort) => {
 
 onMounted(async () => {
   await getListTeacher()
+  await getListCategory()
   await getList()
 })
 </script>
@@ -314,6 +324,22 @@ onMounted(async () => {
                   </el-form-item>
                 </b-col>
                 <b-col md="4">
+                  <el-form-item label="Chủ đề" prop="categoryId">
+                    <el-select
+                      v-model="formSearchData.value.categoryId"
+                      placeholder="chọn"
+                      filterable
+                    >
+                      <el-option
+                        v-for="item in categoryList.value"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="4">
                   <el-form-item label="Mô tả" prop="description">
                     <el-input
                       v-model="formSearchData.value.description"
@@ -334,10 +360,13 @@ onMounted(async () => {
 
       <el-table :data="tableRules.data" style="width: 100%">
         <el-table-column prop="name" label="Tên đề tài" width="150" />
+        <el-table-column prop="categoryName" label="Chủ đề" width="120" />
         <el-table-column prop="lecturerCounterArgumentDTO.fullName" label="Giáo viên phản biện" width="120" />
         <el-table-column prop="lecturerGuideDTO.fullName" label="Giáo viên hướng dẫn" width="120" />
         <el-table-column prop="scoreCounterArgument" label="Điểm phản biện" min-width="100" />
         <el-table-column prop="scoreGuide" label="Điểm hướng dẫn" min-width="100" />
+        <el-table-column prop="scoreProcessOne" label="Điểm kiểm tra tiến độ lần 1" min-width="120" />
+        <el-table-column prop="scoreProcessTwo" label="Điểm kiểm tra tiến độ lần 2" min-width="120" />
         <el-table-column prop="status" label="Trạng thái" min-width="100" />
         <el-table-column
           prop="stdNumber"
@@ -490,6 +519,40 @@ onMounted(async () => {
                 type="year"
                 format="YYYY"
                 placeholder="Chọn"
+              />
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Chủ đề" prop="categoryId">
+              <el-select
+                v-model="formData.value.categoryId"
+                placeholder="chọn"
+                filterable
+              >
+                <el-option
+                  v-for="item in categoryList.value"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Điểm kiểm tra tiến độ lần 1" prop="scoreProcessOne">
+              <el-input
+                v-model="formData.value.scoreProcessOne"
+                type="text"
+                placeholder=""
+              />
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Điểm kiểm tra tiến độ lần 2" prop="scoreProcessTwo">
+              <el-input
+                v-model="formData.value.scoreProcessTwo"
+                type="text"
+                placeholder=""
               />
             </el-form-item>
           </b-col>

@@ -15,5 +15,8 @@ export default {
   },
   delete(id) {
     return Api().delete(`topics/${id}`)
+  },
+  getStatisticalScore() {
+    return Api().get(`topics/statistical-score`)
   }
 }
