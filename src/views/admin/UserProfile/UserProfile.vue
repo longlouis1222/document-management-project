@@ -276,7 +276,7 @@ onMounted(() => {
           </b-col>
           <b-col md="6" class="mb-3">
             <!-- <img :src="imgSrc" alt="" class="avatar__image me-4" /> -->
-            <div class="d-flex flex-row align-items-center">
+            <!-- <div class="d-flex flex-row align-items-center">
               <el-upload
                 v-model:file-list="formData.value.avatar"
                 action
@@ -333,7 +333,7 @@ onMounted(() => {
 
             <el-dialog v-model="dialogVisible">
               <img w-full :src="dialogImageUrl" alt="Preview Image" />
-            </el-dialog>
+            </el-dialog> -->
           </b-col>
         </b-row>
 
