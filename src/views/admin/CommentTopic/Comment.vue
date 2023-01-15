@@ -27,52 +27,14 @@
             </div>
           </form>
         </div>
-        <div class="col-md-6">
-          <form class="form-inline">
-            <div class="form-group">
-              <label for="name">What is your name?</label>
-              <input
-                type="text"
-                id="name"
-                class="form-control"
-                v-model="send_message"
-                placeholder="Your name here..."
-              />
-            </div>
-            <button
-              id="send"
-              class="btn btn-default"
-              type="submit"
-              @click.prevent="send"
-            >
-              Send
-            </button>
-          </form>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <table id="conversation" class="table table-striped">
-            <thead>
-              <tr>
-                <th>Greetings</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in received_messages" :key="item">
-                <td>{{ item }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
+import SockJS from 'sockjs-client'
+import Stomp from 'webstomp-client'
 
 export default {
   name: 'websocketdemo',
@@ -84,26 +46,20 @@ export default {
     }
   },
   methods: {
-    send() {
-      console.log('Send message:' + this.send_message)
-      if (this.stompClient && this.stompClient.connected) {
-        const msg = { name: this.send_message }
-        this.stompClient.send('/app/hello', JSON.stringify(msg), {})
-      }
-    },
     connect() {
       this.socket = new SockJS(process.env.VUE_APP_API + 'manager-project-app')
       this.stompClient = Stomp.over(this.socket)
-      this.stompClient.connect({},(frame) => {
-          this.connected = true
-          console.log(frame)
-          this.stompClient.subscribe(process.env.VUE_APP_API + 'topic/messages/18', (tick) => {
-            console.log(tick)
-            const data = this.received_messages.push(
-              JSON.parse(tick.body).name,
-            )
-            console.log(data)
-          })
+      this.stompClient.connect(
+        {},
+        (frame) => {
+          console.log(
+            'this.stompClient.connected: ',
+            this.stompClient.connected,
+          )
+          if (this.stompClient.connected) {
+            console.log('connected to: ' + frame)
+            this.connectChangeComment()
+          }
         },
         (error) => {
           console.log(error)
@@ -119,6 +75,21 @@ export default {
     },
     tickleConnection() {
       this.connected ? this.disconnect() : this.connect()
+    },
+    connectChangeComment() {
+      console.log('vaooooooooooooo connect')
+      try {
+        this.stompClient.subscribe(
+          process.env.VUE_APP_API + 'topic/messages/1',
+          (tick) => {
+            console.log('greeting: ', tick)
+            const listDataNoti = JSON.parse(JSON.parse(tick.body).content).data
+            console.log('reponse channel: ', listDataNoti)
+          },
+        )
+      } catch (error) {
+        console.log(error)
+      }
     },
   },
   mounted() {
