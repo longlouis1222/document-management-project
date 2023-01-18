@@ -1,12 +1,20 @@
 <script setup>
+import MethodService from '@/service/MethodService'
+import CategoryApi from '@/moduleApi/modules/CategoryApi'
+import TopicApi from '@/moduleApi/modules/TopicApi'
+
 import { useRouter } from 'vue-router'
 import AppFooter from '@/components/AppFooter.vue'
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
-import { ref, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 
 const router = useRouter()
 
 const textSearch = ref('')
+const dialogCategory = ref(false)
+const categoryList = reactive({ value: [] })
+const allCategoryList = reactive({ value: [] })
+const topicList = reactive({ value: [] })
 
 const bannerList = [
   {
@@ -35,7 +43,38 @@ const search = () => {
   console.log('Search...')
 }
 
+const getCategoryList = async (isAll) => {
+  let dataFilter = {
+    size: 9999999,
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const categoryApiRes = await CategoryApi.list(isAll ? filter : '')
+  if (categoryApiRes.status === 200 && !isAll) {
+    categoryList.value = categoryApiRes.data.data.data
+  } else if (categoryApiRes.status === 200 && isAll) {
+    allCategoryList.value = categoryApiRes.data.data.data
+  }
+}
+
+const getTopicList = async (categoryId) => {
+  let dataFilter = {
+    categoryId: categoryId ? categoryId : '',
+    size: 9999999
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const res = await TopicApi.list(filter)
+  if (res.status === 200) {
+    topicList.value = res.data.data.data
+  }
+}
+
+const openDialog = async () => {
+  await getCategoryList(true)
+  dialogCategory.value = true
+}
 onMounted(() => {
+  getTopicList()
+  getCategoryList()
 })
 </script>
 
@@ -79,90 +118,16 @@ onMounted(() => {
           <h4 class="mb-3">Danh sách đồ án</h4>
           <el-divider />
           <b-row>
-            <b-col md="4">
+            <b-col class="mb-4" md="4" v-for="(item, i) in topicList.value" :key="item.id">
               <CCard>
                 <CCardBody>
-                  <CCardTitle>Đồ án 01</CCardTitle>
-                  <CCardText>Đề tài: Quản lý đồ án Đại học Kiến Trúc Hà Nội.</CCardText>
-                  <CButton color="light" size="sm" href="#">Xem chi tiết</CButton>
-                </CCardBody>
-              </CCard>
-            </b-col>
-            <b-col md="4">
-              <CCard>
-                <CCardBody>
-                  <CCardTitle>Đồ án 01</CCardTitle>
-                  <CCardText>Đề tài: Quản lý đồ án Đại học Kiến Trúc Hà Nội.</CCardText>
-                  <CButton color="light" size="sm">Xem chi tiết</CButton>
-                </CCardBody>
-              </CCard>
-            </b-col>
-            <b-col md="4">
-              <CCard>
-                <CCardBody>
-                  <CCardTitle>Đồ án 01</CCardTitle>
-                  <CCardText>Đề tài: Quản lý đồ án Đại học Kiến Trúc Hà Nội.</CCardText>
-                  <CButton color="light" size="sm">Xem chi tiết</CButton>
-                </CCardBody>
-              </CCard>
-            </b-col>
-          </b-row>
-
-          <b-row class="mt-3">
-            <b-col md="4">
-              <CCard>
-                <CCardBody>
-                  <CCardTitle>Đồ án 01</CCardTitle>
-                  <CCardText>Đề tài: Quản lý đồ án Đại học Kiến Trúc Hà Nội.</CCardText>
-                  <CButton color="light" size="sm">Xem chi tiết</CButton>
-                </CCardBody>
-              </CCard>
-            </b-col>
-            <b-col md="4">
-              <CCard>
-                <CCardBody>
-                  <CCardTitle>Đồ án 01</CCardTitle>
-                  <CCardText>Đề tài: Quản lý đồ án Đại học Kiến Trúc Hà Nội.</CCardText>
-                  <CButton color="light" size="sm">Xem chi tiết</CButton>
-                </CCardBody>
-              </CCard>
-            </b-col>
-            <b-col md="4">
-              <CCard>
-                <CCardBody>
-                  <CCardTitle>Đồ án 01</CCardTitle>
-                  <CCardText>Đề tài: Quản lý đồ án Đại học Kiến Trúc Hà Nội.</CCardText>
-                  <CButton color="light" size="sm">Xem chi tiết</CButton>
-                </CCardBody>
-              </CCard>
-            </b-col>
-          </b-row>
-
-          <b-row class="mt-3">
-            <b-col md="4">
-              <CCard>
-                <CCardBody>
-                  <CCardTitle>Đồ án 01</CCardTitle>
-                  <CCardText>Đề tài: Quản lý đồ án Đại học Kiến Trúc Hà Nội.</CCardText>
-                  <CButton color="light" size="sm">Xem chi tiết</CButton>
-                </CCardBody>
-              </CCard>
-            </b-col>
-            <b-col md="4">
-              <CCard>
-                <CCardBody>
-                  <CCardTitle>Đồ án 01</CCardTitle>
-                  <CCardText>Đề tài: Quản lý đồ án Đại học Kiến Trúc Hà Nội.</CCardText>
-                  <CButton color="light" size="sm">Xem chi tiết</CButton>
-                </CCardBody>
-              </CCard>
-            </b-col>
-            <b-col md="4">
-              <CCard>
-                <CCardBody>
-                  <CCardTitle>Đồ án 01</CCardTitle>
-                  <CCardText>Đề tài: Quản lý đồ án Đại học Kiến Trúc Hà Nội.</CCardText>
-                  <CButton color="light" size="sm">Xem chi tiết</CButton>
+                  <CCardTitle>{{ i + 1 }}. {{ item.name }}</CCardTitle>
+                  <CCardText
+                    >Mô tả: {{ item.description }}.</CCardText
+                  >
+                  <CButton color="light" size="sm" href="#"
+                    >Xem chi tiết</CButton
+                  >
                 </CCardBody>
               </CCard>
             </b-col>
@@ -176,18 +141,57 @@ onMounted(() => {
             autocomplete="off"
             @keyup.enter="search"
           />
+          <el-divider />
+          <h5>Chủ đề tiêu biểu</h5>
+          <el-divider />
+          <CListGroup class="mb-3">
+            <CListGroupItem
+              v-for="item in categoryList.value"
+              :key="item.id"
+              component="a"
+              @click="getTopicList(item.id)"
+              >{{ item.name }}</CListGroupItem
+            >
+          </CListGroup>
+          <CLink @click="openDialog">Xem thêm</CLink>
         </b-col>
       </b-row>
     </CContainer>
     <!-- End Company recruitment BLock -->
 
     <AppFooter />
+
+    <CModal
+      :visible="dialogCategory"
+      scrollable
+      size="lg"
+      @close="
+        () => {
+          dialogCategory = false
+        }
+      "
+    >
+      <CModalHeader>
+        <CModalTitle>Danh sách chủ đề</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <CListGroup class="mb-3">
+          <CListGroupItem
+            v-for="item in allCategoryList.value"
+            :key="item.id"
+            component="a"
+            @click="getTopicList(item.id)"
+            >{{ item.name }}</CListGroupItem
+          >
+        </CListGroup>
+      </CModalBody>
+    </CModal>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .card {
-  transition: .2s ease;
+  transition: 0.2s ease;
   &:hover {
     border: 1px solid #15234775;
     box-shadow: 0 2px 3px 0px #bebebe;

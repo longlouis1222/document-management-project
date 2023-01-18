@@ -99,6 +99,18 @@ export default [
           import('@/views/admin/UserProfile/UserProfile.vue'),
       },
       {
+        path: '/my-project',
+        name: 'Đề tài của tôi',
+        component: () =>
+          import('@/views/admin/MyProject/MyProjectList.vue'),
+      },
+      {
+        path: '/project-registrator',
+        name: 'Đề tài đăng ký',
+        component: () =>
+          import('@/views/admin/ProjectRegistration/ProjectRegistrationList.vue'),
+      },
+      {
         path: '/theme',
         name: 'Theme',
         redirect: '/theme/typography',

@@ -44,7 +44,12 @@ export default createStore({
           commit('SET_CURRENT_USER', VueJwtDecode.decode(res.data.token))
           localStorage.setItem('Token', res.data.token)
           localStorage.setItem('uid', VueJwtDecode.decode(res.data.token).uid)
-          router.push({ name: 'Dashboard' })
+          localStorage.setItem('type', VueJwtDecode.decode(res.data.token).type)
+          if (VueJwtDecode.decode(res.data.token).type === 'LECTURE') {
+            router.push({ name: 'Dashboard' })
+          } else if (VueJwtDecode.decode(res.data.token).type !== 'LECTURE') {
+            router.push({ name: 'Landing page' })
+          }
         }
       } catch (error) {
         console.log(error)
@@ -56,6 +61,7 @@ export default createStore({
         console.log('Log out from Action store ...')
         localStorage.removeItem('Token')
         localStorage.removeItem('uid')
+        localStorage.removeItem('type')
         commit('SET_CURRENT_USER', null)
         router.push({ name: 'Login' })
       } catch (error) {

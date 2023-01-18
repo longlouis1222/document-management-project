@@ -20,11 +20,19 @@
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav>
-        <CNavItem>
+        <CNavItem v-if="!isLogin">
           <CButton color="primary" @click="goToLogin" class="px-4"
             >Đăng nhập</CButton
           >
         </CNavItem>
+
+        <CNavItem v-if="isLogin" @click="goToMyProject" class="text-white fw-bold mt-2 me-3">
+          Đề tài của tôi
+        </CNavItem>
+        <CNavItem v-if="isLogin" @click="goToProjectList" class="text-white fw-bold mt-2 me-3">
+          Đề tài đăng ký
+        </CNavItem>
+        <AppHeaderDropdownAccnt v-if="isLogin" />
       </CHeaderNav>
     </CContainer>
   </CHeader>
@@ -37,8 +45,19 @@ import { logo } from '@/assets/brand/logo'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
+const isLogin = localStorage.getItem('uid')
+
 const goToLogin = () => {
-  router.push({ name: 'Login'})
+  router.push({ name: 'Login' })
+}
+
+const goToMyProject = () => {
+  router.push({ name: 'Đề tài của tôi' })
+}
+
+const goToProjectList = () => {
+  router.push({ name: 'Đề tài đăng ký' })
 }
 </script>
 <style lang="scss" scoped>
