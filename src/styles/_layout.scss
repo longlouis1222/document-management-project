@@ -5,6 +5,10 @@
   @include transition(padding .15s);
 }
 
+html, body {
+  // font-weight: 500;
+}
+
 .container-lg {
   margin-bottom: 15px;
 }

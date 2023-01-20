@@ -6,7 +6,7 @@ export default [
     path: '/',
     name: 'Home',
     component: DefaultLayout,
-    redirect: '/pages/landing-page',
+    redirect: '/pages/login',
     children: [
       {
         path: '/dashboard',
@@ -50,12 +50,6 @@ export default [
         component: () =>
           import('@/views/admin/StatisticalScoreManagement/StatisticalList.vue'),
       },
-      // {
-      //   path: '/admin/year-management/year-list',
-      //   name: 'Quản lý Niên khóa',
-      //   component: () =>
-      //     import('@/views/admin/YearManagement/YearList.vue'),
-      // },
       {
         path: '/admin/class-management/class-list',
         name: 'Quản lý Lớp',
@@ -352,6 +346,7 @@ export default [
       },
     ],
   },
+
   {
     path: '/pages',
     redirect: '/pages/404',
@@ -401,6 +396,11 @@ export default [
         path: 'landing-page',
         name: 'Landing page',
         component: () => import('@/views/pages/LandingPage'),
+      },
+      {
+        path: 'project-detail/:id',
+        name: 'Project detail',
+        component: () => import('@/views/pages/ProjectDetail'),
       },
     ],
   },

@@ -45,9 +45,9 @@ export default createStore({
           localStorage.setItem('Token', res.data.token)
           localStorage.setItem('uid', VueJwtDecode.decode(res.data.token).uid)
           localStorage.setItem('type', VueJwtDecode.decode(res.data.token).type)
-          if (VueJwtDecode.decode(res.data.token).type === 'LECTURE') {
+          if (VueJwtDecode.decode(res.data.token).type !== 'STUDENT') {
             router.push({ name: 'Dashboard' })
-          } else if (VueJwtDecode.decode(res.data.token).type !== 'LECTURE') {
+          } else if (VueJwtDecode.decode(res.data.token).type === 'STUDENT') {
             router.push({ name: 'Landing page' })
           }
         }

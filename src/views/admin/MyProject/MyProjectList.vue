@@ -4,6 +4,7 @@ import DataService from '@/service/DataService'
 import TeacherApi from '@/moduleApi/modules/TeacherApi'
 import TopicApi from '@/moduleApi/modules/TopicApi'
 import CategoryApi from '@/moduleApi/modules/CategoryApi'
+import StudentApi from '@/moduleApi/modules/StudentApi'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -33,6 +34,7 @@ const dialogModel = ref(false)
 const viewMode = ref('create')
 const teacherList = reactive({ value: [] })
 const categoryList = reactive({ value: [] })
+const topicRegistryList = reactive({ value: [] })
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -69,7 +71,7 @@ const submitForm = async (formEl) => {
           }
         }
         resetForm(formEl)
-        await getList()
+        await getListTopicRegistry()
       } catch (error) {
         console.log(error)
       }
@@ -93,7 +95,7 @@ const submitFormSearch = async (formEl) => {
         tableRules.filters = formSearchData.value
         tableRules.skip = 0
         tableRules.page = 1
-        await getList()
+        await getListTopicRegistry()
       } catch (error) {
         console.log(error)
       }
@@ -103,12 +105,11 @@ const submitFormSearch = async (formEl) => {
   })
 }
 
-const getList = async () => {
+const getListTopicRegistry = async () => {
   let dataFilter = {
     limit: tableRules.limit,
     skip: tableRules.skip,
     page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
-    // sort: tableRules.sort,
     ...tableRules.filters,
   }
   router.replace({
@@ -118,11 +119,10 @@ const getList = async () => {
     },
   })
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
-  const topicApiRes = await TopicApi.list(filter)
-  if (topicApiRes.status === 200) {
-    tableRules.data = await changeData(topicApiRes.data.data.data)
-    tableRules.total = topicApiRes.data.data.totalElements
-    console.log('getList', topicApiRes)
+  const res = await StudentApi.getListTopicRegistry(filter)
+  if (res.status === 200) {
+    tableRules.data = await changeData(res.data.data.data)
+    tableRules.total = res.data.data.totalElements
   }
 }
 
@@ -165,7 +165,7 @@ const deleteItem = async (id) => {
           type: 'success',
           message: `Xóa thành công`,
         })
-        await getList()
+        await getListTopicRegistry()
         viewMode.value = 'create'
       }
     },
@@ -202,7 +202,7 @@ const fn_tableNextClick = () => {
 const fn_tableChangeskip = (page) => {
   tableRules.page = page
   tableRules.skip = (tableRules.page - 1) * tableRules.limit
-  getList()
+  getListTopicRegistry()
 }
 const fn_tableSortChange = (column, tableSort) => {
   tableSort = tableRules
@@ -213,7 +213,7 @@ const fn_tableSortChange = (column, tableSort) => {
 onMounted(async () => {
   await getListTeacher()
   await getListCategory()
-  await getList()
+  await getListTopicRegistry()
 })
 </script>
 
@@ -223,11 +223,11 @@ onMounted(async () => {
       <template #header>
         <div class="card-header">
           <div class="d-flex justify-content-between">
-            <h4>Danh sách thông tin đồ án</h4>
+            <h4>Danh sách đồ án của tôi</h4>
             <div>
-              <CButton color="primary" class="me-2" @click="toggleSearchBox"
+              <!-- <CButton color="primary" class="me-2" @click="toggleSearchBox"
                 ><CIcon icon="cilSearch" class="me-2" />Tra cứu</CButton
-              >
+              > -->
               <CButton color="primary" @click="openDialogAddItem"
                 >Thêm mới</CButton
               >
@@ -375,7 +375,7 @@ onMounted(async () => {
         />
         <el-table-column prop="year" label="Năm" min-width="80" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
-        <el-table-column
+        <!-- <el-table-column
           fixed="right"
           align="center"
           label="Thao tác"
@@ -400,7 +400,7 @@ onMounted(async () => {
               /></CButton>
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
       <div class="d-flex justify-content-center mt-3 mb-3">
         <el-pagination

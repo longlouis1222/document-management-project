@@ -15,5 +15,14 @@ export default {
   },
   delete(id) {
     return Api().delete(`students/${id}`)
-  }
+  },
+  getListTopicApproved(id) {
+    return Api().get(`students/get-list-topic-approved`)
+  },
+  getListTopicRegistry() {
+    return Api().get(`students/get-list-topic-registry`)
+  },
+  registryTopic(id) {
+    return Api().get(`students/registry-topic?registry=true&topicId=${id}`)
+  },
 }

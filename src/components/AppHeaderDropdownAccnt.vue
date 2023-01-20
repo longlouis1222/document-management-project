@@ -40,6 +40,9 @@
       <!-- <CDropdownItem>
         <CIcon icon="cil-shield-alt" /> Lock Account
       </CDropdownItem> -->
+      <CDropdownItem @click="goToForgotPassword">
+        <CIcon icon="cilShieldAlt" /> Change password
+      </CDropdownItem>
       <CDropdownItem @click="logout">
         <CIcon icon="cil-lock-locked" /> Logout
       </CDropdownItem>
@@ -61,5 +64,9 @@ const logout = () => {
 
 const goToUserProfile = () => {
   router.push({ name: 'Thông tin tài khoản'})
+}
+
+const goToForgotPassword = () => {
+  router.push({ name: 'ForgotPassword'})
 }
 </script>

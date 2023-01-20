@@ -2,24 +2,29 @@
 import MethodService from '@/service/MethodService'
 import CategoryApi from '@/moduleApi/modules/CategoryApi'
 import TopicApi from '@/moduleApi/modules/TopicApi'
+import StudentApi from '@/moduleApi/modules/StudentApi'
 
-import { useRouter } from 'vue-router'
+import { ElMessageBox, ElMessage } from 'element-plus'
+
+import { useRoute, useRouter } from 'vue-router'
 import AppFooter from '@/components/AppFooter.vue'
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
 import { ref, reactive, onMounted } from 'vue'
 
 const router = useRouter()
+const route = useRoute()
 
 const textSearch = ref('')
 const dialogCategory = ref(false)
+const topicList = reactive({ value: [] })
 const categoryList = reactive({ value: [] })
 const allCategoryList = reactive({ value: [] })
-const topicList = reactive({ value: [] })
+const topic = ref(null)
 
 const bannerList = [
   {
     id: 1,
-    src: require('../../assets/banner/Baner50namkXD2022.jpeg'),
+    src: require('../../assets/banner/2.jpg'),
   },
   {
     id: 2,
@@ -68,78 +73,71 @@ const getTopicList = async (categoryId) => {
   }
 }
 
+const getTopicById = async () => {
+  const res = await TopicApi.findById(route.params.id)
+  if (res.status === 200) {
+    topic.value = res.data.data
+    console.log('topic', topic.value)
+  }
+}
+
 const openDialog = async () => {
   await getCategoryList(true)
   dialogCategory.value = true
 }
 
-const goToDetail = (id) => {
-  router.push({ name: 'Project detail', params: { id: id } })
+const registerProject = async () => {
+  try {
+    const res = await StudentApi.registryTopic(route.params.id)
+    if (res.status === 200) {
+      ElMessage({
+        type: 'success',
+        message: `Đăng ký thành công`,
+      })
+    }
+  } catch (error) {
+    ElMessage({
+      type: 'error',
+      message: `${error}.`,
+    })
+  }
 }
 
-onMounted(() => {
-  getTopicList()
+onMounted(async () => {
+  await getTopicById()
   getCategoryList()
+  await getTopicList()
 })
 </script>
 
 <template>
   <div class="min-vh-100">
     <AppHeaderLanding />
-    <!-- Start Carousel -->
-    <CContainer xxl>
-      <div class="block text-center">
-        <el-carousel height="475px">
-          <el-carousel-item
-            v-for="item in bannerList"
-            :key="item.id"
-            class="banner"
-          >
-            <!-- <h3 class="small justify-center" text="2xl">{{ item }}</h3> -->
-            <img
-              :src="item.src"
-              :alt="item.src"
-              class="banner__img"
-              :style="
-                item.id == 1 || item.id == 5
-                  ? 'object-position: bottom 0px right 0px;'
-                  : item.id == 3
-                  ? 'object-position: bottom 100px right 0px;'
-                  : item.id == 4
-                  ? 'object-position: bottom 500px right 0px;'
-                  : ''
-              "
-            />
-          </el-carousel-item>
-        </el-carousel>
-      </div>
-    </CContainer>
-    <!-- End Carousel -->
 
     <!-- Start Company recruitment BLock -->
-    <CContainer xl class="mt-4 company_recruitment_block">
+    <CContainer xl class="mt-4 mb-4 company_recruitment_block">
       <b-row>
-        <b-col md="8">
-          <h4 class="mb-3">Danh sách đồ án</h4>
-          <el-divider />
-          <b-row>
-            <b-col
-              class="mb-4"
-              md="4"
-              v-for="(item, i) in topicList.value"
-              :key="item.id"
+        <b-col md="8" v-if="topic">
+          <CCard>
+            <CCardHeader component="h5"
+              >Chi tiết đồ án: {{ topic.name }}</CCardHeader
             >
-              <CCard>
-                <CCardBody>
-                  <CCardTitle>{{ i + 1 }}. {{ item.name }}</CCardTitle>
-                  <CCardText>Mô tả: {{ item.description }}.</CCardText>
-                  <CButton color="light" size="sm" @click="goToDetail(item.id)"
-                    >Xem chi tiết</CButton
-                  >
-                </CCardBody>
-              </CCard>
-            </b-col>
-          </b-row>
+            <CCardBody>
+              <p>Mô tả: {{ topic.description }}</p>
+              <p>Sinh viên thực hiện: {{ topic.stdNumber }}</p>
+              <p>Giảng viên hướng dẫn: {{ topic.lecturerGuideDTO.fullName }}</p>
+              <p>
+                Giảng viên phản biện:
+                {{ topic.lecturerCounterArgumentDTO.fullName }}
+              </p>
+              <p>Năm thực hiện: {{ new Date(topic.year).getFullYear() }}</p>
+              <p>Bản mềm: <CCardLink>Another link</CCardLink></p>
+              <p class="text-right" style="width: fit-content;" @click="backToPrev">
+                <em> &lt;&lt; Quay lại</em>
+              </p>
+              <CButton color="primary" size="sm" @click="registerProject">Đăng ký đề tài</CButton>
+            </CCardBody>
+          </CCard>
         </b-col>
         <b-col md="4">
           <h4>Tìm kiếm</h4>
@@ -153,15 +151,14 @@ onMounted(() => {
           <h5>Chủ đề tiêu biểu</h5>
           <el-divider />
           <CListGroup class="mb-3">
-            <CListGroupItem @click="getTopicList()">
+            <CListGroupItem @click="backToPrev">
               Tất cả chủ đề
             </CListGroupItem>
-
             <CListGroupItem
               v-for="item in categoryList.value"
               :key="item.id"
               component="a"
-              @click="getTopicList(item.id)"
+              @click="backToPrev"
               >{{ item.name }}</CListGroupItem
             >
           </CListGroup>
@@ -192,7 +189,7 @@ onMounted(() => {
             v-for="item in allCategoryList.value"
             :key="item.id"
             component="a"
-            @click="getTopicList(item.id)"
+            @click="backToPrev"
             >{{ item.name }}</CListGroupItem
           >
         </CListGroup>
@@ -204,9 +201,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .card {
   transition: 0.2s ease;
-  &:hover {
-    border: 1px solid #15234775;
-    box-shadow: 0 2px 3px 0px #bebebe;
-  }
+  box-shadow: 0 2px 3px 0px #bebebe;
 }
 </style>
