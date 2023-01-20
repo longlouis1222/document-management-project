@@ -81,6 +81,18 @@ export default [
     to: '/admin/category-management/category-list',
     icon: 'cilNewspaper',
   },
+  {
+    component: 'CNavItem',
+    name: 'Đề tài của tôi',
+    to: '/my-project',
+    icon: 'cilBook',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Đề tài đăng ký',
+    to: '/project-registrator',
+    icon: 'cilBarcode',
+  },
   // {
   //   component: 'CNavTitle',
   //   name: 'Theme',
