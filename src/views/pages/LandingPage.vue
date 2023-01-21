@@ -2,14 +2,15 @@
 import MethodService from '@/service/MethodService'
 import CategoryApi from '@/moduleApi/modules/CategoryApi'
 import TopicApi from '@/moduleApi/modules/TopicApi'
-
 import { useRouter } from 'vue-router'
 import AppFooter from '@/components/AppFooter.vue'
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
 import { ref, reactive, onMounted } from 'vue'
+import modelData from '../admin/GraduationProjectManagement/GraduationProjectModel'
 
 const router = useRouter()
 
+const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const textSearch = ref('')
 const dialogCategory = ref(false)
 const categoryList = reactive({ value: [] })
@@ -39,8 +40,38 @@ const goToDashboard = () => {
   router.push({ name: 'Dashboard' })
 }
 
-const search = () => {
-  console.log('Search...')
+const search = async () => {
+  try {
+    console.log('Search...',tableRules.dataSearch.value.name)
+    tableRules.filters = { name: tableRules.dataSearch.value.name}
+    tableRules.skip = 0
+    tableRules.page = 1
+    await getTopicList()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const getTopicList = async (categoryId) => {
+  let dataFilter = {
+    limit: tableRules.limit,
+    skip: tableRules.skip,
+    page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
+    categoryId: categoryId ? categoryId : '',
+    ...tableRules.filters,
+  }
+  router.replace({
+    name: 'Landing page',
+    query: {
+      ...dataFilter,
+    },
+  })
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const res = await TopicApi.list(filter)
+  if (res.status === 200) {
+    topicList.value = res.data.data.data
+    tableRules.total = res.data.data.totalElements
+  }
 }
 
 const getCategoryList = async (isAll) => {
@@ -56,18 +87,6 @@ const getCategoryList = async (isAll) => {
   }
 }
 
-const getTopicList = async (categoryId) => {
-  let dataFilter = {
-    categoryId: categoryId ? categoryId : '',
-    size: 9999999,
-  }
-  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
-  const res = await TopicApi.list(filter)
-  if (res.status === 200) {
-    topicList.value = res.data.data.data
-  }
-}
-
 const openDialog = async () => {
   await getCategoryList(true)
   dialogCategory.value = true
@@ -77,6 +96,24 @@ const goToDetail = (id) => {
   router.push({ name: 'Project detail', params: { id: id } })
 }
 
+const fn_tableSizeChange = (limit) => {
+  tableRules.limit = limit
+  fn_tableChangeskip(1)
+}
+const fn_tableCurentChange = (page) => {
+  fn_tableChangeskip(page)
+}
+const fn_tablePrevClick = () => {
+  // fn_tableChangeskip(page);
+}
+const fn_tableNextClick = () => {
+  // fn_tableChangeskip(page);
+}
+const fn_tableChangeskip = (page) => {
+  tableRules.page = page
+  tableRules.skip = (tableRules.page - 1) * tableRules.limit
+  getTopicList()
+}
 onMounted(() => {
   getTopicList()
   getCategoryList()
@@ -140,14 +177,30 @@ onMounted(() => {
               </CCard>
             </b-col>
           </b-row>
+          <div class="d-flex justify-content-center mt-3 mb-3">
+            <el-pagination
+              small
+              v-model:currentPage="tableRules.page"
+              v-model:pageSize="tableRules.limit"
+              :page-sizes="tableRules.lengthMenu"
+              background
+              layout="sizes, prev, pager, next, total"
+              :total="Number(tableRules.total)"
+              @size-change="fn_tableSizeChange"
+              @current-change="fn_tableCurentChange"
+              @prev-click="fn_tablePrevClick"
+              @next-click="fn_tableNextClick"
+            />
+          </div>
         </b-col>
         <b-col md="4">
           <h4>Tìm kiếm</h4>
           <el-divider />
           <el-input
-            v-model="textSearch"
+            v-model="tableRules.dataSearch.value.name"
             autocomplete="off"
             @keyup.enter="search"
+            placeholder="Nhập tên đề tài rồi Enter để tìm kiếm"
           />
           <el-divider />
           <h5>Chủ đề tiêu biểu</h5>
