@@ -23,9 +23,9 @@ const formData = reactive({
   value: MethodService.copyObject(modelData.dataForm),
 })
 const formValid = modelData.validForm
-const formSearchData = reactive(
-  { value: MethodService.copyObject(tableRules.dataSearch.value) }
-)
+const formSearchData = reactive({
+  value: MethodService.copyObject(tableRules.dataSearch.value),
+})
 const formSearchValid = tableRules.dataSearch.valid
 
 const topicStatusList = DataService.topicStatusList
@@ -204,6 +204,12 @@ const fn_tableChangeskip = (page) => {
   getTopicApprovedList()
 }
 
+const backToPrev = () => {
+  router.push({
+    name: 'Landing page'
+  })
+}
+
 onMounted(async () => {
   await getListTeacher()
   await getListCategory()
@@ -219,12 +225,7 @@ onMounted(async () => {
           <div class="d-flex justify-content-between">
             <h4>Danh sách thông tin đồ án đăng ký</h4>
             <div>
-              <!-- <CButton color="primary" class="me-2" @click="toggleSearchBox"
-                ><CIcon icon="cilSearch" class="me-2" />Tra cứu</CButton
-              > -->
-              <!-- <CButton color="primary" @click="openDialogAddItem"
-                >Thêm mới</CButton
-              > -->
+              <CButton color="primary" variant="outline" class="me-2" @click="backToPrev">Quay lại</CButton>
             </div>
           </div>
         </div>
@@ -274,7 +275,10 @@ onMounted(async () => {
                   </el-form-item>
                 </b-col>
                 <b-col md="4">
-                  <el-form-item label="Giáo viên phản biện" prop="lecturerCounterArgumentId">
+                  <el-form-item
+                    label="Giáo viên phản biện"
+                    prop="lecturerCounterArgumentId"
+                  >
                     <el-select
                       v-model="formSearchData.value.lecturerCounterArgumentId"
                       placeholder="chọn"
@@ -291,7 +295,10 @@ onMounted(async () => {
                   </el-form-item>
                 </b-col>
                 <b-col md="4">
-                  <el-form-item label="Giáo viên hướng dẫn" prop="lecturerGuideId">
+                  <el-form-item
+                    label="Giáo viên hướng dẫn"
+                    prop="lecturerGuideId"
+                  >
                     <el-select
                       v-model="formSearchData.value.lecturerGuideId"
                       placeholder="chọn"
@@ -355,12 +362,36 @@ onMounted(async () => {
       <el-table :data="tableRules.data" style="width: 100%">
         <el-table-column prop="name" label="Tên đề tài" width="150" />
         <el-table-column prop="categoryName" label="Chủ đề" width="120" />
-        <el-table-column prop="lecturerCounterArgumentDTO.fullName" label="Giáo viên phản biện" width="120" />
-        <el-table-column prop="lecturerGuideDTO.fullName" label="Giáo viên hướng dẫn" width="120" />
-        <el-table-column prop="scoreCounterArgument" label="Điểm phản biện" min-width="100" />
-        <el-table-column prop="scoreGuide" label="Điểm hướng dẫn" min-width="100" />
-        <el-table-column prop="scoreProcessOne" label="Điểm kiểm tra tiến độ lần 1" min-width="120" />
-        <el-table-column prop="scoreProcessTwo" label="Điểm kiểm tra tiến độ lần 2" min-width="120" />
+        <el-table-column
+          prop="lecturerCounterArgumentDTO.fullName"
+          label="Giáo viên phản biện"
+          width="120"
+        />
+        <el-table-column
+          prop="lecturerGuideDTO.fullName"
+          label="Giáo viên hướng dẫn"
+          width="120"
+        />
+        <el-table-column
+          prop="scoreCounterArgument"
+          label="Điểm phản biện"
+          min-width="100"
+        />
+        <el-table-column
+          prop="scoreGuide"
+          label="Điểm hướng dẫn"
+          min-width="100"
+        />
+        <el-table-column
+          prop="scoreProcessOne"
+          label="Điểm kiểm tra tiến độ lần 1"
+          min-width="120"
+        />
+        <el-table-column
+          prop="scoreProcessTwo"
+          label="Điểm kiểm tra tiến độ lần 2"
+          min-width="120"
+        />
         <el-table-column prop="status" label="Trạng thái" min-width="100" />
         <el-table-column
           prop="stdNumber"
@@ -491,7 +522,10 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Giáo viên phản biện" prop="lecturerCounterArgumentId">
+            <el-form-item
+              label="Giáo viên phản biện"
+              prop="lecturerCounterArgumentId"
+            >
               <el-select
                 v-model="formData.value.lecturerCounterArgumentId"
                 placeholder="chọn"
@@ -533,7 +567,10 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Điểm kiểm tra tiến độ lần 1" prop="scoreProcessOne">
+            <el-form-item
+              label="Điểm kiểm tra tiến độ lần 1"
+              prop="scoreProcessOne"
+            >
               <el-input
                 v-model="formData.value.scoreProcessOne"
                 type="text"
@@ -542,7 +579,10 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Điểm kiểm tra tiến độ lần 2" prop="scoreProcessTwo">
+            <el-form-item
+              label="Điểm kiểm tra tiến độ lần 2"
+              prop="scoreProcessTwo"
+            >
               <el-input
                 v-model="formData.value.scoreProcessTwo"
                 type="text"

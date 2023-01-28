@@ -4,19 +4,18 @@ import DataService from '@/service/DataService'
 import TeacherApi from '@/moduleApi/modules/TeacherApi'
 import TopicApi from '@/moduleApi/modules/TopicApi'
 import CategoryApi from '@/moduleApi/modules/CategoryApi'
-import StudentApi from '@/moduleApi/modules/StudentApi'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
-import modelData from './MyProjectModel'
+import modelData from './TopicOfLectureModel'
 
 const defaultFilter = DataService.defaultFilter
 
 const router = useRouter()
-const moduleName = 'Đề tài của tôi'
+const moduleName = 'Đề tài phản biện'
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const formData = reactive({
@@ -34,7 +33,6 @@ const dialogModel = ref(false)
 const viewMode = ref('create')
 const teacherList = reactive({ value: [] })
 const categoryList = reactive({ value: [] })
-const topicRegistryList = reactive({ value: [] })
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -71,7 +69,7 @@ const submitForm = async (formEl) => {
           }
         }
         resetForm(formEl)
-        await getListTopicRegistry()
+        await getList()
       } catch (error) {
         console.log(error)
       }
@@ -95,7 +93,7 @@ const submitFormSearch = async (formEl) => {
         tableRules.filters = formSearchData.value
         tableRules.skip = 0
         tableRules.page = 1
-        await getListTopicRegistry()
+        await getList()
       } catch (error) {
         console.log(error)
       }
@@ -105,7 +103,7 @@ const submitFormSearch = async (formEl) => {
   })
 }
 
-const getListTopicRegistry = async () => {
+const getList = async () => {
   let dataFilter = {
     limit: tableRules.limit,
     skip: tableRules.skip,
@@ -119,10 +117,10 @@ const getListTopicRegistry = async () => {
     },
   })
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
-  const res = await StudentApi.getListTopicRegistry(filter)
-  if (res.status === 200) {
-    tableRules.data = await changeData(res.data.data.data)
-    tableRules.total = res.data.data.totalElements
+  const topicApiRes = await TeacherApi.getListTopicCounter(filter)
+  if (topicApiRes.status === 200) {
+    tableRules.data = await changeData(topicApiRes.data.data.data)
+    tableRules.total = topicApiRes.data.data.totalElements
   }
 }
 
@@ -165,7 +163,7 @@ const deleteItem = async (id) => {
           type: 'success',
           message: `Xóa thành công`,
         })
-        await getListTopicRegistry()
+        await getList()
         viewMode.value = 'create'
       }
     },
@@ -202,24 +200,13 @@ const fn_tableNextClick = () => {
 const fn_tableChangeskip = (page) => {
   tableRules.page = page
   tableRules.skip = (tableRules.page - 1) * tableRules.limit
-  getListTopicRegistry()
-}
-const fn_tableSortChange = (column, tableSort) => {
-  tableSort = tableRules
-  MethodService.tableSortChange(column, tableSort)
-  // getService();
-}
-
-const backToPrev = () => {
-  router.push({
-    name: 'Landing page',
-  })
+  getList()
 }
 
 onMounted(async () => {
   await getListTeacher()
   await getListCategory()
-  await getListTopicRegistry()
+  await getList()
 })
 </script>
 
@@ -229,9 +216,14 @@ onMounted(async () => {
       <template #header>
         <div class="card-header">
           <div class="d-flex justify-content-between">
-            <h4>Danh sách đồ án của tôi</h4>
+            <h4>Danh sách đề tài phản biện</h4>
             <div>
-              <CButton color="primary" variant="outline" class="me-2" @click="backToPrev">Quay lại</CButton>
+              <CButton color="primary" class="me-2" @click="toggleSearchBox"
+                ><CIcon icon="cilSearch" class="me-2" />Tra cứu</CButton
+              >
+              <!-- <CButton color="primary" @click="openDialogAddItem"
+                >Thêm mới</CButton
+              > -->
             </div>
           </div>
         </div>
@@ -346,7 +338,7 @@ onMounted(async () => {
                     </el-select>
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
+                <b-col md="12">
                   <el-form-item label="Mô tả" prop="description">
                     <el-input
                       v-model="formSearchData.value.description"
@@ -406,7 +398,7 @@ onMounted(async () => {
         />
         <el-table-column prop="year" label="Năm" min-width="80" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
-        <!-- <el-table-column
+        <el-table-column
           fixed="right"
           align="center"
           label="Thao tác"
@@ -422,16 +414,9 @@ onMounted(async () => {
                 @click="handle('update', scope.row)"
                 ><CIcon icon="cilPencil"
               /></CButton>
-              <CButton
-                color="danger"
-                variant="outline"
-                size="sm"
-                @click="handle('delete', scope.row)"
-                ><CIcon icon="cilTrash"
-              /></CButton>
             </div>
           </template>
-        </el-table-column> -->
+        </el-table-column>
       </el-table>
       <div class="d-flex justify-content-center mt-3 mb-3">
         <el-pagination
@@ -471,7 +456,7 @@ onMounted(async () => {
         <b-row>
           <b-col md="4">
             <el-form-item label="Tên đồ án" prop="name">
-              <el-input v-model="formData.value.name" autocomplete="off" />
+              <el-input v-model="formData.value.name" autocomplete="off" disabled/>
             </el-form-item>
           </b-col>
           <b-col md="4">
@@ -487,6 +472,7 @@ onMounted(async () => {
               <el-input
                 v-model="formData.value.scoreGuide"
                 autocomplete="off"
+                disabled
               />
             </el-form-item>
           </b-col>
@@ -496,6 +482,7 @@ onMounted(async () => {
                 v-model="formData.value.status"
                 placeholder="chọn"
                 filterable
+                disabled
               >
                 <el-option
                   v-for="item in topicStatusList"
@@ -508,7 +495,7 @@ onMounted(async () => {
           </b-col>
           <b-col md="4">
             <el-form-item label="Số lượng sinh viên" prop="stdNumber">
-              <el-input v-model="formData.value.stdNumber" autocomplete="off" />
+              <el-input v-model="formData.value.stdNumber" autocomplete="off" disabled/>
             </el-form-item>
           </b-col>
           <b-col md="4">
@@ -517,6 +504,7 @@ onMounted(async () => {
                 v-model="formData.value.lecturerGuideId"
                 placeholder="chọn"
                 filterable
+                disabled
               >
                 <el-option
                   v-for="item in teacherList.value"
@@ -536,6 +524,7 @@ onMounted(async () => {
                 v-model="formData.value.lecturerCounterArgumentId"
                 placeholder="chọn"
                 filterable
+                disabled
               >
                 <el-option
                   v-for="item in teacherList.value"
@@ -553,6 +542,7 @@ onMounted(async () => {
                 type="year"
                 format="YYYY"
                 placeholder="Chọn"
+                disabled
               />
             </el-form-item>
           </b-col>
@@ -562,6 +552,7 @@ onMounted(async () => {
                 v-model="formData.value.categoryId"
                 placeholder="chọn"
                 filterable
+                disabled
               >
                 <el-option
                   v-for="item in categoryList.value"
@@ -581,6 +572,7 @@ onMounted(async () => {
                 v-model="formData.value.scoreProcessOne"
                 type="text"
                 placeholder=""
+                disabled
               />
             </el-form-item>
           </b-col>
@@ -593,6 +585,7 @@ onMounted(async () => {
                 v-model="formData.value.scoreProcessTwo"
                 type="text"
                 placeholder=""
+                disabled
               />
             </el-form-item>
           </b-col>
@@ -601,6 +594,7 @@ onMounted(async () => {
               <el-input
                 v-model="formData.value.description"
                 autocomplete="off"
+                disabled
               />
             </el-form-item>
           </b-col>

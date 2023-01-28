@@ -94,6 +94,7 @@ const registerProject = async () => {
         type: 'success',
         message: `Đăng ký thành công`,
       })
+      await getTopicById()
     }
   } catch (error) {
     ElMessage({

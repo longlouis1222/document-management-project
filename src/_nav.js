@@ -83,6 +83,24 @@ export default [
   },
   {
     component: 'CNavItem',
+    name: 'Đề tài phản biện',
+    to: '/admin/topic-of-lecture/topic-of-lecture-list',
+    icon: 'cilApplicationsSettings',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Đề tài hướng dẫn',
+    to: '/admin/topic-of-lecture/topic-of-lecture-guide-list',
+    icon: 'cilBlurLinear',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Đề tài sinh viên đăng ký',
+    to: '/admin/topic-of-lecture/topic-student-assign-list',
+    icon: 'cilColorBorder',
+  },
+  {
+    component: 'CNavItem',
     name: 'Đề tài của tôi',
     to: '/my-project',
     icon: 'cilBook',

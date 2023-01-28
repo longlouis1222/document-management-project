@@ -15,5 +15,17 @@ export default {
   },
   delete(id) {
     return Api().delete(`lecturers/${id}`)
-  }
+  },
+  approveTopic(data) {
+    return Api().get(`lecturers/approve-topic?${data}`)
+  },
+  getListTopicStudentAssign(data) {
+    return Api().get(!data ? 'lecturers' : `lecturers/get-list-topic?${data}`)
+  },
+  getListTopicCounter(data) {
+    return Api().get(!data ? 'lecturers' : `lecturers/get-list-topic-counter?${data}`)
+  },
+  getListTopicGuide(data) {
+    return Api().get(!data ? 'lecturers' : `lecturers/get-list-topic-guide?${data}`)
+  },
 }

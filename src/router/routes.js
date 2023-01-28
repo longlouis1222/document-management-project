@@ -87,6 +87,24 @@ export default [
           import('@/views/admin/CategoryManagement/CategoryList.vue'),
       },
       {
+        path: '/admin/topic-of-lecture/topic-of-lecture-list',
+        name: 'Đề tài phản biện',
+        component: () =>
+          import('@/views/admin/TopicOfLectureManagement/TopicOfLectureList.vue'),
+      },
+      {
+        path: '/admin/topic-of-lecture/topic-of-lecture-guide-list',
+        name: 'Đề tài hướng dẫn',
+        component: () =>
+          import('@/views/admin/TopicOfLectureManagement/TopicOfLectureGuideList.vue'),
+      },
+      {
+        path: '/admin/topic-of-lecture/topic-student-assign-list',
+        name: 'Đề tài sinh viên đăng ký',
+        component: () =>
+          import('@/views/admin/TopicOfLectureManagement/TopicStudentAssignList.vue'),
+      },
+      {
         path: '/user-profile',
         name: 'Thông tin tài khoản',
         component: () =>
