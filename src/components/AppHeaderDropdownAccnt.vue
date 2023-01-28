@@ -1,6 +1,6 @@
 <template>
   <CDropdown>
-    <CDropdownToggle placement="bottom-end" class="py-0" :caret="false">
+    <CDropdownToggle placement="bottom-end" class="py-0" :caret="false" style="border: none;">
       <CAvatar :src="avatar" size="md" />
     </CDropdownToggle>
     <CDropdownMenu class="pt-0">

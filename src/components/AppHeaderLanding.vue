@@ -32,7 +32,10 @@
         <CNavItem v-if="isLogin" @click="goToProjectList" class="text-white fw-bold mt-2 me-3">
           Đề tài đăng ký
         </CNavItem>
-        <AppHeaderDropdownAccnt v-if="isLogin" />
+        <div class="d-flex align-items-center" style="border: 1px solid #fff; border-radius: 8px; background-color: #fff; padding: 4px; margin-top: -4px;">
+          <p class="mb-0 ms-2 fw-bold" style="color: #152347;" v-if="userInfo"> {{ userInfo.fullName ? userInfo.fullName : '' }}</p>
+          <AppHeaderDropdownAccnt v-if="isLogin" />
+        </div>
       </CHeaderNav>
     </CContainer>
   </CHeader>
@@ -43,9 +46,13 @@ import AppBreadcrumb from './AppBreadcrumb'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt'
 import { logo } from '@/assets/brand/logo'
 import { useRouter } from 'vue-router'
+import { ref, reactive, onMounted, computed } from 'vue'
+import auth from '@/moduleApi/modules/auth'
+// import { useStore } from 'vuex'
+// const store = useStore()
 
 const router = useRouter()
-
+const userInfo = ref(null)
 const isLogin = localStorage.getItem('uid')
 
 const goToLogin = () => {
@@ -59,6 +66,18 @@ const goToMyProject = () => {
 const goToProjectList = () => {
   router.push({ name: 'Đề tài đăng ký' })
 }
+
+const getUserInfo = async () => {
+  if (!localStorage.getItem('uid')) return
+  const res = await auth.getAccount()
+  if (res.status == 200) {
+    userInfo.value = res.data.data
+  }
+}
+onMounted(async () => {
+  await getUserInfo()
+})
+
 </script>
 <style lang="scss" scoped>
 .logo-KT {

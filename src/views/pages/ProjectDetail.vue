@@ -135,7 +135,7 @@ onMounted(async () => {
               <p class="text-right" style="width: fit-content;" @click="backToPrev">
                 <em> &lt;&lt; Quay lại</em>
               </p>
-              <CButton color="primary" size="sm" @click="registerProject">Đăng ký đề tài</CButton>
+              <CButton color="primary" size="sm" @click="registerProject" :disabled="topic.studentRegistry">Đăng ký đề tài</CButton>
             </CCardBody>
           </CCard>
         </b-col>

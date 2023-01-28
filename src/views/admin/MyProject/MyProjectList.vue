@@ -228,9 +228,9 @@ onMounted(async () => {
               <!-- <CButton color="primary" class="me-2" @click="toggleSearchBox"
                 ><CIcon icon="cilSearch" class="me-2" />Tra cứu</CButton
               > -->
-              <CButton color="primary" @click="openDialogAddItem"
+              <!-- <CButton color="primary" @click="openDialogAddItem"
                 >Thêm mới</CButton
-              >
+              > -->
             </div>
           </div>
         </div>
