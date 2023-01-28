@@ -5,13 +5,14 @@ import TeacherApi from '@/moduleApi/modules/TeacherApi'
 import TopicApi from '@/moduleApi/modules/TopicApi'
 import CategoryApi from '@/moduleApi/modules/CategoryApi'
 import StudentApi from '@/moduleApi/modules/StudentApi'
-
+import axios from 'axios'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
 import modelData from './MyProjectModel'
+import FileApi from '@/moduleApi/modules/FileApi'
 
 const defaultFilter = DataService.defaultFilter
 
@@ -35,6 +36,9 @@ const viewMode = ref('create')
 const teacherList = reactive({ value: [] })
 const categoryList = reactive({ value: [] })
 const topicRegistryList = reactive({ value: [] })
+
+const topicId = ref(null)
+const fileList = ref([])
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -134,16 +138,34 @@ const changeData = (data) => {
   return data
 }
 
-const handle = (type, rowData) => {
-  if (type == 'update') {
-    viewMode.value = 'update'
+const handle = async (type, rowData) => {
+  viewMode.value = type
+  if (type == 'upload') {
+    // dialogModel.value = true
+    // formData.value = rowData
+    // formData.value.status = rowData.status == 'Đạt' ? true : false
+    // formData.value.year = new Date().setFullYear(rowData.year)
+    fileList.value = []
+    topicId.value = rowData.id
     dialogModel.value = true
-    formData.value = rowData
-    formData.value.status = rowData.status == 'Đạt' ? true : false
-    formData.value.year = new Date().setFullYear(rowData.year)
   } else if (type == 'delete') {
     viewMode.value = 'delete'
     deleteItem(rowData.id)
+  }
+  else if (type == 'view') {
+    await getListFile(rowData.fileIds)
+    topicId.value = rowData.id
+    dialogModel.value = true
+  }
+}
+
+const getListFile = async (arrFileId) => {
+  const res = await FileApi.getFileByListId({ fieldIds: arrFileId })
+  if (res.status === 200) {
+    fileList.value = res.data.data.map((file) => ({
+      name: file.name,
+      url: file.link,
+    }))
   }
 }
 
@@ -216,6 +238,74 @@ const backToPrev = () => {
   })
 }
 
+const handleRemove = (file, uploadFiles) => {
+  console.log(file, uploadFiles)
+}
+
+const handlePreview = (uploadFile) => {
+  console.log(uploadFile)
+  window.open(uploadFile.url)
+}
+
+const handleExceed = (files, uploadFiles) => {
+  ElMessage.warning(`Giới hạn file tải lên là ${files.length}`)
+}
+
+const beforeRemove = (uploadFile, uploadFiles) => {
+  return ElMessageBox.confirm(
+    `Bạn có chắc chắn muốn xóa ${uploadFile.name} ?`,
+  ).then(
+    () => true,
+    () => false,
+  )
+}
+
+const uploadFileToDb = async () => {
+  if (!fileList.value || fileList.value && fileList.value.length == 0) {
+    ElMessage.warning(`Vui lòng tải lên ít nhất 1 file.`)
+    return
+  }
+  let fd = new FormData()
+  fd.append(
+    'filePath',
+    'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link',
+  )
+  for (let i = 0; i < fileList.value.length; i++) {
+    fd.append('fileUpload', fileList.value[i].raw, fileList.value[i].raw.name)
+  }
+  fd.append('shared', true)
+  fd.append('topicId', topicId.value)
+
+  console.log('fd', fd)
+  // const fileApiRes = await FileApi.uploadFile(fd)
+  // console.log(fileApiRes)
+
+  axios({
+    method: 'post',
+    url: 'http://localhost:8084/api/v1/topics/upload',
+    data: fd,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization:
+        localStorage.getItem('Token') && localStorage.getItem('uid')
+          ? 'Bearer ' + localStorage.getItem('Token')
+          : '',
+    },
+  })
+    .then(async (response) => {
+      //handle success
+      console.log('success', response)
+      dialogModel.value = false
+      fileList.value = []
+      await getListTopicRegistry()
+      ElMessage.success(`Tải lên file thành công.`)
+    })
+    .catch((response) => {
+      //handle error
+      console.log('error', response)
+    })
+}
+
 onMounted(async () => {
   await getListTeacher()
   await getListCategory()
@@ -231,7 +321,13 @@ onMounted(async () => {
           <div class="d-flex justify-content-between">
             <h4>Danh sách đồ án của tôi</h4>
             <div>
-              <CButton color="primary" variant="outline" class="me-2" @click="backToPrev">Quay lại</CButton>
+              <CButton
+                color="primary"
+                variant="outline"
+                class="me-2"
+                @click="backToPrev"
+                >Quay lại</CButton
+              >
             </div>
           </div>
         </div>
@@ -406,7 +502,7 @@ onMounted(async () => {
         />
         <el-table-column prop="year" label="Năm" min-width="80" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
-        <!-- <el-table-column
+        <el-table-column
           fixed="right"
           align="center"
           label="Thao tác"
@@ -419,19 +515,19 @@ onMounted(async () => {
                 variant="outline"
                 class="me-2"
                 size="sm"
-                @click="handle('update', scope.row)"
-                ><CIcon icon="cilPencil"
+                @click="handle('upload', scope.row)"
+                ><CIcon icon="cilCloudUpload"
               /></CButton>
               <CButton
-                color="danger"
+                color="info"
                 variant="outline"
                 size="sm"
-                @click="handle('delete', scope.row)"
-                ><CIcon icon="cilTrash"
+                @click="handle('view', scope.row)"
+                ><CIcon icon="cilPaperclip"
               /></CButton>
             </div>
           </template>
-        </el-table-column> -->
+        </el-table-column>
       </el-table>
       <div class="d-flex justify-content-center mt-3 mb-3">
         <el-pagination
@@ -453,10 +549,10 @@ onMounted(async () => {
     <!-- Start dialog -->
     <el-dialog
       v-model="dialogModel"
-      title="Thêm mới đồ án"
+      title="Thêm file đính kèm"
       :close-on-click-modal="false"
       :close-on-press-escape="true"
-      width="80%"
+      width="30%"
       @close="resetForm(ruleFormRef)"
     >
       <el-form
@@ -468,149 +564,35 @@ onMounted(async () => {
         class="demo-ruleForm"
         status-icon
       >
-        <b-row>
-          <b-col md="4">
-            <el-form-item label="Tên đồ án" prop="name">
-              <el-input v-model="formData.value.name" autocomplete="off" />
-            </el-form-item>
-          </b-col>
-          <b-col md="4">
-            <el-form-item label="Điểm phản biện" prop="scoreCounterArgument">
-              <el-input
-                v-model="formData.value.scoreCounterArgument"
-                autocomplete="off"
-              />
-            </el-form-item>
-          </b-col>
-          <b-col md="4">
-            <el-form-item label="Điểm hướng dẫn" prop="scoreGuide">
-              <el-input
-                v-model="formData.value.scoreGuide"
-                autocomplete="off"
-              />
-            </el-form-item>
-          </b-col>
-          <b-col md="4">
-            <el-form-item label="Trạng thái" prop="status">
-              <el-select
-                v-model="formData.value.status"
-                placeholder="chọn"
-                filterable
-              >
-                <el-option
-                  v-for="item in topicStatusList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </b-col>
-          <b-col md="4">
-            <el-form-item label="Số lượng sinh viên" prop="stdNumber">
-              <el-input v-model="formData.value.stdNumber" autocomplete="off" />
-            </el-form-item>
-          </b-col>
-          <b-col md="4">
-            <el-form-item label="Giáo viên hướng dẫn" prop="lecturerGuideId">
-              <el-select
-                v-model="formData.value.lecturerGuideId"
-                placeholder="chọn"
-                filterable
-              >
-                <el-option
-                  v-for="item in teacherList.value"
-                  :key="item.id"
-                  :label="item.userInfoDTO.fullName"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </b-col>
-          <b-col md="4">
-            <el-form-item
-              label="Giáo viên phản biện"
-              prop="lecturerCounterArgumentId"
-            >
-              <el-select
-                v-model="formData.value.lecturerCounterArgumentId"
-                placeholder="chọn"
-                filterable
-              >
-                <el-option
-                  v-for="item in teacherList.value"
-                  :key="item.id"
-                  :label="item.userInfoDTO.fullName"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </b-col>
-          <b-col md="4">
-            <el-form-item label="Năm" prop="year">
-              <el-date-picker
-                v-model="formData.value.year"
-                type="year"
-                format="YYYY"
-                placeholder="Chọn"
-              />
-            </el-form-item>
-          </b-col>
-          <b-col md="4">
-            <el-form-item label="Chủ đề" prop="categoryId">
-              <el-select
-                v-model="formData.value.categoryId"
-                placeholder="chọn"
-                filterable
-              >
-                <el-option
-                  v-for="item in categoryList.value"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </b-col>
-          <b-col md="4">
-            <el-form-item
-              label="Điểm kiểm tra tiến độ lần 1"
-              prop="scoreProcessOne"
-            >
-              <el-input
-                v-model="formData.value.scoreProcessOne"
-                type="text"
-                placeholder=""
-              />
-            </el-form-item>
-          </b-col>
-          <b-col md="4">
-            <el-form-item
-              label="Điểm kiểm tra tiến độ lần 2"
-              prop="scoreProcessTwo"
-            >
-              <el-input
-                v-model="formData.value.scoreProcessTwo"
-                type="text"
-                placeholder=""
-              />
-            </el-form-item>
-          </b-col>
-          <b-col md="4">
-            <el-form-item label="Mô tả" prop="description">
-              <el-input
-                v-model="formData.value.description"
-                autocomplete="off"
-              />
-            </el-form-item>
-          </b-col>
-        </b-row>
+        <div class="text-center">
+          <el-upload
+            v-model:file-list="fileList"
+            class="upload-demo"
+            action
+            multiple
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            :limit="5"
+            :on-exceed="handleExceed"
+            :auto-upload="false"
+            :disabled="viewMode !== 'upload'"
+          >
+            <template #trigger>
+              <CButton v-if="viewMode == 'upload'" color="info">Tải file lên</CButton>
+            </template>
+
+            <template #tip>
+              <div class="el-upload__tip">
+                File tải lên có dung lượng tối đa 500kb
+              </div>
+            </template>
+          </el-upload>
+        </div>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <CButton color="primary" @click="submitForm(ruleFormRef)">{{
-            viewMode === 'create' ? 'Thêm mới' : 'Cập nhật'
-          }}</CButton>
+          <CButton  v-if="viewMode == 'upload'" color="primary" @click="uploadFileToDb">Cập nhật</CButton>
         </span>
       </template>
     </el-dialog>

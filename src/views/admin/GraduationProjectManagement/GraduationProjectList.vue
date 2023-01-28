@@ -4,6 +4,9 @@ import DataService from '@/service/DataService'
 import TeacherApi from '@/moduleApi/modules/TeacherApi'
 import TopicApi from '@/moduleApi/modules/TopicApi'
 import CategoryApi from '@/moduleApi/modules/CategoryApi'
+import FileApi from '@/moduleApi/modules/FileApi'
+
+import axios from 'axios'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -22,9 +25,9 @@ const formData = reactive({
   value: MethodService.copyObject(modelData.dataForm),
 })
 const formValid = modelData.validForm
-const formSearchData = reactive(
-  { value: MethodService.copyObject(tableRules.dataSearch.value) }
-)
+const formSearchData = reactive({
+  value: MethodService.copyObject(tableRules.dataSearch.value),
+})
 const formSearchValid = tableRules.dataSearch.valid
 
 const topicStatusList = DataService.topicStatusList
@@ -33,6 +36,10 @@ const dialogModel = ref(false)
 const viewMode = ref('create')
 const teacherList = reactive({ value: [] })
 const categoryList = reactive({ value: [] })
+
+const dialogUpload = ref(false)
+const fileList = ref([])
+const topicId = ref(null)
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -134,16 +141,23 @@ const changeData = (data) => {
   return data
 }
 
-const handle = (type, rowData) => {
+const handle = async (type, rowData) => {
+  viewMode.value = type
   if (type == 'update') {
-    viewMode.value = 'update'
     dialogModel.value = true
     formData.value = rowData
     formData.value.status = rowData.status == 'Đạt' ? true : false
     formData.value.year = new Date().setFullYear(rowData.year)
   } else if (type == 'delete') {
-    viewMode.value = 'delete'
     deleteItem(rowData.id)
+  } else if (type == 'upload') {
+    fileList.value = []
+    topicId.value = rowData.id
+    dialogUpload.value = true
+  } else if (type == 'view') {
+    await getListFile(rowData.fileIds)
+    topicId.value = rowData.id
+    dialogUpload.value = true
   }
 }
 
@@ -208,6 +222,82 @@ const fn_tableSortChange = (column, tableSort) => {
   tableSort = tableRules
   MethodService.tableSortChange(column, tableSort)
   // getService();
+}
+
+const getListFile = async (arrFileId) => {
+  const res = await FileApi.getFileByListId({ fieldIds: arrFileId })
+  if (res.status === 200) {
+    fileList.value = res.data.data.map((file) => ({
+      name: file.name,
+      url: file.link,
+    }))
+  }
+}
+
+const handleRemove = (file, uploadFiles) => {
+  console.log(file, uploadFiles)
+}
+
+const handlePreview = (uploadFile) => {
+  console.log(uploadFile)
+  window.open(uploadFile.url)
+}
+
+const handleExceed = (files, uploadFiles) => {
+  ElMessage.warning(`Giới hạn file tải lên là ${files.length}`)
+}
+
+const beforeRemove = (uploadFile, uploadFiles) => {
+  return ElMessageBox.confirm(
+    `Bạn có chắc chắn muốn xóa ${uploadFile.name} ?`,
+  ).then(
+    () => true,
+    () => false,
+  )
+}
+
+const uploadFileToDb = async () => {
+  if (!fileList.value || fileList.value && fileList.value.length == 0) {
+    ElMessage.warning(`Vui lòng tải lên ít nhất 1 file.`)
+    return
+  }
+  let fd = new FormData()
+  fd.append(
+    'filePath',
+    'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link',
+  )
+
+  for (let i = 0; i < fileList.value.length; i++) {
+    fd.append('fileUpload', fileList.value[i].raw, fileList.value[i].raw.name)
+  }
+  fd.append('shared', true)
+  fd.append('topicId', topicId.value)
+
+  axios({
+    method: 'post',
+    url: 'http://localhost:8084/api/v1/topics/upload',
+    data: fd,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization:
+        localStorage.getItem('Token') && localStorage.getItem('uid')
+          ? 'Bearer ' + localStorage.getItem('Token')
+          : '',
+    },
+  })
+    .then(async (response) => {
+      //handle success
+      console.log('success', response)
+
+      dialogUpload.value = false
+      fileList.value = []
+      await getList()
+      ElMessage.success(`Tải lên file thành công.`)
+    })
+    .catch((response) => {
+      //handle error
+      console.log('error', response)
+    })
 }
 
 onMounted(async () => {
@@ -280,7 +370,10 @@ onMounted(async () => {
                   </el-form-item>
                 </b-col>
                 <b-col md="4">
-                  <el-form-item label="Giáo viên phản biện" prop="lecturerCounterArgumentId">
+                  <el-form-item
+                    label="Giáo viên phản biện"
+                    prop="lecturerCounterArgumentId"
+                  >
                     <el-select
                       v-model="formSearchData.value.lecturerCounterArgumentId"
                       placeholder="chọn"
@@ -297,7 +390,10 @@ onMounted(async () => {
                   </el-form-item>
                 </b-col>
                 <b-col md="4">
-                  <el-form-item label="Giáo viên hướng dẫn" prop="lecturerGuideId">
+                  <el-form-item
+                    label="Giáo viên hướng dẫn"
+                    prop="lecturerGuideId"
+                  >
                     <el-select
                       v-model="formSearchData.value.lecturerGuideId"
                       placeholder="chọn"
@@ -361,12 +457,36 @@ onMounted(async () => {
       <el-table :data="tableRules.data" style="width: 100%">
         <el-table-column prop="name" label="Tên đề tài" width="150" />
         <el-table-column prop="categoryName" label="Chủ đề" width="120" />
-        <el-table-column prop="lecturerCounterArgumentDTO.fullName" label="Giáo viên phản biện" width="120" />
-        <el-table-column prop="lecturerGuideDTO.fullName" label="Giáo viên hướng dẫn" width="120" />
-        <el-table-column prop="scoreCounterArgument" label="Điểm phản biện" min-width="100" />
-        <el-table-column prop="scoreGuide" label="Điểm hướng dẫn" min-width="100" />
-        <el-table-column prop="scoreProcessOne" label="Điểm kiểm tra tiến độ lần 1" min-width="120" />
-        <el-table-column prop="scoreProcessTwo" label="Điểm kiểm tra tiến độ lần 2" min-width="120" />
+        <el-table-column
+          prop="lecturerCounterArgumentDTO.fullName"
+          label="Giáo viên phản biện"
+          width="120"
+        />
+        <el-table-column
+          prop="lecturerGuideDTO.fullName"
+          label="Giáo viên hướng dẫn"
+          width="120"
+        />
+        <el-table-column
+          prop="scoreCounterArgument"
+          label="Điểm phản biện"
+          min-width="100"
+        />
+        <el-table-column
+          prop="scoreGuide"
+          label="Điểm hướng dẫn"
+          min-width="100"
+        />
+        <el-table-column
+          prop="scoreProcessOne"
+          label="Điểm kiểm tra tiến độ lần 1"
+          min-width="120"
+        />
+        <el-table-column
+          prop="scoreProcessTwo"
+          label="Điểm kiểm tra tiến độ lần 2"
+          min-width="120"
+        />
         <el-table-column prop="status" label="Trạng thái" min-width="100" />
         <el-table-column
           prop="stdNumber"
@@ -379,10 +499,26 @@ onMounted(async () => {
           fixed="right"
           align="center"
           label="Thao tác"
-          width="120"
+          width="200"
         >
           <template #default="scope">
             <div>
+              <CButton
+                color="info"
+                variant="outline"
+                class="me-2"
+                size="sm"
+                @click="handle('upload', scope.row)"
+                ><CIcon icon="cilCloudUpload"
+              /></CButton>
+              <CButton
+                color="info"
+                variant="outline"
+                class="me-2"
+                size="sm"
+                @click="handle('view', scope.row)"
+                ><CIcon icon="cilPaperclip"
+              /></CButton>
               <CButton
                 color="info"
                 variant="outline"
@@ -497,7 +633,10 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Giáo viên phản biện" prop="lecturerCounterArgumentId">
+            <el-form-item
+              label="Giáo viên phản biện"
+              prop="lecturerCounterArgumentId"
+            >
               <el-select
                 v-model="formData.value.lecturerCounterArgumentId"
                 placeholder="chọn"
@@ -539,7 +678,10 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Điểm kiểm tra tiến độ lần 1" prop="scoreProcessOne">
+            <el-form-item
+              label="Điểm kiểm tra tiến độ lần 1"
+              prop="scoreProcessOne"
+            >
               <el-input
                 v-model="formData.value.scoreProcessOne"
                 type="text"
@@ -548,7 +690,10 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Điểm kiểm tra tiến độ lần 2" prop="scoreProcessTwo">
+            <el-form-item
+              label="Điểm kiểm tra tiến độ lần 2"
+              prop="scoreProcessTwo"
+            >
               <el-input
                 v-model="formData.value.scoreProcessTwo"
                 type="text"
@@ -575,6 +720,58 @@ onMounted(async () => {
       </template>
     </el-dialog>
     <!-- End dialog -->
+
+    <!-- Start dialog Upload -->
+    <el-dialog
+      v-model="dialogUpload"
+      title="Thêm file đính kèm"
+      :close-on-click-modal="false"
+      :close-on-press-escape="true"
+      width="30%"
+      @close="resetForm(ruleFormRef)"
+    >
+      <el-form
+        ref="ruleFormRef"
+        :model="formData.value"
+        :rules="formValid"
+        label-width="140px"
+        label-position="top"
+        class="demo-ruleForm"
+        status-icon
+      >
+        <div class="text-center">
+          <el-upload
+            v-model:file-list="fileList"
+            class="upload-demo"
+            action
+            multiple
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            :limit="5"
+            :on-exceed="handleExceed"
+            :auto-upload="false"
+            :disabled="viewMode !== 'upload'"
+          >
+            <template #trigger>
+              <CButton :disabled="viewMode !== 'upload'" color="info">Tải file lên</CButton>
+            </template>
+
+            <template #tip>
+              <div class="el-upload__tip">
+                File tải lên có dung lượng tối đa 500kb
+              </div>
+            </template>
+          </el-upload>
+        </div>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <CButton v-if="viewMode == 'upload'" color="primary" @click="uploadFileToDb">Cập nhật</CButton>
+        </span>
+      </template>
+    </el-dialog>
+    <!-- End dialog upload -->
   </div>
 </template>
 

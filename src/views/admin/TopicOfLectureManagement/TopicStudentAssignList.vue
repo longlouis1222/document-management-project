@@ -400,6 +400,7 @@ onMounted(async () => {
                 class="me-2"
                 size="sm"
                 @click="handle('', scope.row)"
+                :disabled="scope.row.statusApprove"
                 ><CIcon icon="cilCheck"
               /></CButton>
             </div>
