@@ -2,6 +2,8 @@
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
 import WorkplaceApi from '@/moduleApi/modules/WorkplaceApi'
+import ExcelApi from '@/moduleApi/modules/ExcelApi'
+
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -152,6 +154,16 @@ const deleteItem = async (rowData) => {
   })
 }
 
+const exportExcel = async () => {
+  const res = await ExcelApi.exportWorkplace()
+  if (res.status === 200) {
+    ElMessage({
+      message: 'Tải file thành công.',
+      type: 'success',
+    })
+  }
+}
+
 const fn_tableSizeChange = (limit) => {
   tableRules.limit = limit
   fn_tableChangeskip(1)
@@ -195,6 +207,13 @@ onMounted(async () => {
               <CButton color="primary" @click="openDialogAddItem"
                 >Thêm mới</CButton
               >
+              <CButton
+                color="info"
+                variant="outline"
+                class="ms-2"
+                @click="exportExcel"
+                ><CIcon icon="cilCloudDownload"
+              /></CButton>
             </div>
           </div>
         </div>

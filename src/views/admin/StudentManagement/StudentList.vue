@@ -5,6 +5,7 @@ import FacultyApi from '@/moduleApi/modules/FacultyApi'
 import StudentApi from '@/moduleApi/modules/StudentApi'
 import TopicApi from '@/moduleApi/modules/TopicApi'
 import ClassApi from '@/moduleApi/modules/ClassApi'
+import ExcelApi from '@/moduleApi/modules/ExcelApi'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -216,6 +217,16 @@ const getClassList = async () => {
   }
 }
 
+const exportExcel = async () => {
+  const res = await ExcelApi.exportStudent()
+  if (res.status === 200) {
+    ElMessage({
+      message: 'Tải file thành công.',
+      type: 'success',
+    })
+  }
+}
+
 const fn_tableSizeChange = (limit) => {
   tableRules.limit = limit
   fn_tableChangeskip(1)
@@ -262,6 +273,13 @@ onMounted(async () => {
               <CButton color="primary" @click="openDialogAddItem"
                 >Thêm mới</CButton
               >
+              <CButton
+                color="info"
+                variant="outline"
+                class="ms-2"
+                @click="exportExcel"
+                ><CIcon icon="cilCloudDownload"
+              /></CButton>
             </div>
           </div>
         </div>

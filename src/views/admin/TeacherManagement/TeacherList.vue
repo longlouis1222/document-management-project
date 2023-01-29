@@ -3,6 +3,7 @@ import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
 import FacultyApi from '@/moduleApi/modules/FacultyApi'
 import TeacherApi from '@/moduleApi/modules/TeacherApi'
+import ExcelApi from '@/moduleApi/modules/ExcelApi'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -193,6 +194,16 @@ const getListFaculty = async () => {
   const facultyApiRes = await FacultyApi.list()
   if (facultyApiRes.status === 200) {
     facultyList.value = facultyApiRes.data.data.data
+  }
+}
+
+const exportExcel = async () => {
+  const res = await ExcelApi.exportLecture()
+  if (res.status === 200) {
+    ElMessage({
+      message: 'Tải file thành công.',
+      type: 'success',
+    })
   }
 }
 

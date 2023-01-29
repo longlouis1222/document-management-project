@@ -27,12 +27,12 @@ export default [
     to: '/admin/workplace-management/workplace-list',
     icon: 'cilVector',
   },
-  {
-    component: 'CNavItem',
-    name: 'Quản lý Bình luận',
-    to: '/admin/comment-topic',
-    icon: 'cilVector',
-  },
+  // {
+  //   component: 'CNavItem',
+  //   name: 'Quản lý Bình luận',
+  //   to: '/admin/comment-topic',
+  //   icon: 'cilVector',
+  // },
   // {
   //   component: 'CNavItem',
   //   name: 'Quản lý Niên khóa',

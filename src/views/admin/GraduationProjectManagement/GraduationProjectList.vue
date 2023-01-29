@@ -5,6 +5,7 @@ import TeacherApi from '@/moduleApi/modules/TeacherApi'
 import TopicApi from '@/moduleApi/modules/TopicApi'
 import CategoryApi from '@/moduleApi/modules/CategoryApi'
 import FileApi from '@/moduleApi/modules/FileApi'
+import ExcelApi from '@/moduleApi/modules/ExcelApi'
 
 import axios from 'axios'
 
@@ -300,6 +301,16 @@ const uploadFileToDb = async () => {
     })
 }
 
+const exportExcel = async () => {
+  const res = await ExcelApi.exportTopic()
+  if (res.status === 200) {
+    ElMessage({
+      message: 'Tải file thành công.',
+      type: 'success',
+    })
+  }
+}
+
 onMounted(async () => {
   await getListTeacher()
   await getListCategory()
@@ -321,6 +332,13 @@ onMounted(async () => {
               <CButton color="primary" @click="openDialogAddItem"
                 >Thêm mới</CButton
               >
+              <CButton
+                color="info"
+                variant="outline"
+                class="ms-2"
+                @click="exportExcel"
+                ><CIcon icon="cilCloudDownload"
+              /></CButton>
             </div>
           </div>
         </div>

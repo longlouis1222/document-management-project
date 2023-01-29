@@ -4,6 +4,7 @@ import DataService from '@/service/DataService'
 import AssemblyApi from '@/moduleApi/modules/AssemblyApi'
 import TeacherApi from '@/moduleApi/modules/TeacherApi'
 import TopicApi from '@/moduleApi/modules/TopicApi'
+import ExcelApi from '@/moduleApi/modules/ExcelApi'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -58,10 +59,8 @@ const submitForm = async (formEl) => {
             dialogModel.value = false
           }
         } else if (viewMode.value === 'update') {
-          console.log('Update data', formData.value)
           const assemblyApiRes = await AssemblyApi.update(formData.value)
           if (assemblyApiRes.status === 200) {
-            console.log('Update', assemblyApiRes)
             ElMessage({
               message: 'Cập nhật thành công.',
               type: 'success',
@@ -92,7 +91,6 @@ const submitFormSearch = async (formEl) => {
     if (valid) {
       try {
         tableRules.filters = formSearchData.value
-        console.log('tableRules.filters', tableRules.filters)
         tableRules.skip = 0
         tableRules.page = 1
         await getList()
@@ -110,7 +108,6 @@ const getList = async () => {
     limit: tableRules.limit,
     skip: tableRules.skip,
     page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
-    // sort: tableRules.sort,
     ...tableRules.filters,
   }
   router.replace({
@@ -124,7 +121,6 @@ const getList = async () => {
   if (assemblyApiRes.status === 200) {
     tableRules.data = await changeData(assemblyApiRes.data.data.data)
     tableRules.total = assemblyApiRes.data.data.totalElements
-    console.log('tableRules.data', tableRules.data)
   }
 }
 
@@ -193,6 +189,16 @@ const getTopicList = async () => {
   }
 }
 
+const exportExcel = async () => {
+  const res = await ExcelApi.exportAssembly()
+  if (res.status === 200) {
+    ElMessage({
+      message: 'Tải file thành công.',
+      type: 'success',
+    })
+  }
+}
+
 const fn_tableSizeChange = (limit) => {
   tableRules.limit = limit
   fn_tableChangeskip(1)
@@ -237,6 +243,13 @@ onMounted(async () => {
             <CButton color="primary" @click="openDialogAddItem"
               >Thêm mới</CButton
             >
+            <CButton
+              color="info"
+              variant="outline"
+              class="ms-2"
+              @click="exportExcel"
+              ><CIcon icon="cilCloudDownload"
+            /></CButton>
           </div>
         </div>
       </template>
