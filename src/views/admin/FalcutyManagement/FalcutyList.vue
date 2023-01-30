@@ -181,13 +181,10 @@ const getListWorkplace = async () => {
 }
 
 const exportExcel = async () => {
-  const res = await ExcelApi.exportFaculty()
-  if (res.status === 200) {
-    ElMessage({
-      message: 'Tải file thành công.',
-      type: 'success',
-    })
-  }
+  const a = document.createElement("a");
+  const res = ExcelApi.exportExcelfile('faculty');
+  a.href = res
+  a.click();
 }
 
 const fn_tableSizeChange = (limit) => {

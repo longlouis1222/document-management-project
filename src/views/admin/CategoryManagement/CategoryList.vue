@@ -155,6 +155,14 @@ const getListFaculty = async () => {
     facultyList.value = facultyApiRes.data.data.data
   }
 }
+
+const exportExcel = async () => {
+  const a = document.createElement("a");
+  const res = ExcelApi.exportExcelfile('category');
+  a.href = res
+  a.click();
+}
+
 const fn_tableSizeChange = (limit) => {
   tableRules.limit = limit
   fn_tableChangeskip(1)
