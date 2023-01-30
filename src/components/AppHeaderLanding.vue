@@ -27,6 +27,9 @@
         </CNavItem>
 
         <CNavItem v-if="isLogin" @click="goToMyProject" class="text-white fw-bold mt-2 me-3">
+          Đề xuất đề tài
+        </CNavItem>
+        <CNavItem v-if="isLogin" @click="goToMyProject" class="text-white fw-bold mt-2 me-3">
           Đề tài của tôi
         </CNavItem>
         <CNavItem v-if="isLogin" @click="goToProjectList" class="text-white fw-bold mt-2 me-3">

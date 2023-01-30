@@ -34,11 +34,6 @@ export default [
   //   icon: 'cilVector',
   // },
   // {
-  //   component: 'CNavItem',
-  //   name: 'Quản lý Niên khóa',
-  //   to: '/admin/year-management/year-list',
-  //   icon: 'cilWindowRestore',
-  // },
   {
     component: 'CNavItem',
     name: 'Quản lý Lớp',
@@ -83,6 +78,12 @@ export default [
   },
   {
     component: 'CNavItem',
+    name: 'Danh sách Đề tài đề xuất',
+    to: '/admin/propose-topic-management/propose-topic-list',
+    icon: 'cilNewspaper',
+  },
+  {
+    component: 'CNavItem',
     name: 'Đề tài phản biện',
     to: '/admin/topic-of-lecture/topic-of-lecture-list',
     icon: 'cilApplicationsSettings',
@@ -98,6 +99,12 @@ export default [
     name: 'Đề tài sinh viên đăng ký',
     to: '/admin/topic-of-lecture/topic-student-assign-list',
     icon: 'cilColorBorder',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Đề tài đề xuất',
+    to: '/propose-project',
+    icon: 'cil-puzzle',
   },
   {
     component: 'CNavItem',

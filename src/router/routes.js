@@ -87,6 +87,12 @@ export default [
           import('@/views/admin/CategoryManagement/CategoryList.vue'),
       },
       {
+        path: '/admin/propose-topic-management/propose-topic-list',
+        name: 'Danh sách Đề tài đề xuất',
+        component: () =>
+          import('@/views/admin/ProposeTopicManagement/ProposeTopicList.vue'),
+      },
+      {
         path: '/admin/topic-of-lecture/topic-of-lecture-list',
         name: 'Đề tài phản biện',
         component: () =>
@@ -109,6 +115,12 @@ export default [
         name: 'Thông tin tài khoản',
         component: () =>
           import('@/views/admin/UserProfile/UserProfile.vue'),
+      },
+      {
+        path: '/propose-project',
+        name: 'Đề tài đề xuất',
+        component: () =>
+          import('@/views/admin/TopicOfLectureManagement/TopicStudentSuggestList.vue'),
       },
       {
         path: '/my-project',
