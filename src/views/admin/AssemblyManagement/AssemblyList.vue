@@ -8,11 +8,12 @@ import ExcelApi from '@/moduleApi/modules/ExcelApi'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
 import modelData from './AssemblyModel'
 
+const route = useRoute()
 const router = useRouter()
 const moduleName = 'Quản lý Hội đồng'
 
@@ -190,13 +191,10 @@ const getTopicList = async () => {
 }
 
 const exportExcel = async () => {
-  const res = await ExcelApi.exportAssembly()
-  if (res.status === 200) {
-    ElMessage({
-      message: 'Tải file thành công.',
-      type: 'success',
-    })
-  }
+  const a = document.createElement("a");
+  const res = ExcelApi.exportExcelfile('assembly');
+  a.href = res
+  a.click();
 }
 
 const fn_tableSizeChange = (limit) => {

@@ -155,13 +155,10 @@ const deleteItem = async (rowData) => {
 }
 
 const exportExcel = async () => {
-  const res = await ExcelApi.exportWorkplace()
-  if (res.status === 200) {
-    ElMessage({
-      message: 'Tải file thành công.',
-      type: 'success',
-    })
-  }
+  const a = document.createElement("a");
+  const res = ExcelApi.exportExcelfile('workplace');
+  a.href = res
+  a.click();
 }
 
 const fn_tableSizeChange = (limit) => {

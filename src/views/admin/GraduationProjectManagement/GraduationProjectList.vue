@@ -302,13 +302,10 @@ const uploadFileToDb = async () => {
 }
 
 const exportExcel = async () => {
-  const res = await ExcelApi.exportTopic()
-  if (res.status === 200) {
-    ElMessage({
-      message: 'Tải file thành công.',
-      type: 'success',
-    })
-  }
+  const a = document.createElement("a");
+  const res = ExcelApi.exportExcelfile('topic');
+  a.href = res
+  a.click();
 }
 
 onMounted(async () => {
