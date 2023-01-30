@@ -156,6 +156,9 @@ const getListFaculty = async () => {
   }
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> e437003 (Updated Export Excel v2)
 
 const exportExcel = async () => {
   const a = document.createElement("a");
@@ -164,8 +167,11 @@ const exportExcel = async () => {
   a.click();
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> 7731bdb (clone from branch ket category.vue)
+=======
+>>>>>>> e437003 (Updated Export Excel v2)
 const fn_tableSizeChange = (limit) => {
   tableRules.limit = limit
   fn_tableChangeskip(1)
