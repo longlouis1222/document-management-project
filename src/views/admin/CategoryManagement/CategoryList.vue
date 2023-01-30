@@ -155,6 +155,7 @@ const getListFaculty = async () => {
     facultyList.value = facultyApiRes.data.data.data
   }
 }
+<<<<<<< HEAD
 
 const exportExcel = async () => {
   const a = document.createElement("a");
@@ -163,6 +164,8 @@ const exportExcel = async () => {
   a.click();
 }
 
+=======
+>>>>>>> 7731bdb (clone from branch ket category.vue)
 const fn_tableSizeChange = (limit) => {
   tableRules.limit = limit
   fn_tableChangeskip(1)
