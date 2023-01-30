@@ -179,7 +179,10 @@ const exportExcel = async () => {
   a.click();
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2874272 (clone from branch ket category.vue)
 const fn_tableSizeChange = (limit) => {
   tableRules.limit = limit
   fn_tableChangeskip(1)
