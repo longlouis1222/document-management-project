@@ -3,15 +3,11 @@ import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
 import FacultyApi from '@/moduleApi/modules/FacultyApi'
 import CategoryApi from '@/moduleApi/modules/CategoryApi'
-import ExcelApi from '@/moduleApi/modules/ExcelApi'
-
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
-
 import modelData from './CategoryModel'
-
 const defaultFilter = DataService.defaultFilter
 const router = useRouter()
 // const route = useRoute()
@@ -26,19 +22,15 @@ const formSearchData = reactive({
   value: MethodService.copyObject(tableRules.dataSearch.value),
 })
 const formSearchValid = tableRules.dataSearch.valid
-
 const dialogModel = ref(false)
 const viewMode = ref('create')
 const facultyList = reactive({ value: [] })
-
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
 }
-
 const openDialogAddItem = () => {
   dialogModel.value = true
 }
-
 const submitForm = async (formEl) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
@@ -75,13 +67,11 @@ const submitForm = async (formEl) => {
     }
   })
 }
-
 const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
   viewMode.value = 'create'
 }
-
 const submitFormSearch = async (formEl) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
@@ -100,7 +90,6 @@ const submitFormSearch = async (formEl) => {
     }
   })
 }
-
 const getList = async () => {
   let dataFilter = {
     limit: tableRules.limit,
@@ -123,12 +112,10 @@ const getList = async () => {
     console.log('getList', categoryApiRes)
   }
 }
-
 const changeData = (data) => {
   data.forEach((e) => {})
   return data
 }
-
 const handle = (type, rowData) => {
   viewMode.value = type
   if (type == 'update') {
@@ -138,14 +125,12 @@ const handle = (type, rowData) => {
     deleteItem(rowData.id)
   }
 }
-
 const getItemById = async (id) => {
   const categoryApiRes = await CategoryApi.findById(id)
   if (categoryApiRes.status === 200) {
     formData.value = categoryApiRes.data.data
   }
 }
-
 const deleteItem = async (id) => {
   ElMessageBox.alert('Bạn có chắc muốn xóa bản ghi này ?', 'Cảnh báo', {
     // if you want to disable its autofocus
@@ -164,24 +149,12 @@ const deleteItem = async (id) => {
     },
   })
 }
-
 const getListFaculty = async () => {
   const facultyApiRes = await FacultyApi.list(defaultFilter)
   if (facultyApiRes.status === 200) {
     facultyList.value = facultyApiRes.data.data.data
   }
 }
-
-const exportExcel = async () => {
-  const res = await ExcelApi.exportCategory()
-  if (res.status === 200) {
-    ElMessage({
-      message: 'Tải file thành công.',
-      type: 'success',
-    })
-  }
-}
-
 const fn_tableSizeChange = (limit) => {
   tableRules.limit = limit
   fn_tableChangeskip(1)
@@ -205,7 +178,6 @@ const fn_tableSortChange = (column, tableSort) => {
   MethodService.tableSortChange(column, tableSort)
   // getService();
 }
-
 onMounted(async () => {
   await getListFaculty()
   await getList()
@@ -225,13 +197,6 @@ onMounted(async () => {
             <CButton color="primary" @click="openDialogAddItem"
               >Thêm mới</CButton
             >
-            <CButton
-              color="info"
-              variant="outline"
-              class="ms-2"
-              @click="exportExcel"
-              ><CIcon icon="cilCloudDownload"
-            /></CButton>
           </div>
         </div>
       </template>
