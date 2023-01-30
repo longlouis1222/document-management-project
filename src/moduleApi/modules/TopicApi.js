@@ -18,5 +18,8 @@ export default {
   },
   getStatisticalScore() {
     return Api().get(`topics/statistical-score`)
-  }
+  },
+  getListTopicSuggest(data) {
+    return Api().get(!data ? 'topics/get-list-topic-suggest' : `topics/get-list-topic-suggest?${data}`)
+  },
 }

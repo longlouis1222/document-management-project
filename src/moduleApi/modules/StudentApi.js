@@ -16,13 +16,22 @@ export default {
   delete(id) {
     return Api().delete(`students/${id}`)
   },
-  getListTopicApproved(id) {
-    return Api().get(`students/get-list-topic-approved`)
+  getListTopicApproved(data) {
+    return Api().get(!data ? 'students/get-list-topic-approved' : `students/get-list-topic-approved?${data}`)
   },
-  getListTopicRegistry() {
-    return Api().get(`students/get-list-topic-registry`)
+  getListTopicRegistry(data) {
+    return Api().get(!data ? `students/get-list-topic-registry` : `students/get-list-topic-registry?${data}`)
   },
   registryTopic(id) {
     return Api().get(`students/registry-topic?registry=true&topicId=${id}`)
+  },
+  createTopicSuggest(data) {
+    return Api().post(`students/create-topic-suggest`, data)
+  },
+  getListTopicSuggest(data) {
+    return Api().get(!data ? `students/get-list-topic-suggest` : `students/get-list-topic-suggest?${data}`)
+  },
+  adminApproveTopic(id) {
+    return Api().get(`students/admin-approve-topic/topicId=${id}`)
   },
 }
