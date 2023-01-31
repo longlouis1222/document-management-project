@@ -248,6 +248,13 @@ onMounted(async () => {
               <CButton color="primary" @click="openDialogAddItem"
                 >Thêm mới</CButton
               >
+              <CButton
+                color="info"
+                variant="outline"
+                class="ms-2"
+                @click="exportExcel"
+                ><CIcon icon="cilCloudDownload"
+              /></CButton>
             </div>
           </div>
         </div>
