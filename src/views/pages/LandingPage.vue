@@ -173,6 +173,8 @@ onMounted(() => {
                   <CButton color="light" size="sm" @click="goToDetail(item.id)"
                     >Xem chi tiết</CButton
                   >
+                  <CButton class="btn-registry" color="success" size="sm" v-if="item.studentRegistry">Đã đăng ký</CButton>
+                  <CButton class="btn-registry" color="primary" size="sm" v-if="!item.studentRegistry">Chưa đăng ký</CButton>
                 </CCardBody>
               </CCard>
             </b-col>
@@ -255,6 +257,9 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+.btn-registry {
+  margin-left: 5px;
+}
 .card {
   transition: 0.2s ease;
   &:hover {
