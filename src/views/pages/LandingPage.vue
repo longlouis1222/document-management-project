@@ -156,9 +156,8 @@ onMounted(() => {
     <!-- Start Company recruitment BLock -->
     <CContainer xl class="mt-4 company_recruitment_block">
       <b-row>
-        <b-col md="8">
+        <b-col md="9">
           <h4 class="mb-3">Danh sách đồ án</h4>
-          <el-divider />
           <b-row>
             <b-col
               class="mb-4"
@@ -170,9 +169,12 @@ onMounted(() => {
                 <CCardBody>
                   <CCardTitle>{{ i + 1 }}. {{ item.name }}</CCardTitle>
                   <CCardText>Mô tả: {{ item.description }}.</CCardText>
+                  <CCardText>Năm thực hiện: {{ new Date(item.year).getFullYear() }}</CCardText>
                   <CButton color="light" size="sm" @click="goToDetail(item.id)"
                     >Xem chi tiết</CButton
                   >
+                  <CButton class="btn-registry" color="success" size="sm" v-if="item.studentRegistry">Đã đăng ký</CButton>
+                  <CButton class="btn-registry" color="primary" size="sm" v-if="!item.studentRegistry">Chưa đăng ký</CButton>
                 </CCardBody>
               </CCard>
             </b-col>
@@ -193,7 +195,7 @@ onMounted(() => {
             />
           </div>
         </b-col>
-        <b-col md="4">
+        <b-col md="3">
           <h4>Tìm kiếm</h4>
           <el-divider />
           <el-input
@@ -255,6 +257,10 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+.btn-registry {
+  margin-left: 5px;
+}
+
 .card {
   transition: 0.2s ease;
   &:hover {
