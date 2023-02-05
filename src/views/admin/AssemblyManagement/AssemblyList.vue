@@ -134,6 +134,14 @@ const changeData = (data) => {
       })
       e.lecture_name = a.join(', ')
     }
+
+    if (e.topicNames && e.topicNames.length > 0) {
+      let a = []
+      e.topicNames.forEach(l => {
+        a.push(l)
+      })
+      e.topic_name = a.join(', ')
+    }
   })
   return data
 }
@@ -270,7 +278,7 @@ onMounted(async () => {
               @submit.prevent="submitFormSearch(ruleFormRef)"
             >
               <b-row>
-                <b-col md="4">
+                <b-col md="12">
                   <el-form-item label="Tên hội đồng" prop="nameAssembly">
                     <el-input
                       v-model="formSearchData.value.nameAssembly"
@@ -278,7 +286,7 @@ onMounted(async () => {
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
+                <!-- <b-col md="6">
                   <el-form-item label="Đồ án" prop="topicId">
                     <el-select
                       v-model="formSearchData.value.topicId"
@@ -293,15 +301,15 @@ onMounted(async () => {
                       />
                     </el-select>
                   </el-form-item>
-                </b-col>
-                <b-col md="4">
+                </b-col> -->
+                <!-- <b-col md="4">
                   <el-form-item label="Điểm" prop="score">
                     <el-input
                       v-model="formSearchData.value.score"
                       autocomplete="off"
                     />
                   </el-form-item>
-                </b-col>
+                </b-col> -->
               </b-row>
               <div class="text-center">
                 <CButton color="primary" @click="submitFormSearch(ruleFormRef)"
@@ -316,8 +324,8 @@ onMounted(async () => {
       <el-table :data="tableRules.data" style="width: 100%">
         <el-table-column prop="nameAssembly" label="Tên hội đồng" min-width="120" />
         <el-table-column prop="lecture_name" label="Giáo viên" min-width="150" />
-        <el-table-column prop="topicDTO.name" label="Đồ án" min-width="120" />
-        <el-table-column prop="score" label="Điểm" />
+        <el-table-column prop="topic_name" label="Đồ án" min-width="150" />
+        <!-- <el-table-column prop="score" label="Điểm" /> -->
         <el-table-column align="center" label="Thao tác" width="120">
           <template #default="scope">
             <div>
@@ -402,10 +410,11 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="12">
-            <el-form-item label="Đồ án" prop="topicId">
+            <el-form-item label="Đồ án" prop="idTopics">
               <el-select
-                v-model="formData.value.topicId"
+                v-model="formData.value.idTopics"
                 placeholder="chọn"
+                multiple
                 filterable
               >
                 <el-option
@@ -417,11 +426,11 @@ onMounted(async () => {
               </el-select>
             </el-form-item>
           </b-col>
-          <b-col md="12">
+          <!-- <b-col md="12">
             <el-form-item label="Điểm" prop="score">
               <el-input v-model="formData.value.score" autocomplete="off" />
             </el-form-item>
-          </b-col>
+          </b-col> -->
         </b-row>
       </el-form>
       <template #footer>

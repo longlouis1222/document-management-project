@@ -483,6 +483,11 @@ onMounted(async () => {
           width="120"
         />
         <el-table-column
+          prop="scoreAssembly"
+          label="Điểm hội đồng"
+          min-width="100"
+        />
+        <el-table-column
           prop="scoreCounterArgument"
           label="Điểm phản biện"
           min-width="100"
@@ -598,6 +603,14 @@ onMounted(async () => {
             <el-form-item label="Điểm phản biện" prop="scoreCounterArgument">
               <el-input
                 v-model="formData.value.scoreCounterArgument"
+                autocomplete="off"
+              />
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Điểm hội đồng" prop="scoreAssembly">
+              <el-input
+                v-model="formData.value.scoreAssembly"
                 autocomplete="off"
               />
             </el-form-item>

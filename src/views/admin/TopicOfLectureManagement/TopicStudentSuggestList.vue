@@ -353,8 +353,8 @@ onMounted(async () => {
       </div>
 
       <el-table :data="tableRules.data" style="width: 100%">
-        <el-table-column prop="name" label="Tên đề tài" width="150" />
-        <el-table-column prop="categoryName" label="Chủ đề" width="120" />
+        <el-table-column prop="name" label="Tên đề tài" />
+        <!-- <el-table-column prop="categoryName" label="Chủ đề" width="120" />
         <el-table-column
           prop="lecturerCounterArgumentDTO.fullName"
           label="Giáo viên phản biện"
@@ -392,7 +392,7 @@ onMounted(async () => {
           min-width="150"
         />
         <el-table-column prop="year" label="Năm" min-width="80" />
-        <el-table-column prop="description" label="Thông tin" min-width="200" />
+        <el-table-column prop="description" label="Thông tin" min-width="200" /> -->
         <!-- <el-table-column
           fixed="right"
           align="center"

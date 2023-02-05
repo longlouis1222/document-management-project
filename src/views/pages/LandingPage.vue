@@ -169,7 +169,8 @@ onMounted(() => {
               <CCard>
                 <CCardBody>
                   <CCardTitle>{{ i + 1 }}. {{ item.name }}</CCardTitle>
-                  <CCardText>Mô tả: {{ item.description }}.</CCardText>
+                  <CCardText>Mô tả: {{ item.description }}</CCardText>
+                  <CCardText>Năm thực hiện: {{ new Date(item.year).getFullYear() }}</CCardText>
                   <CButton color="light" size="sm" @click="goToDetail(item.id)"
                     >Xem chi tiết</CButton
                   >
