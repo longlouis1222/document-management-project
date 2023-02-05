@@ -371,7 +371,7 @@ onMounted(async () => {
       <el-table :data="tableRules.data" style="width: 100%">
         <el-table-column prop="username" label="Tên người dùng" />
         <el-table-column prop="email" label="Email" min-width="160px" />
-        <el-table-column prop="listRole" label="Quyền hạn" />
+        <!-- <el-table-column prop="listRole" label="Quyền hạn" /> -->
         <el-table-column prop="status_name" label="Trạng thái" align="center">
           <template #default="scope">
             <span
@@ -391,7 +391,7 @@ onMounted(async () => {
                 ? 'Giáo viên'
                 : scope.row.type == 'STUDENT'
                 ? 'Sinh viên'
-                : 'Khác'
+                : 'Quản trị viên'
             }}
           </template>
         </el-table-column>

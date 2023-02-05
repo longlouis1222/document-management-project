@@ -134,6 +134,7 @@ const changeData = (data) => {
   data.forEach((e) => {
     e.year = new Date(e.year).getFullYear()
     e.status = e.status == true ? 'Đạt' : 'Không đạt'
+    e.statusTopic = e.statusTopic == 'APPROVED' ? 'Đã duyệt' : 'Chờ duyệt'
   })
   return data
 }
@@ -475,6 +476,11 @@ onMounted(async () => {
           width="120"
         />
         <el-table-column
+          prop="scoreAssembly"
+          label="Điểm hội đồng"
+          min-width="100"
+        />
+        <el-table-column
           prop="scoreCounterArgument"
           label="Điểm phản biện"
           min-width="100"
@@ -494,13 +500,8 @@ onMounted(async () => {
           label="Điểm kiểm tra tiến độ lần 2"
           min-width="120"
         />
-        <el-table-column prop="status" label="Trạng thái" min-width="100" />
-        <el-table-column
-          prop="stdNumber"
-          label="Số lượng sinh viên"
-          min-width="150"
-        />
-        <el-table-column prop="year" label="Năm" min-width="80" />
+        <el-table-column prop="statusTopic" label="Trạng thái" min-width="100" />
+        <el-table-column prop="year" label="Năm Thực hiện" min-width="120" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
         <el-table-column
           fixed="right"

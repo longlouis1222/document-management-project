@@ -156,7 +156,7 @@ onMounted(() => {
     <!-- Start Company recruitment BLock -->
     <CContainer xl class="mt-4 company_recruitment_block">
       <b-row>
-        <b-col md="8">
+        <b-col md="9">
           <h4 class="mb-3">Danh sách đồ án</h4>
           <el-divider />
           <b-row>
@@ -196,7 +196,7 @@ onMounted(() => {
             />
           </div>
         </b-col>
-        <b-col md="4">
+        <b-col md="3">
           <h4>Tìm kiếm</h4>
           <el-divider />
           <el-input
@@ -221,7 +221,7 @@ onMounted(() => {
               >{{ item.name }}</CListGroupItem
             >
           </CListGroup>
-          <CLink @click="openDialog">Xem thêm</CLink>
+          <CButton color="link" size="sm" @click="openDialog">Xem thêm</CButton>
         </b-col>
       </b-row>
     </CContainer>

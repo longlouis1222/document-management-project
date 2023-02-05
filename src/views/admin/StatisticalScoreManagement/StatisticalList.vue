@@ -6,6 +6,7 @@ import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { FormInstance } from 'element-plus'
+import ExcelApi from '@/moduleApi/modules/ExcelApi'
 
 import modelData from './StatisticalScoreModel'
 
@@ -176,6 +177,13 @@ const fn_tableSortChange = (column, tableSort) => {
   // getService();
 }
 
+const exportExcel = async () => {
+  const a = document.createElement('a')
+  const res = ExcelApi.exportExcelfile('statistical')
+  a.href = res
+  a.click()
+}
+
 onMounted(async () => {
   await getList()
 })
@@ -196,6 +204,15 @@ onMounted(async () => {
                 >Thêm mới</CButton
               >
             </div> -->
+            <div>
+              <CButton
+                color="info"
+                variant="outline"
+                class="ms-2"
+                @click="exportExcel"
+                ><CIcon icon="cilCloudDownload"
+              /></CButton>
+            </div>
           </div>
         </div>
       </template>
@@ -263,14 +280,20 @@ onMounted(async () => {
       <el-table :data="tableRules.data">
         <el-table-column prop="nameClass" label="Lớp" width="180" />
         <el-table-column prop="nameStudent" label="Sinh viên" width="150" />
-        <el-table-column prop="nameTopic" label="Chủ đề" />
-        <el-table-column prop="scoreAssembly" label="Hội đồng" />
+        <el-table-column prop="nameTopic" label="Tên đề tài" />
+        <el-table-column prop="scoreAssembly" label="Điểm hội đồng" />
         <el-table-column prop="scoreCounterArgument" label="Điểm phản biện" />
         <el-table-column prop="scoreGuide" label="Điểm hướng dẫn" />
-        <el-table-column prop="scoreProcessOne" label="Điểm kiểm tra tiến độ lần 1" />
-        <el-table-column prop="scoreProcessTwo" label="Điểm kiểm tra tiến độ lần 2" />
+        <el-table-column
+          prop="scoreProcessOne"
+          label="Điểm kiểm tra tiến độ lần 1"
+        />
+        <el-table-column
+          prop="scoreProcessTwo"
+          label="Điểm kiểm tra tiến độ lần 2"
+        />
         <el-table-column prop="scoreMedium" label="Điểm trung bình" />
-        <el-table-column prop="topicYear" label="Đề tài thuộc năm">
+        <el-table-column prop="topicYear" label="Năm thực hiện">
           <template #default="scope">
             {{ new Date(scope.row.topicYear).getFullYear() }}
           </template>
@@ -282,10 +305,10 @@ onMounted(async () => {
         >
           <template #default="scope">
             <div class=""> -->
-              <!-- <CButton color="secondary" variant="outline" class="me-2"
+        <!-- <CButton color="secondary" variant="outline" class="me-2"
                 ><CIcon icon="cilFindInPage"
               /></CButton> -->
-              <!-- <CButton
+        <!-- <CButton
                 color="info"
                 variant="outline"
                 class="me-2"

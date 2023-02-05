@@ -129,6 +129,7 @@ const changeData = (data) => {
   data.forEach((e) => {
     e.year = new Date(e.year).getFullYear()
     e.status = e.status == true ? 'Đạt' : 'Không đạt'
+    e.statusTopic = e.statusTopic == 'APPROVED' ? 'Đã duyệt' : 'Chờ duyệt'
   })
   return data
 }
@@ -361,18 +362,18 @@ onMounted(async () => {
 
       <el-table :data="tableRules.data" style="width: 100%">
         <el-table-column prop="name" label="Tên đề tài" width="150" />
-        <el-table-column prop="categoryName" label="Chủ đề" width="120" />
+        <el-table-column prop="categoryName" label="Chủ đề" width="150" />
         <el-table-column
           prop="lecturerCounterArgumentDTO.fullName"
           label="Giáo viên phản biện"
-          width="120"
+          width="150"
         />
         <el-table-column
           prop="lecturerGuideDTO.fullName"
           label="Giáo viên hướng dẫn"
-          width="120"
+          width="150"
         />
-        <el-table-column
+        <!-- <el-table-column
           prop="scoreCounterArgument"
           label="Điểm phản biện"
           min-width="100"
@@ -391,41 +392,10 @@ onMounted(async () => {
           prop="scoreProcessTwo"
           label="Điểm kiểm tra tiến độ lần 2"
           min-width="120"
-        />
-        <el-table-column prop="status" label="Trạng thái" min-width="100" />
-        <el-table-column
-          prop="stdNumber"
-          label="Số lượng sinh viên"
-          min-width="150"
-        />
-        <el-table-column prop="year" label="Năm" min-width="80" />
+        /> -->
+        <el-table-column fixed="right" prop="statusTopic" label="Trạng thái" min-width="100" />
+        <el-table-column prop="year" label="Năm thực hiện" min-width="100" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
-        <!-- <el-table-column
-          fixed="right"
-          align="center"
-          label="Thao tác"
-          width="120"
-        >
-          <template #default="scope">
-            <div>
-              <CButton
-                color="info"
-                variant="outline"
-                class="me-2"
-                size="sm"
-                @click="handle('update', scope.row)"
-                ><CIcon icon="cilPencil"
-              /></CButton>
-              <CButton
-                color="danger"
-                variant="outline"
-                size="sm"
-                @click="handle('delete', scope.row)"
-                ><CIcon icon="cilTrash"
-              /></CButton>
-            </div>
-          </template>
-        </el-table-column> -->
       </el-table>
       <div class="d-flex justify-content-center mt-3 mb-3">
         <el-pagination

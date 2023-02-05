@@ -544,11 +544,12 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Đề tài" prop="topicId">
+            <el-form-item label="Đề tài" prop="">
               <el-select
                 v-model="formData.value.topicId"
                 placeholder="chọn"
                 filterable
+                clearable
               >
                 <el-option
                   v-for="item in topicList.value"
