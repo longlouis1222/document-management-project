@@ -124,6 +124,7 @@ onMounted(async () => {
               >Chi tiết đồ án: {{ topic.name }}</CCardHeader
             >
             <CCardBody>
+              <p>Chủ đề: {{ topic.categoryName }}</p>
               <p>Mô tả: {{ topic.description }}</p>
               <p>Sinh viên thực hiện: {{ topic.stdNumber }}</p>
               <p>Giảng viên hướng dẫn: {{ topic.lecturerGuideDTO.fullName }}</p>
@@ -133,12 +134,33 @@ onMounted(async () => {
               </p>
               <p>Năm thực hiện: {{ new Date(topic.year).getFullYear() }}</p>
               <p>Bản mềm: <CCardLink>Another link</CCardLink></p>
-              <p class="text-right" style="width: fit-content;" @click="backToPrev">
+              <p
+                class="text-right"
+                style="width: fit-content"
+                @click="backToPrev"
+              >
                 <em> &lt;&lt; Quay lại</em>
               </p>
-              <CButton color="primary" size="sm" @click="registerProject" v-if="!topic.studentRegistry">Chưa đăng ký đề tài</CButton>
-              <CButton color="success" size="sm" @click="registerProject" :disabled="topic.studentRegistry" v-if="topic.studentRegistry">Đã đăng ký đề tài</CButton>
+              <CButton
+                color="info"
+                size="sm"
+                @click="registerProject"
+                v-if="!topic.studentRegistry"
+                >Chưa đăng ký đề tài</CButton
+              >
+              <CButton
+                color="success"
+                size="sm"
+                @click="registerProject"
+                :disabled="topic.studentRegistry"
+                v-if="topic.studentRegistry"
+                >Đã đăng ký đề tài</CButton
+              >
             </CCardBody>
+          </CCard>
+          <CCard class="mt-3">
+            <CCardHeader component="h5">Bình luận</CCardHeader>
+            <CCardBody> </CCardBody>
           </CCard>
         </b-col>
         <b-col md="4">
@@ -153,9 +175,7 @@ onMounted(async () => {
           <h5>Chủ đề tiêu biểu</h5>
           <el-divider />
           <CListGroup class="mb-3">
-            <CListGroupItem @click="backToPrev">
-              Tất cả chủ đề
-            </CListGroupItem>
+            <CListGroupItem @click="backToPrev"> Tất cả chủ đề </CListGroupItem>
             <CListGroupItem
               v-for="item in categoryList.value"
               :key="item.id"

@@ -169,13 +169,14 @@ onMounted(() => {
               <CCard>
                 <CCardBody>
                   <CCardTitle>{{ i + 1 }}. {{ item.name }}</CCardTitle>
+                  <CCardText>Chủ đề: {{ item.categoryName }}</CCardText>
                   <CCardText>Mô tả: {{ item.description }}</CCardText>
                   <CCardText>Năm thực hiện: {{ new Date(item.year).getFullYear() }}</CCardText>
                   <CButton color="light" size="sm" @click="goToDetail(item.id)"
                     >Xem chi tiết</CButton
                   >
                   <CButton class="btn-registry" color="success" size="sm" v-if="item.studentRegistry">Đã đăng ký</CButton>
-                  <CButton class="btn-registry" color="primary" size="sm" v-if="!item.studentRegistry">Chưa đăng ký</CButton>
+                  <CButton class="btn-registry" color="info" size="sm" v-if="!item.studentRegistry">Chưa đăng ký</CButton>
                 </CCardBody>
               </CCard>
             </b-col>
