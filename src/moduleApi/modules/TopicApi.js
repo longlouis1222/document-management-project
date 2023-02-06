@@ -22,4 +22,7 @@ export default {
   getListTopicSuggest(data) {
     return Api().get(!data ? 'topics/get-list-topic-suggest' : `topics/get-list-topic-suggest?${data}`)
   },
+  getTopicSuggest(data) {
+    return Api().get(!data ? 'topics/get-topic-suggest' : `topics/get-topic-suggest?${data}`)
+  },
 }

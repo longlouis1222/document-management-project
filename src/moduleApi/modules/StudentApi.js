@@ -32,6 +32,6 @@ export default {
     return Api().get(!data ? `students/get-list-topic-suggest` : `students/get-list-topic-suggest?${data}`)
   },
   adminApproveTopic(id) {
-    return Api().get(`students/admin-approve-topic/topicId=${id}`)
+    return Api().get(`students/admin-approve-topic?topicId=${id}`)
   },
 }

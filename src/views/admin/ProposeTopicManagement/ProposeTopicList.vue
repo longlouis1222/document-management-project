@@ -118,7 +118,7 @@ const getList = async () => {
     },
   })
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
-  const topicApiRes = await TopicApi.getListTopicSuggest(filter)
+  const topicApiRes = await TopicApi.getTopicSuggest(filter)
   if (topicApiRes.status === 200) {
     tableRules.data = await changeData(topicApiRes.data.data.data)
     tableRules.total = topicApiRes.data.data.totalElements
@@ -148,12 +148,13 @@ const handle = (type, rowData) => {
 }
 
 const approveTopic = async (rowData) => {
-  const res = await StudentApi.approveTopic(rowData.id)
+  const res = await StudentApi.adminApproveTopic(rowData.topicId)
   if (res.status === 200) {
     ElMessage({
       type: 'success',
       message: `Duyệt thành công`,
     })
+    getList()
   }
 }
 
@@ -253,15 +254,23 @@ onMounted(async () => {
               @submit.prevent="submitFormSearch(ruleFormRef)"
             >
               <b-row>
-                <b-col md="4">
-                  <el-form-item label="Tên đồ án" prop="name">
+                <b-col md="6">
+                  <el-form-item label="Tên đề tài" prop="">
                     <el-input
-                      v-model="formSearchData.value.name"
+                      v-model="formSearchData.value.topicName"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
+                <b-col md="6">
+                  <el-form-item label="Sinh viên" prop="">
+                    <el-input
+                      v-model="formSearchData.value.studentName"
+                      autocomplete="off"
+                    />
+                  </el-form-item>
+                </b-col>
+                <!-- <b-col md="4">
                   <el-form-item label="Trạng thái" prop="status">
                     <el-select
                       v-model="formSearchData.value.status"
@@ -351,7 +360,7 @@ onMounted(async () => {
                       autocomplete="off"
                     />
                   </el-form-item>
-                </b-col>
+                </b-col> -->
               </b-row>
               <div class="text-center">
                 <CButton color="primary" @click="submitFormSearch(ruleFormRef)"
@@ -364,9 +373,9 @@ onMounted(async () => {
       </div>
 
       <el-table :data="tableRules.data" style="width: 100%">
-        <el-table-column prop="name" label="Tên đề tài" width="150" />
-        <el-table-column prop="categoryName" label="Chủ đề" width="120" />
-        <el-table-column
+        <el-table-column prop="topicName" label="Tên đề tài" min-width="150" />
+        <el-table-column prop="studentName" label="Sinh viên" min-width="120" />
+        <!-- <el-table-column
           prop="lecturerCounterArgumentDTO.fullName"
           label="Giáo viên phản biện"
           width="120"
@@ -404,6 +413,7 @@ onMounted(async () => {
         />
         <el-table-column prop="year" label="Năm" min-width="80" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
+        -->
         <el-table-column
           fixed="right"
           align="center"
@@ -418,6 +428,7 @@ onMounted(async () => {
                 class="me-2"
                 size="sm"
                 @click="handle('approve', scope.row)"
+                :disabled="scope.row.statusApprove"
                 ><CIcon icon="cilCheck"
               /></CButton>
             </div>

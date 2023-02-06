@@ -33,7 +33,7 @@ model.validForm = {
 
 model.tableRules = {
   data: [],
-  lengthMenu: [10, 20, 50, 100],
+  lengthMenu: [9, 18, 27, 36],
   allowPaging: true,
   allowSorting: true,
   allowSelect: false,

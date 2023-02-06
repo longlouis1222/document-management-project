@@ -105,6 +105,7 @@ export default [
     name: 'Đề tài đề xuất',
     to: '/propose-project',
     icon: 'cil-puzzle',
+    role: ['STUDENT']
   },
   {
     component: 'CNavItem',

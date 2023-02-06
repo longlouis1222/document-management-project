@@ -211,11 +211,11 @@ onMounted(async () => {
       <template #header>
         <div class="card-header">
           <div class="d-flex justify-content-between">
-            <h4>Danh sách đề tài đề xuất</h4>
+            <h4>Đề tài đề xuất</h4>
             <div>
-              <!-- <CButton color="primary" class="me-2" @click="toggleSearchBox"
+              <CButton color="primary" class="me-2" @click="toggleSearchBox"
                 ><CIcon icon="cilSearch" class="me-2" />Tra cứu</CButton
-              > -->
+              >
               <CButton color="primary" @click="openDialogAddItem"
                 >Thêm mới</CButton
               >
@@ -242,101 +242,10 @@ onMounted(async () => {
               @submit.prevent="submitFormSearch(ruleFormRef)"
             >
               <b-row>
-                <b-col md="4">
-                  <el-form-item label="Tên đồ án" prop="name">
-                    <el-input
-                      v-model="formSearchData.value.name"
-                      autocomplete="off"
-                    />
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item label="Trạng thái" prop="status">
-                    <el-select
-                      v-model="formSearchData.value.status"
-                      placeholder="chọn"
-                      filterable
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in topicStatusList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item
-                    label="Giáo viên phản biện"
-                    prop="lecturerCounterArgumentId"
-                  >
-                    <el-select
-                      v-model="formSearchData.value.lecturerCounterArgumentId"
-                      placeholder="chọn"
-                      filterable
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in teacherList.value"
-                        :key="item.id"
-                        :label="item.userInfoDTO.fullName"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item
-                    label="Giáo viên hướng dẫn"
-                    prop="lecturerGuideId"
-                  >
-                    <el-select
-                      v-model="formSearchData.value.lecturerGuideId"
-                      placeholder="chọn"
-                      filterable
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in teacherList.value"
-                        :key="item.id"
-                        :label="item.userInfoDTO.fullName"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item label="Năm" prop="year">
-                    <el-date-picker
-                      v-model="formSearchData.value.year"
-                      type="year"
-                      format="YYYY"
-                      placeholder="Chọn"
-                    />
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item label="Chủ đề" prop="categoryId">
-                    <el-select
-                      v-model="formSearchData.value.categoryId"
-                      placeholder="chọn"
-                      filterable
-                    >
-                      <el-option
-                        v-for="item in categoryList.value"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
                 <b-col md="12">
-                  <el-form-item label="Mô tả" prop="description">
+                  <el-form-item label="Tên đồ án" prop="">
                     <el-input
-                      v-model="formSearchData.value.description"
+                      v-model="formSearchData.value.topicName"
                       autocomplete="off"
                     />
                   </el-form-item>

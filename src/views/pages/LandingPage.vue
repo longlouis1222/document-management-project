@@ -42,8 +42,8 @@ const goToDashboard = () => {
 
 const search = async () => {
   try {
-    console.log('Search...',tableRules.dataSearch.value.name)
-    tableRules.filters = { name: tableRules.dataSearch.value.name}
+    console.log('Search...', tableRules.dataSearch.value.name)
+    tableRules.filters = { name: tableRules.dataSearch.value.name, year: tableRules.dataSearch.value.year }
     tableRules.skip = 0
     tableRules.page = 1
     await getTopicList()
@@ -153,11 +153,21 @@ onMounted(() => {
     </CContainer>
     <!-- End Carousel -->
 
-    <!-- Start Company recruitment BLock -->
-    <CContainer xl class="mt-4 company_recruitment_block">
+    <!-- Start BLock -->
+    <CContainer xxl class="mt-4 company_recruitment_block">
       <b-row>
         <b-col md="9">
-          <h4 class="mb-3">Danh sách đồ án</h4>
+          <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-3">Danh sách đồ án</h4>
+            <el-date-picker
+              class="w-25"
+              v-model="tableRules.dataSearch.value.year"
+              type="year"
+              format="YYYY"
+              placeholder="Chọn"
+              @change="search"
+            />
+          </div>
           <el-divider />
           <b-row>
             <b-col
@@ -171,12 +181,27 @@ onMounted(() => {
                   <CCardTitle>{{ i + 1 }}. {{ item.name }}</CCardTitle>
                   <CCardText>Chủ đề: {{ item.categoryName }}</CCardText>
                   <CCardText>Mô tả: {{ item.description }}</CCardText>
-                  <CCardText>Năm thực hiện: {{ new Date(item.year).getFullYear() }}</CCardText>
+                  <CCardText
+                    >Năm thực hiện:
+                    {{ new Date(item.year).getFullYear() }}</CCardText
+                  >
                   <CButton color="light" size="sm" @click="goToDetail(item.id)"
                     >Xem chi tiết</CButton
                   >
-                  <CButton class="btn-registry" color="success" size="sm" v-if="item.studentRegistry">Đã đăng ký</CButton>
-                  <CButton class="btn-registry" color="info" size="sm" v-if="!item.studentRegistry">Chưa đăng ký</CButton>
+                  <CButton
+                    class="btn-registry"
+                    color="success"
+                    size="sm"
+                    v-if="item.studentRegistry"
+                    >Đã đăng ký</CButton
+                  >
+                  <CButton
+                    class="btn-registry"
+                    color="info"
+                    size="sm"
+                    v-if="!item.studentRegistry"
+                    >Chưa đăng ký</CButton
+                  >
                 </CCardBody>
               </CCard>
             </b-col>
@@ -226,7 +251,7 @@ onMounted(() => {
         </b-col>
       </b-row>
     </CContainer>
-    <!-- End Company recruitment BLock -->
+    <!-- End BLock -->
 
     <AppFooter />
 

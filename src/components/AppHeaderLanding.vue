@@ -26,7 +26,7 @@
           >
         </CNavItem>
 
-        <CNavItem v-if="isLogin" @click="goToMyProject" class="text-white fw-bold mt-2 me-3">
+        <CNavItem v-if="isLogin" @click="goToProposeList" class="text-white fw-bold mt-2 me-3">
           Đề xuất đề tài
         </CNavItem>
         <CNavItem v-if="isLogin" @click="goToMyProject" class="text-white fw-bold mt-2 me-3">
@@ -68,6 +68,10 @@ const goToMyProject = () => {
 
 const goToProjectList = () => {
   router.push({ name: 'Đề tài đăng ký' })
+}
+
+const goToProposeList = () => {
+  router.push({ name: 'Đề tài đề xuất' })
 }
 
 const getUserInfo = async () => {
