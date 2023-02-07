@@ -273,101 +273,19 @@ onMounted(async () => {
               @submit.prevent="submitFormSearch(ruleFormRef)"
             >
               <b-row>
-                <b-col md="4">
-                  <el-form-item label="Tên đồ án" prop="name">
+                <b-col md="6">
+                  <el-form-item label="Tên đề tài" prop="topicName">
                     <el-input
-                      v-model="formSearchData.value.name"
+                      v-model="formSearchData.value.topicName"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
-                  <el-form-item label="Trạng thái" prop="status">
-                    <el-select
-                      v-model="formSearchData.value.status"
-                      placeholder="chọn"
-                      filterable
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in topicStatusList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item
-                    label="Giáo viên phản biện"
-                    prop="lecturerCounterArgumentId"
-                  >
-                    <el-select
-                      v-model="formSearchData.value.lecturerCounterArgumentId"
-                      placeholder="chọn"
-                      filterable
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in teacherList.value"
-                        :key="item.id"
-                        :label="item.userInfoDTO.fullName"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item
-                    label="Giáo viên hướng dẫn"
-                    prop="lecturerGuideId"
-                  >
-                    <el-select
-                      v-model="formSearchData.value.lecturerGuideId"
-                      placeholder="chọn"
-                      filterable
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in teacherList.value"
-                        :key="item.id"
-                        :label="item.userInfoDTO.fullName"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item label="Năm" prop="year">
-                    <el-date-picker
-                      v-model="formSearchData.value.year"
-                      type="year"
-                      format="YYYY"
-                      placeholder="Chọn"
-                    />
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item label="Chủ đề" prop="categoryId">
-                    <el-select
-                      v-model="formSearchData.value.categoryId"
-                      placeholder="chọn"
-                      filterable
-                    >
-                      <el-option
-                        v-for="item in categoryList.value"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="12">
-                  <el-form-item label="Mô tả" prop="description">
+
+                <b-col md="6">
+                  <el-form-item label="Tên sinh viên" prop="studentName">
                     <el-input
-                      v-model="formSearchData.value.description"
+                      v-model="formSearchData.value.studentName"
                       autocomplete="off"
                     />
                   </el-form-item>
