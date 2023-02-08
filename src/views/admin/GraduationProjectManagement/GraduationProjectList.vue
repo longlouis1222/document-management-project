@@ -729,7 +729,7 @@ onMounted(async () => {
               />
             </el-form-item>
           </b-col>
-          <b-col md="4">
+          <b-col md="12">
             <el-form-item label="Mô tả" prop="description">
               <el-input
                 v-model="formData.value.description"

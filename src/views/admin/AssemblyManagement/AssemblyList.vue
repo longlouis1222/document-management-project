@@ -129,7 +129,7 @@ const changeData = (data) => {
   data.forEach((e) => {
     if (e.lecturerDTOS && e.lecturerDTOS.length > 0) {
       let a = []
-      e.lecturerDTOS.forEach(l => {
+      e.lecturerDTOS.forEach((l) => {
         a.push(l.fullName)
       })
       e.lecture_name = a.join(', ')
@@ -137,7 +137,7 @@ const changeData = (data) => {
 
     if (e.topicNames && e.topicNames.length > 0) {
       let a = []
-      e.topicNames.forEach(l => {
+      e.topicNames.forEach((l) => {
         a.push(l)
       })
       e.topic_name = a.join(', ')
@@ -199,10 +199,10 @@ const getTopicList = async () => {
 }
 
 const exportExcel = async () => {
-  const a = document.createElement("a");
-  const res = ExcelApi.exportExcelfile('assembly');
+  const a = document.createElement('a')
+  const res = ExcelApi.exportExcelfile('assembly')
   a.href = res
-  a.click();
+  a.click()
 }
 
 const fn_tableSizeChange = (limit) => {
@@ -287,7 +287,10 @@ onMounted(async () => {
                   </el-form-item>
                 </b-col>
                 <b-col md="6">
-                  <el-form-item label="Chủ tịch hội đồng" prop="lecturePresidentId">
+                  <el-form-item
+                    label="Chủ tịch hội đồng"
+                    prop="lecturePresidentId"
+                  >
                     <el-select
                       v-model="formSearchData.value.lecturePresidentId"
                       placeholder="chọn"
@@ -304,7 +307,10 @@ onMounted(async () => {
                   </el-form-item>
                 </b-col>
                 <b-col md="6">
-                  <el-form-item label="Thư ký hội đồng" prop="lectureSecretaryId">
+                  <el-form-item
+                    label="Thư ký hội đồng"
+                    prop="lectureSecretaryId"
+                  >
                     <el-select
                       v-model="formSearchData.value.lectureSecretaryId"
                       placeholder="chọn"
@@ -340,11 +346,53 @@ onMounted(async () => {
       </div>
 
       <el-table :data="tableRules.data" style="width: 100%">
-        <el-table-column prop="nameAssembly" label="Tên hội đồng" min-width="100" />
-        <el-table-column prop="lecturePresidentName" label="Chủ tịch hội đồng" min-width="100" />
-        <el-table-column prop="lectureSecretaryName" label="Thư ký hội đồng" min-width="100" />
-        <el-table-column prop="lecture_name" label="Thành viên hội đồng" min-width="150" />
-        <el-table-column prop="topic_name" label="Đồ án" min-width="250" />
+        <el-table-column
+          prop="nameAssembly"
+          label="Tên hội đồng"
+          min-width="100"
+        />
+        <el-table-column
+          prop="lecturePresidentName"
+          label="Chủ tịch hội đồng"
+          min-width="100"
+        />
+        <el-table-column
+          prop="lectureSecretaryName"
+          label="Thư ký hội đồng"
+          min-width="100"
+        />
+        <el-table-column
+          prop="lecture_name"
+          label="Thành viên hội đồng"
+          min-width="150"
+        >
+          <template #default="scope">
+            <ul class="p-0">
+              <li
+                v-for="(item, i) in scope.row.lecturerDTOS
+                  ? scope.row.lecturerDTOS
+                  : []"
+                :key="i"
+              >
+                - {{ item.fullName }}
+              </li>
+            </ul>
+          </template>
+        </el-table-column>
+        <el-table-column prop="topic_name" label="Đồ án" min-width="250">
+          <template #default="scope">
+            <ul class="p-0">
+              <li
+                v-for="(item, i) in scope.row.topicNames
+                  ? scope.row.topicNames
+                  : []"
+                :key="i"
+              >
+                - {{ item }}
+              </li>
+            </ul>
+          </template>
+        </el-table-column>
         <!-- <el-table-column prop="score" label="Điểm" /> -->
         <el-table-column align="center" label="Thao tác" width="120">
           <template #default="scope">

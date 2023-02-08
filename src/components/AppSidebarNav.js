@@ -156,6 +156,8 @@ const AppSidebarNav = defineComponent({
             if (item.role.includes(localStorage.getItem('type'))) {
               if (item.name === 'Điểm hội đồng' && !isAbleToScore.value) return
               else return renderItem(item)
+              // Bỏ ẩn/hiện menu item "Điểm hội đồng" comment 2 dòng trên và mở comment dòng dưới
+              // return renderItem(item)
             }
           }),
         },
