@@ -20,12 +20,18 @@ export default {
     return Api().get(`lecturers/approve-topic?${data}`)
   },
   getListTopicStudentAssign(data) {
-    return Api().get(!data ? 'lecturers' : `lecturers/get-list-topic?${data}`)
+    return Api().get(!data ? 'lecturers/get-list-topic' : `lecturers/get-list-topic?${data}`)
   },
   getListTopicCounter(data) {
-    return Api().get(!data ? 'lecturers' : `lecturers/get-list-topic-counter?${data}`)
+    return Api().get(!data ? 'lecturers/get-list-topic-counter' : `lecturers/get-list-topic-counter?${data}`)
   },
   getListTopicGuide(data) {
-    return Api().get(!data ? 'lecturers' : `lecturers/get-list-topic-guide?${data}`)
+    return Api().get(!data ? 'lecturers/get-list-topic-guide' : `lecturers/get-list-topic-guide?${data}`)
+  },
+  checkLectureByAssembly(id) {
+    return Api().get(`lecturers/check-lecture-by-assembly?userId=${id}`)
+  },
+  getListTopicByAssembly(data) {
+    return Api().get(!data ? 'lecturers/get-topic-by-assembly' : `lecturers/get-topic-by-assembly?${data}`)
   },
 }

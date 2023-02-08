@@ -87,6 +87,12 @@ export default [
           import('@/views/admin/CategoryManagement/CategoryList.vue'),
       },
       {
+        path: '/admin/score-assembly/score-assembly-list',
+        name: 'Điểm hội đồng',
+        component: () =>
+          import('@/views/admin/ScoreAssembly/ScoreAssemblyList.vue'),
+      },
+      {
         path: '/admin/propose-topic-management/propose-topic-list',
         name: 'Danh sách Đề tài đề xuất',
         component: () =>

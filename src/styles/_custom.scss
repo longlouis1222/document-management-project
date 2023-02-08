@@ -12,3 +12,13 @@ ul li {
   box-shadow: 0 0 4px 0px #515151;
   border-radius: 4px;
 }
+.text-overflow {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 22px;
+  -webkit-line-clamp: 1;
+  display: -webkit-box;
+  word-break: break-all;
+  -webkit-box-orient: vertical;
+}
