@@ -286,22 +286,40 @@ onMounted(async () => {
                     />
                   </el-form-item>
                 </b-col>
-                <!-- <b-col md="6">
-                  <el-form-item label="Đồ án" prop="topicId">
+                <b-col md="6">
+                  <el-form-item label="Chủ tịch hội đồng" prop="lecturePresidentId">
                     <el-select
-                      v-model="formSearchData.value.topicId"
+                      v-model="formSearchData.value.lecturePresidentId"
                       placeholder="chọn"
+                      clearable
                       filterable
                     >
                       <el-option
-                        v-for="item in topicList.value"
+                        v-for="item in lectureList.value"
                         :key="item.id"
-                        :label="item.name"
+                        :label="item.userInfoDTO.fullName"
                         :value="item.id"
                       />
                     </el-select>
                   </el-form-item>
-                </b-col> -->
+                </b-col>
+                <b-col md="6">
+                  <el-form-item label="Thư ký hội đồng" prop="lectureSecretaryId">
+                    <el-select
+                      v-model="formSearchData.value.lectureSecretaryId"
+                      placeholder="chọn"
+                      clearable
+                      filterable
+                    >
+                      <el-option
+                        v-for="item in lectureList.value"
+                        :key="item.id"
+                        :label="item.userInfoDTO.fullName"
+                        :value="item.id"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
                 <!-- <b-col md="4">
                   <el-form-item label="Điểm" prop="score">
                     <el-input
@@ -322,9 +340,11 @@ onMounted(async () => {
       </div>
 
       <el-table :data="tableRules.data" style="width: 100%">
-        <el-table-column prop="nameAssembly" label="Tên hội đồng" min-width="120" />
-        <el-table-column prop="lecture_name" label="Giáo viên" min-width="150" />
-        <el-table-column prop="topic_name" label="Đồ án" min-width="150" />
+        <el-table-column prop="nameAssembly" label="Tên hội đồng" min-width="100" />
+        <el-table-column prop="lecturePresidentName" label="Chủ tịch hội đồng" min-width="100" />
+        <el-table-column prop="lectureSecretaryName" label="Thư ký hội đồng" min-width="100" />
+        <el-table-column prop="lecture_name" label="Thành viên hội đồng" min-width="150" />
+        <el-table-column prop="topic_name" label="Đồ án" min-width="250" />
         <!-- <el-table-column prop="score" label="Điểm" /> -->
         <el-table-column align="center" label="Thao tác" width="120">
           <template #default="scope">
@@ -393,12 +413,47 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="12">
+            <el-form-item label="Chủ tịch hội đồng" prop="lecturePresidentId">
+              <el-select
+                v-model="formData.value.lecturePresidentId"
+                placeholder="chọn"
+                clearable
+                filterable
+              >
+                <el-option
+                  v-for="item in lectureList.value"
+                  :key="item.id"
+                  :label="item.userInfoDTO.fullName"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </b-col>
+          <b-col md="12">
+            <el-form-item label="Thư ký hội đồng" prop="lectureSecretaryId">
+              <el-select
+                v-model="formData.value.lectureSecretaryId"
+                placeholder="chọn"
+                clearable
+                filterable
+              >
+                <el-option
+                  v-for="item in lectureList.value"
+                  :key="item.id"
+                  :label="item.userInfoDTO.fullName"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </b-col>
+          <b-col md="12">
             <el-form-item label="Giáo viên" prop="idLectures">
               <el-select
                 v-model="formData.value.idLectures"
                 placeholder="chọn"
                 multiple
                 filterable
+                clearable
               >
                 <el-option
                   v-for="item in lectureList.value"
@@ -416,6 +471,7 @@ onMounted(async () => {
                 placeholder="chọn"
                 multiple
                 filterable
+                clearable
               >
                 <el-option
                   v-for="item in topicList.value"
