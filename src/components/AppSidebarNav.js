@@ -9,6 +9,22 @@ import {
   CNavTitle,
 } from '@coreui/vue'
 import nav from '@/_nav.js'
+import TeacherApi from '@/moduleApi/modules/TeacherApi'
+
+const isAbleToScore = ref(false)
+const checkRoleToScore = async () => {
+  try {
+    const res = await TeacherApi.checkLectureByAssembly(localStorage.getItem('uid'))
+    if (res.status === 200) {
+      isAbleToScore.value = res.data.data
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'success',
+    })
+  }
+}
 
 const normalizePath = (path) =>
   decodeURI(path)
@@ -42,6 +58,8 @@ const isActiveItem = (route, item) => {
   return false
 }
 
+
+
 const AppSidebarNav = defineComponent({
   name: 'AppSidebarNav',
   components: {
@@ -55,6 +73,7 @@ const AppSidebarNav = defineComponent({
 
     onMounted(() => {
       firstRender.value = false
+      checkRoleToScore()
     })
 
     const renderItem = (item) => {
@@ -133,7 +152,12 @@ const AppSidebarNav = defineComponent({
         CSidebarNav,
         {},
         {
-          default: () => nav.map((item) => renderItem(item)),
+          default: () => nav.map((item) => {
+            if (item.role.includes(localStorage.getItem('type'))) {
+              if (item.name === 'Điểm hội đồng' && !isAbleToScore.value) return
+              else return renderItem(item)
+            }
+          }),
         },
       )
   },

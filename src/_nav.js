@@ -8,24 +8,28 @@ export default [
     //   color: 'primary',
     //   text: 'NEW',
     // },
+    role: ['OTHER']
   },
   {
     component: 'CNavItem',
     name: 'Danh sách quản lý',
     to: '/admin/user-management/user-list',
     icon: 'cilPeople',
+    role: ['OTHER']
   },
   {
     component: 'CNavItem',
     name: 'Quản lý Khoa',
     to: '/admin/falcuty-management/falcuty-list',
     icon: 'cilHouse',
+    role: ['OTHER']
   },
   {
     component: 'CNavItem',
     name: 'Quản lý Đơn vị',
     to: '/admin/workplace-management/workplace-list',
     icon: 'cilVector',
+    role: ['OTHER']
   },
   // {
   //   component: 'CNavItem',
@@ -39,66 +43,84 @@ export default [
     name: 'Quản lý Lớp',
     to: '/admin/class-management/class-list',
     icon: 'cilWc',
+    role: ['OTHER']
   },
   {
     component: 'CNavItem',
     name: 'Quản lý Giáo viên',
     to: '/admin/teacher-management/teacher-list',
     icon: 'cilUser',
+    role: ['OTHER']
   },
   {
     component: 'CNavItem',
     name: 'Quản lý Hội đồng',
     to: '/admin/assembly-management/assembly-list',
     icon: 'cilObjectGroup',
+    role: ['OTHER']
   },
   {
     component: 'CNavItem',
     name: 'Quản lý Sinh viên',
     to: '/admin/student-management/student-list',
     icon: 'cilMoodGood',
+    role: ['OTHER']
   },
   {
     component: 'CNavItem',
     name: 'Quản lý Đồ án',
     to: '/admin/graduation-project-management/graduation-project-list',
     icon: 'cilNewspaper',
+    role: ['OTHER']
   },
   {
     component: 'CNavItem',
     name: 'Quản lý Thống kê điểm',
     to: '/admin/statistical-score-management/statistical-list',
     icon: 'cilNewspaper',
+    role: ['OTHER']
   },
   {
     component: 'CNavItem',
     name: 'Quản lý Chủ đề',
     to: '/admin/category-management/category-list',
     icon: 'cilNewspaper',
+    role: ['OTHER']
+  },
+  {
+    component: 'CNavItem',
+    name: 'Điểm hội đồng',
+    to: '/admin/score-assembly/score-assembly-list',
+    icon: 'cilNewspaper',
+    role: ['LECTURE']
   },
   {
     component: 'CNavItem',
     name: 'Danh sách Đề tài đề xuất',
     to: '/admin/propose-topic-management/propose-topic-list',
     icon: 'cilNewspaper',
+    role: ['OTHER']
   },
   {
     component: 'CNavItem',
     name: 'Đề tài phản biện',
     to: '/admin/topic-of-lecture/topic-of-lecture-list',
     icon: 'cilApplicationsSettings',
+    role: ['LECTURE']
   },
   {
     component: 'CNavItem',
     name: 'Đề tài hướng dẫn',
     to: '/admin/topic-of-lecture/topic-of-lecture-guide-list',
     icon: 'cilBlurLinear',
+    role: ['LECTURE']
   },
   {
     component: 'CNavItem',
     name: 'Đề tài sinh viên đăng ký',
     to: '/admin/topic-of-lecture/topic-student-assign-list',
     icon: 'cilColorBorder',
+    role: ['LECTURE']
   },
   {
     component: 'CNavItem',
@@ -112,12 +134,14 @@ export default [
     name: 'Đề tài của tôi',
     to: '/my-project',
     icon: 'cilBook',
+    role: ['STUDENT']
   },
   {
     component: 'CNavItem',
     name: 'Đề tài đăng ký',
     to: '/project-registrator',
     icon: 'cilBarcode',
+    role: ['STUDENT']
   },
   // {
   //   component: 'CNavTitle',
