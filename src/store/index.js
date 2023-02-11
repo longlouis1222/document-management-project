@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import AuthService from '../moduleApi/modules/auth'
 import VueJwtDecode from 'vue-jwt-decode'
 import router from '../router/index'
+import { ElMessage } from 'element-plus'
 
 export default createStore({
   state: {
@@ -53,6 +54,12 @@ export default createStore({
         }
       } catch (error) {
         console.log(error)
+        if (error.code) {
+          ElMessage({
+            message: `${error.message}`,
+            type: 'error',
+          })
+        }
       }
     },
 
