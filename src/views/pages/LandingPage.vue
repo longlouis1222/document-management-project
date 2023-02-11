@@ -158,7 +158,7 @@ onMounted(() => {
       <b-row>
         <b-col md="9">
           <div class="d-flex justify-content-between align-items-center">
-            <h4 class="mb-3">Danh sách đồ án</h4>
+            <h4>Danh sách đồ án</h4>
             <el-date-picker
               class="w-25"
               v-model="tableRules.dataSearch.value.year"

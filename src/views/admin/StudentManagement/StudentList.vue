@@ -343,7 +343,7 @@ onMounted(async () => {
                 </b-col>
               </b-row>
               <b-row>
-                <b-col md="3">
+                <b-col md="4">
                   <el-form-item label="Số điện thoại" prop="phoneNumber">
                     <el-input
                       v-model="formSearchData.value.phoneNumber"
@@ -351,7 +351,7 @@ onMounted(async () => {
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="3">
+                <b-col md="4">
                   <el-form-item label="Địa chỉ" prop="address">
                     <el-input
                       v-model="formSearchData.value.address"
@@ -359,7 +359,7 @@ onMounted(async () => {
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="3">
+                <b-col md="4">
                   <el-form-item label="Quê quán" prop="town">
                     <el-input
                       v-model="formSearchData.value.town"
