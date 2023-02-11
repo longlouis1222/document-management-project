@@ -41,7 +41,6 @@ const categoryList = reactive({ value: [] })
 const dialogUpload = ref(false)
 const fileList = ref([])
 const topicId = ref(null)
-const isAbleToScore = ref(false)
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -304,19 +303,19 @@ const exportExcel = async () => {
   a.click();
 }
 
-const checkRoleToScore = async () => {
-  try {
-    const res = await TeacherApi.checkLectureByAssembly(localStorage.getItem('uid'))
-    if (res.status === 200) {
-      isAbleToScore.value = res.data.data
-    }
-  } catch (error) {
-    ElMessage({
-      message: 'Có lỗi khi tải dữ liệu.',
-      type: 'success',
-    })
-  }
-}
+// const checkRoleToScore = async () => {
+//   try {
+//     const res = await TeacherApi.checkLectureByAssembly(localStorage.getItem('uid'))
+//     if (res.status === 200) {
+//       isAbleToScore.value = res.data.data
+//     }
+//   } catch (error) {
+//     ElMessage({
+//       message: 'Có lỗi khi tải dữ liệu.',
+//       type: 'success',
+//     })
+//   }
+// }
 onMounted(async () => {
   await checkRoleToScore()
   await getListTeacher()
@@ -539,7 +538,6 @@ onMounted(async () => {
                 class="me-2"
                 size="sm"
                 @click="handle('update', scope.row)"
-                :disabled="!isAbleToScore"
                 ><CIcon icon="cilPencil"
               /></CButton>
             </div>

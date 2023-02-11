@@ -9,22 +9,22 @@ import {
   CNavTitle,
 } from '@coreui/vue'
 import nav from '@/_nav.js'
-import TeacherApi from '@/moduleApi/modules/TeacherApi'
+// import TeacherApi from '@/moduleApi/modules/TeacherApi'
 
-const isAbleToScore = ref(false)
-const checkRoleToScore = async () => {
-  try {
-    const res = await TeacherApi.checkLectureByAssembly(localStorage.getItem('uid'))
-    if (res.status === 200) {
-      isAbleToScore.value = res.data.data
-    }
-  } catch (error) {
-    ElMessage({
-      message: 'Có lỗi khi tải dữ liệu.',
-      type: 'success',
-    })
-  }
-}
+// const isAbleToScore = ref(false)
+// const checkRoleToScore = async () => {
+//   try {
+//     const res = await TeacherApi.checkLectureByAssembly(localStorage.getItem('uid'))
+//     if (res.status === 200) {
+//       isAbleToScore.value = res.data.data
+//     }
+//   } catch (error) {
+//     ElMessage({
+//       message: 'Có lỗi khi tải dữ liệu.',
+//       type: 'success',
+//     })
+//   }
+// }
 
 const normalizePath = (path) =>
   decodeURI(path)
