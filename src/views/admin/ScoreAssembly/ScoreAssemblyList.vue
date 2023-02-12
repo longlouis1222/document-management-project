@@ -317,7 +317,7 @@ const exportExcel = async () => {
 //   }
 // }
 onMounted(async () => {
-  await checkRoleToScore()
+  // await checkRoleToScore()
   await getListTeacher()
   await getListCategory()
   await getList()
@@ -537,6 +537,7 @@ onMounted(async () => {
                 variant="outline"
                 class="me-2"
                 size="sm"
+                :disabled="!scope.row.topicOfAssembly"
                 @click="handle('update', scope.row)"
                 ><CIcon icon="cilPencil"
               /></CButton>
