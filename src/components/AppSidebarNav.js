@@ -73,7 +73,7 @@ const AppSidebarNav = defineComponent({
 
     onMounted(() => {
       firstRender.value = false
-      checkRoleToScore()
+      // checkRoleToScore()
     })
 
     const renderItem = (item) => {
