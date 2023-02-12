@@ -78,6 +78,21 @@ const submitForm = async (formEl) => {
         await getListTopicRegistry()
       } catch (error) {
         console.log(error)
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${error.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -152,8 +167,7 @@ const handle = async (type, rowData) => {
   } else if (type == 'delete') {
     viewMode.value = 'delete'
     deleteItem(rowData.id)
-  }
-  else if (type == 'view') {
+  } else if (type == 'view') {
     await getListFile(rowData.fileIds)
     topicId.value = rowData.id
     dialogModel.value = true
@@ -161,18 +175,30 @@ const handle = async (type, rowData) => {
 }
 
 const getListFile = async (arrFileId) => {
-  const res = await FileApi.getFileByListId({ fieldIds: arrFileId })
-  if (res.status === 200) {
-    fileList.value = res.data.data.map((file) => ({
-      name: file.name,
-      url: file.link,
-    }))
-  }
-}
-
-const getItemById = async (id) => {
-  const topicApiRes = await TopicApi.findById(id)
-  if (topicApiRes.status === 200) {
+  try {
+    const res = await FileApi.getFileByListId({ fieldIds: arrFileId })
+    if (res.status === 200) {
+      fileList.value = res.data.data.map((file) => ({
+        name: file.name,
+        url: file.link,
+      }))
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -196,16 +222,52 @@ const deleteItem = async (id) => {
 }
 
 const getListTeacher = async () => {
-  const teacherApiRes = await TeacherApi.list(defaultFilter)
-  if (teacherApiRes.status === 200) {
-    teacherList.value = teacherApiRes.data.data.data
+  try {
+    const teacherApiRes = await TeacherApi.list(defaultFilter)
+    if (teacherApiRes.status === 200) {
+      teacherList.value = teacherApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const getListCategory = async () => {
-  const categoryApiRes = await CategoryApi.list(defaultFilter)
-  if (categoryApiRes.status === 200) {
-    categoryList.value = categoryApiRes.data.data.data
+  try {
+    const categoryApiRes = await CategoryApi.list(defaultFilter)
+    if (categoryApiRes.status === 200) {
+      categoryList.value = categoryApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -262,7 +324,7 @@ const beforeRemove = (uploadFile, uploadFiles) => {
 }
 
 const uploadFileToDb = async () => {
-  if (!fileList.value || fileList.value && fileList.value.length == 0) {
+  if (!fileList.value || (fileList.value && fileList.value.length == 0)) {
     ElMessage.warning(`Vui lòng tải lên ít nhất 1 file.`)
     return
   }
@@ -304,6 +366,21 @@ const uploadFileToDb = async () => {
     .catch((response) => {
       //handle error
       console.log('error', response)
+      if (
+        response.response &&
+        response.response.data &&
+        response.response.data.errorMessage
+      ) {
+        ElMessage({
+          type: 'error',
+          message: `${response.response.data.errorMessage}`,
+        })
+        return
+      }
+      ElMessage({
+        type: 'error',
+        message: `Có lỗi xảy ra.`,
+      })
     })
 }
 
@@ -486,7 +563,11 @@ onMounted(async () => {
           label="Điểm kiểm tra tiến độ lần 2"
           min-width="120"
         />
-        <el-table-column prop="statusTopic" label="Trạng thái" min-width="100" />
+        <el-table-column
+          prop="statusTopic"
+          label="Trạng thái"
+          min-width="100"
+        />
         <el-table-column prop="year" label="Năm Thực hiện" min-width="120" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
         <el-table-column
@@ -566,7 +647,9 @@ onMounted(async () => {
             :disabled="viewMode !== 'upload'"
           >
             <template #trigger>
-              <CButton v-if="viewMode == 'upload'" color="info">Tải file lên</CButton>
+              <CButton v-if="viewMode == 'upload'" color="info"
+                >Tải file lên</CButton
+              >
             </template>
 
             <template #tip>
@@ -579,7 +662,12 @@ onMounted(async () => {
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <CButton  v-if="viewMode == 'upload'" color="primary" @click="uploadFileToDb">Cập nhật</CButton>
+          <CButton
+            v-if="viewMode == 'upload'"
+            color="primary"
+            @click="uploadFileToDb"
+            >Cập nhật</CButton
+          >
         </span>
       </template>
     </el-dialog>

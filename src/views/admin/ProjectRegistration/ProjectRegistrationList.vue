@@ -73,6 +73,21 @@ const submitForm = async (formEl) => {
         await getListTopicRegistry()
       } catch (error) {
         console.log(error)
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${error.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -147,12 +162,6 @@ const handle = (type, rowData) => {
   }
 }
 
-const getItemById = async (id) => {
-  const topicApiRes = await TopicApi.findById(id)
-  if (topicApiRes.status === 200) {
-  }
-}
-
 const deleteItem = async (id) => {
   ElMessageBox.alert('Bạn có chắc muốn xóa bản ghi này ?', 'Cảnh báo', {
     // if you want to disable its autofocus
@@ -173,16 +182,52 @@ const deleteItem = async (id) => {
 }
 
 const getListTeacher = async () => {
-  const teacherApiRes = await TeacherApi.list(defaultFilter)
-  if (teacherApiRes.status === 200) {
-    teacherList.value = teacherApiRes.data.data.data
+  try {
+    const teacherApiRes = await TeacherApi.list(defaultFilter)
+    if (teacherApiRes.status === 200) {
+      teacherList.value = teacherApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const getListCategory = async () => {
-  const categoryApiRes = await CategoryApi.list(defaultFilter)
-  if (categoryApiRes.status === 200) {
-    categoryList.value = categoryApiRes.data.data.data
+  try {
+    const categoryApiRes = await CategoryApi.list(defaultFilter)
+    if (categoryApiRes.status === 200) {
+      categoryList.value = categoryApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -207,7 +252,7 @@ const fn_tableChangeskip = (page) => {
 
 const backToPrev = () => {
   router.push({
-    name: 'Landing page'
+    name: 'Landing page',
   })
 }
 
@@ -226,7 +271,13 @@ onMounted(async () => {
           <div class="d-flex justify-content-between">
             <h4>Danh sách thông tin đồ án đăng ký</h4>
             <div>
-              <CButton color="primary" variant="outline" class="me-2" @click="backToPrev">Quay lại</CButton>
+              <CButton
+                color="primary"
+                variant="outline"
+                class="me-2"
+                @click="backToPrev"
+                >Quay lại</CButton
+              >
               <CButton color="primary" class="me-2" @click="toggleSearchBox"
                 ><CIcon icon="cilSearch" class="me-2" />Tra cứu</CButton
               >
@@ -379,7 +430,12 @@ onMounted(async () => {
           label="Điểm kiểm tra tiến độ lần 2"
           min-width="120"
         /> -->
-        <el-table-column fixed="right" prop="statusTopic" label="Trạng thái" min-width="100" />
+        <el-table-column
+          fixed="right"
+          prop="statusTopic"
+          label="Trạng thái"
+          min-width="100"
+        />
         <el-table-column prop="year" label="Năm thực hiện" min-width="100" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
       </el-table>

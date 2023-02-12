@@ -84,6 +84,21 @@ const submitForm = async (formEl) => {
         await getList()
       } catch (error) {
         console.log(error)
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${error.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -129,7 +144,6 @@ const getList = async () => {
   if (userApiRes.status === 200) {
     tableRules.data = await changeData(userApiRes.data.data.data)
     tableRules.total = userApiRes.data.data.totalElements
-    console.log('getList', userApiRes)
   }
 }
 
@@ -143,8 +157,6 @@ const changeData = (data) => {
 
 const updateItem = async (rowData) => {
   viewMode.value = 'update'
-  console.log('formData', formData)
-  console.log(rowData)
   formData.id = rowData.id
   formData.username = rowData.username
   formData.email = rowData.email
@@ -158,10 +170,27 @@ const updateItem = async (rowData) => {
 }
 
 const getItemById = async (rowData) => {
-  console.log('rowData', rowData)
-  const userApiRes = await UserApi.findById(rowData.id)
-  if (userApiRes.status === 200) {
-    console.log('getItemById', userApiRes)
+  try {
+    const userApiRes = await UserApi.findById(rowData.id)
+    if (userApiRes.status === 200) {
+      console.log('getItemById', userApiRes)
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -187,10 +216,10 @@ const deleteItem = async (rowData) => {
 }
 
 const exportExcel = async () => {
-  const a = document.createElement("a");
-  const res = ExcelApi.exportExcelfile('user');
+  const a = document.createElement('a')
+  const res = ExcelApi.exportExcelfile('user')
   a.href = res
-  a.click();
+  a.click()
 }
 
 const fn_tableSizeChange = (limit) => {
@@ -229,7 +258,6 @@ const getStudentTeacher = async () => {
   if (studentApiRes.status === 200) {
     // studentList.value = studentApiRes.data.data.data
     dynamicList.value = studentApiRes.data.data.data
-
   }
 }
 const changeType = () => {

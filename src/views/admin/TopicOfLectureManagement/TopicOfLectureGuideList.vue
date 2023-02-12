@@ -145,12 +145,6 @@ const handle = (type, rowData) => {
   }
 }
 
-const getItemById = async (id) => {
-  const topicApiRes = await TopicApi.findById(id)
-  if (topicApiRes.status === 200) {
-  }
-}
-
 const deleteItem = async (id) => {
   ElMessageBox.alert('Bạn có chắc muốn xóa bản ghi này ?', 'Cảnh báo', {
     // if you want to disable its autofocus
@@ -171,16 +165,44 @@ const deleteItem = async (id) => {
 }
 
 const getListTeacher = async () => {
-  const teacherApiRes = await TeacherApi.list(defaultFilter)
-  if (teacherApiRes.status === 200) {
-    teacherList.value = teacherApiRes.data.data.data
+  try {
+    const teacherApiRes = await TeacherApi.list(defaultFilter)
+    if (teacherApiRes.status === 200) {
+      teacherList.value = teacherApiRes.data.data.data
+    }
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.errorMessage) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const getListCategory = async () => {
-  const categoryApiRes = await CategoryApi.list(defaultFilter)
-  if (categoryApiRes.status === 200) {
-    categoryList.value = categoryApiRes.data.data.data
+  try {
+    const categoryApiRes = await CategoryApi.list(defaultFilter)
+    if (categoryApiRes.status === 200) {
+      categoryList.value = categoryApiRes.data.data.data
+    }
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.errorMessage) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 

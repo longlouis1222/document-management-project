@@ -70,6 +70,21 @@ const submitForm = async (formEl) => {
         await getList()
       } catch (error) {
         console.log(error)
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${error.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -146,10 +161,28 @@ const handle = (type, rowData) => {
 }
 
 const getItemById = async (id) => {
-  const facultyApiRes = await FacultyApi.findById(id)
-  if (facultyApiRes.status === 200) {
-    console.log('getItemById', facultyApiRes)
-    formData.value = facultyApiRes.data.data
+  try {
+    const facultyApiRes = await FacultyApi.findById(id)
+    if (facultyApiRes.status === 200) {
+      console.log('getItemById', facultyApiRes)
+      formData.value = facultyApiRes.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -174,17 +207,35 @@ const deleteItem = async (id) => {
 }
 
 const getListWorkplace = async () => {
-  const workplaceApiRes = await WorkplaceApi.list(defaultFilter)
-  if (workplaceApiRes.status === 200) {
-    workplaceList.value = workplaceApiRes.data.data.data
+  try {
+    const workplaceApiRes = await WorkplaceApi.list(defaultFilter)
+    if (workplaceApiRes.status === 200) {
+      workplaceList.value = workplaceApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const exportExcel = async () => {
-  const a = document.createElement("a");
-  const res = ExcelApi.exportExcelfile('faculty');
+  const a = document.createElement('a')
+  const res = ExcelApi.exportExcelfile('faculty')
   a.href = res
-  a.click();
+  a.click()
 }
 
 const fn_tableSizeChange = (limit) => {

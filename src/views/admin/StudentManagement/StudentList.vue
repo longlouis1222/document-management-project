@@ -77,6 +77,21 @@ const submitForm = async (formEl) => {
         await getList()
       } catch (error) {
         console.log(error)
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${error.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -170,10 +185,27 @@ const handle = (type, rowData) => {
 }
 
 const getItemById = async (id) => {
-  console.log('id', id)
-  const studentApiRes = await StudentApi.findById(id)
-  if (studentApiRes.status === 200) {
-    console.log('getItemById', studentApiRes)
+  try {
+    const studentApiRes = await StudentApi.findById(id)
+    if (studentApiRes.status === 200) {
+      console.log('getItemById', studentApiRes)
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -197,31 +229,85 @@ const deleteItem = async (id) => {
 }
 
 const getFacultyList = async () => {
-  const facultyApiRes = await FacultyApi.list(defaultFilter)
-  if (facultyApiRes.status === 200) {
-    facultyList.value = facultyApiRes.data.data.data
+  try {
+    const facultyApiRes = await FacultyApi.list(defaultFilter)
+    if (facultyApiRes.status === 200) {
+      facultyList.value = facultyApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const getTopicList = async () => {
-  const topicApiRes = await TopicApi.list(defaultFilter)
-  if (topicApiRes.status === 200) {
-    topicList.value = topicApiRes.data.data.data
+  try {
+    const topicApiRes = await TopicApi.list(defaultFilter)
+    if (topicApiRes.status === 200) {
+      topicList.value = topicApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const getClassList = async () => {
-  const classApiRes = await ClassApi.list(defaultFilter)
-  if (classApiRes.status === 200) {
-    classList.value = classApiRes.data.data.data
+  try {
+    const classApiRes = await ClassApi.list(defaultFilter)
+    if (classApiRes.status === 200) {
+      classList.value = classApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const exportExcel = async () => {
-  const a = document.createElement("a");
-  const res = ExcelApi.exportExcelfile('student');
+  const a = document.createElement('a')
+  const res = ExcelApi.exportExcelfile('student')
   a.href = res
-  a.click();
+  a.click()
 }
 
 const fn_tableSizeChange = (limit) => {

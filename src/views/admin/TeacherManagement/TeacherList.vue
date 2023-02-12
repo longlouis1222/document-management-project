@@ -72,6 +72,21 @@ const submitForm = async (formEl) => {
         await getList()
       } catch (error) {
         console.log(error)
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${error.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -88,15 +103,15 @@ const resetForm = (formEl) => {
 const submitFormSearch = async (formEl) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
-      try {
-        tableRules.filters = formSearchData.value
-        console.log('tableRules.filters', tableRules.filters)
-        tableRules.skip = 0
-        tableRules.page = 1
-        await getList()
-      } catch (error) {
-        console.log(error)
-      }
+    try {
+      tableRules.filters = formSearchData.value
+      console.log('tableRules.filters', tableRules.filters)
+      tableRules.skip = 0
+      tableRules.page = 1
+      await getList()
+    } catch (error) {
+      console.log(error)
+    }
   })
 }
 
@@ -150,23 +165,40 @@ const handle = (type, rowData) => {
 }
 
 const getItemById = async (id) => {
-  console.log('id', id)
-  const teacherApiRes = await TeacherApi.findById(id)
-  if (teacherApiRes.status === 200) {
-    dialogModel.value = true
-    let res = teacherApiRes.data.data
-    formData.value = res
-    formData.value.fullName = res.userInfoDTO.fullName
-    formData.value.gender =
-      res.userInfoDTO.gender == 'Nam'
-        ? 0
-        : res.userInfoDTO.gender == 'Nữ'
-        ? 1
-        : 2
-    formData.value.dateOfBirth = res.userInfoDTO.dateOfBirth
-    formData.value.phoneNumber = res.userInfoDTO.phoneNumber
-    formData.value.address = res.userInfoDTO.address
-    formData.value.town = res.userInfoDTO.town
+  try {
+    const teacherApiRes = await TeacherApi.findById(id)
+    if (teacherApiRes.status === 200) {
+      dialogModel.value = true
+      let res = teacherApiRes.data.data
+      formData.value = res
+      formData.value.fullName = res.userInfoDTO.fullName
+      formData.value.gender =
+        res.userInfoDTO.gender == 'Nam'
+          ? 0
+          : res.userInfoDTO.gender == 'Nữ'
+          ? 1
+          : 2
+      formData.value.dateOfBirth = res.userInfoDTO.dateOfBirth
+      formData.value.phoneNumber = res.userInfoDTO.phoneNumber
+      formData.value.address = res.userInfoDTO.address
+      formData.value.town = res.userInfoDTO.town
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -191,17 +223,35 @@ const deleteItem = async (id) => {
 }
 
 const getListFaculty = async () => {
-  const facultyApiRes = await FacultyApi.list()
-  if (facultyApiRes.status === 200) {
-    facultyList.value = facultyApiRes.data.data.data
+  try {
+    const facultyApiRes = await FacultyApi.list()
+    if (facultyApiRes.status === 200) {
+      facultyList.value = facultyApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const exportExcel = async () => {
-  const a = document.createElement("a");
-  const res = ExcelApi.exportExcelfile('lecture');
+  const a = document.createElement('a')
+  const res = ExcelApi.exportExcelfile('lecture')
   a.href = res
-  a.click();
+  a.click()
 }
 
 const fn_tableSizeChange = (limit) => {

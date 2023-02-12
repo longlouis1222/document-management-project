@@ -157,10 +157,28 @@ const handle = (type, rowData) => {
 }
 
 const getItemById = async (id) => {
-  const facultyApiRes = await AssemblyApi.findById(id)
-  if (facultyApiRes.status === 200) {
-    // console.log('getItemById', facultyApiRes)
-    formData.value = facultyApiRes.data.data
+  try {
+    const facultyApiRes = await AssemblyApi.findById(id)
+    if (facultyApiRes.status === 200) {
+      // console.log('getItemById', facultyApiRes)
+      formData.value = facultyApiRes.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -185,16 +203,52 @@ const deleteItem = async (id) => {
 }
 
 const getLectureList = async () => {
-  const lectureApiRes = await TeacherApi.list(defaultFilter)
-  if (lectureApiRes.status === 200) {
-    lectureList.value = lectureApiRes.data.data.data
+  try {
+    const lectureApiRes = await TeacherApi.list(defaultFilter)
+    if (lectureApiRes.status === 200) {
+      lectureList.value = lectureApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const getTopicList = async () => {
-  const topicApiRes = await TopicApi.list(defaultFilter)
-  if (topicApiRes.status === 200) {
-    topicList.value = topicApiRes.data.data.data
+  try {
+    const topicApiRes = await TopicApi.list(defaultFilter)
+    if (topicApiRes.status === 200) {
+      topicList.value = topicApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 

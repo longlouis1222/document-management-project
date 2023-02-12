@@ -49,7 +49,9 @@ const submitForm = async (formEl) => {
     if (valid) {
       try {
         if (viewMode.value === 'create') {
-          const topicApiRes = await StudentApi.createTopicSuggest({ topicName: formData.value.topicName})
+          const topicApiRes = await StudentApi.createTopicSuggest({
+            topicName: formData.value.topicName,
+          })
           if (topicApiRes.status === 200) {
             ElMessage({
               message: 'Thêm mới thành công.',
@@ -73,6 +75,21 @@ const submitForm = async (formEl) => {
         await getList()
       } catch (error) {
         console.log(error)
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${error.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -148,13 +165,31 @@ const handle = (type, rowData) => {
 }
 
 const approveTopic = async (rowData) => {
-  const res = await StudentApi.adminApproveTopic(rowData.topicId)
-  if (res.status === 200) {
+  try {
+    const res = await StudentApi.adminApproveTopic(rowData.topicId)
+    if (res.status === 200) {
+      ElMessage({
+        type: 'success',
+        message: `Duyệt thành công`,
+      })
+      getList()
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
     ElMessage({
-      type: 'success',
-      message: `Duyệt thành công`,
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
     })
-    getList()
   }
 }
 
@@ -178,16 +213,52 @@ const deleteItem = async (id) => {
 }
 
 const getListTeacher = async () => {
-  const teacherApiRes = await TeacherApi.list(defaultFilter)
-  if (teacherApiRes.status === 200) {
-    teacherList.value = teacherApiRes.data.data.data
+  try {
+    const teacherApiRes = await TeacherApi.list(defaultFilter)
+    if (teacherApiRes.status === 200) {
+      teacherList.value = teacherApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const getListCategory = async () => {
-  const categoryApiRes = await CategoryApi.list(defaultFilter)
-  if (categoryApiRes.status === 200) {
-    categoryList.value = categoryApiRes.data.data.data
+  try {
+    const categoryApiRes = await CategoryApi.list(defaultFilter)
+    if (categoryApiRes.status === 200) {
+      categoryList.value = categoryApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -270,97 +341,6 @@ onMounted(async () => {
                     />
                   </el-form-item>
                 </b-col>
-                <!-- <b-col md="4">
-                  <el-form-item label="Trạng thái" prop="status">
-                    <el-select
-                      v-model="formSearchData.value.status"
-                      placeholder="chọn"
-                      filterable
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in topicStatusList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item
-                    label="Giáo viên phản biện"
-                    prop="lecturerCounterArgumentId"
-                  >
-                    <el-select
-                      v-model="formSearchData.value.lecturerCounterArgumentId"
-                      placeholder="chọn"
-                      filterable
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in teacherList.value"
-                        :key="item.id"
-                        :label="item.userInfoDTO.fullName"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item
-                    label="Giáo viên hướng dẫn"
-                    prop="lecturerGuideId"
-                  >
-                    <el-select
-                      v-model="formSearchData.value.lecturerGuideId"
-                      placeholder="chọn"
-                      filterable
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in teacherList.value"
-                        :key="item.id"
-                        :label="item.userInfoDTO.fullName"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item label="Năm" prop="year">
-                    <el-date-picker
-                      v-model="formSearchData.value.year"
-                      type="year"
-                      format="YYYY"
-                      placeholder="Chọn"
-                    />
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item label="Chủ đề" prop="categoryId">
-                    <el-select
-                      v-model="formSearchData.value.categoryId"
-                      placeholder="chọn"
-                      filterable
-                    >
-                      <el-option
-                        v-for="item in categoryList.value"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="12">
-                  <el-form-item label="Mô tả" prop="description">
-                    <el-input
-                      v-model="formSearchData.value.description"
-                      autocomplete="off"
-                    />
-                  </el-form-item>
-                </b-col> -->
               </b-row>
               <div class="text-center">
                 <CButton color="primary" @click="submitFormSearch(ruleFormRef)"
@@ -375,45 +355,6 @@ onMounted(async () => {
       <el-table :data="tableRules.data" style="width: 100%">
         <el-table-column prop="topicName" label="Tên đề tài" min-width="150" />
         <el-table-column prop="studentName" label="Sinh viên" min-width="120" />
-        <!-- <el-table-column
-          prop="lecturerCounterArgumentDTO.fullName"
-          label="Giáo viên phản biện"
-          width="120"
-        />
-        <el-table-column
-          prop="lecturerGuideDTO.fullName"
-          label="Giáo viên hướng dẫn"
-          width="120"
-        />
-        <el-table-column
-          prop="scoreCounterArgument"
-          label="Điểm phản biện"
-          min-width="100"
-        />
-        <el-table-column
-          prop="scoreGuide"
-          label="Điểm hướng dẫn"
-          min-width="100"
-        />
-        <el-table-column
-          prop="scoreProcessOne"
-          label="Điểm kiểm tra tiến độ lần 1"
-          min-width="120"
-        />
-        <el-table-column
-          prop="scoreProcessTwo"
-          label="Điểm kiểm tra tiến độ lần 2"
-          min-width="120"
-        />
-        <el-table-column prop="status" label="Trạng thái" min-width="100" />
-        <el-table-column
-          prop="stdNumber"
-          label="Số lượng sinh viên"
-          min-width="150"
-        />
-        <el-table-column prop="year" label="Năm" min-width="80" />
-        <el-table-column prop="description" label="Thông tin" min-width="200" />
-        -->
         <el-table-column
           fixed="right"
           align="center"
@@ -474,10 +415,7 @@ onMounted(async () => {
         <b-row>
           <b-col md="12">
             <el-form-item label="Tên đồ án" prop="topicName">
-              <el-input
-                v-model="formData.value.topicName"
-                autocomplete="off"
-              />
+              <el-input v-model="formData.value.topicName" autocomplete="off" />
             </el-form-item>
           </b-col>
         </b-row>

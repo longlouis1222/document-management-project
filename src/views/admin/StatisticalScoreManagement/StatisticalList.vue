@@ -57,6 +57,21 @@ const submitForm = async (formEl) => {
         await getList()
       } catch (error) {
         console.log(error)
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${error.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -125,10 +140,27 @@ const updateItem = (rowData) => {
 }
 
 const getItemById = async (rowData) => {
-  console.log('rowData', rowData)
-  const workplaceApiRes = await TopicApi.findById(rowData.id)
-  if (workplaceApiRes.status === 200) {
-    console.log('getItemById', workplaceApiRes)
+  try {
+    const workplaceApiRes = await TopicApi.findById(rowData.id)
+    if (workplaceApiRes.status === 200) {
+      console.log('getItemById', workplaceApiRes)
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 

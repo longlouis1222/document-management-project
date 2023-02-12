@@ -72,6 +72,21 @@ const submitForm = async (formEl) => {
         await getList()
       } catch (error) {
         console.log(error)
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${error.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -133,21 +148,10 @@ const changeData = (data) => {
 }
 
 const handle = (type, rowData) => {
-  // if (type == 'update') {
-  //   viewMode.value = 'update'
-  //   dialogModel.value = true
-  //   formData.value = rowData
-  //   formData.value.status = rowData.status == 'Đạt' ? true : false
-  //   formData.value.year = new Date().setFullYear(rowData.year)
-  // } else if (type == 'delete') {
-  //   viewMode.value = 'delete'
-  //   deleteItem(rowData.id)
-  // }
   approveTopic(rowData)
 }
 
 const approveTopic = async (rowData) => {
-  console.log(rowData)
   if (!rowData) return
   try {
     const dataApprove = {
@@ -164,9 +168,20 @@ const approveTopic = async (rowData) => {
       await getList()
     }
   } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
     ElMessage({
       type: 'error',
-      message: `${error.message}.`,
+      message: `Có lỗi xảy ra.`,
     })
   }
 }
@@ -197,16 +212,44 @@ const deleteItem = async (id) => {
 }
 
 const getListTeacher = async () => {
-  const teacherApiRes = await TeacherApi.list(defaultFilter)
-  if (teacherApiRes.status === 200) {
-    teacherList.value = teacherApiRes.data.data.data
+  try {
+    const teacherApiRes = await TeacherApi.list(defaultFilter)
+    if (teacherApiRes.status === 200) {
+      teacherList.value = teacherApiRes.data.data.data
+    }
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.errorMessage) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const getListCategory = async () => {
-  const categoryApiRes = await CategoryApi.list(defaultFilter)
-  if (categoryApiRes.status === 200) {
-    categoryList.value = categoryApiRes.data.data.data
+  try {
+    const categoryApiRes = await CategoryApi.list(defaultFilter)
+    if (categoryApiRes.status === 200) {
+      categoryList.value = categoryApiRes.data.data.data
+    }
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.errorMessage) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -230,8 +273,6 @@ const fn_tableChangeskip = (page) => {
 }
 
 onMounted(async () => {
-  // await getListTeacher()
-  // await getListCategory()
   await getList()
 })
 </script>

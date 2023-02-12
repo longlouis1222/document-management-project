@@ -69,6 +69,21 @@ const submitForm = async (formEl) => {
         await getList()
       } catch (error) {
         console.log(error)
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${error.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -140,9 +155,27 @@ const handle = (type, rowData) => {
 }
 
 const getItemById = async (id) => {
-  const categoryApiRes = await CategoryApi.findById(id)
-  if (categoryApiRes.status === 200) {
-    formData.value = categoryApiRes.data.data
+  try {
+    const categoryApiRes = await CategoryApi.findById(id)
+    if (categoryApiRes.status === 200) {
+      formData.value = categoryApiRes.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -166,17 +199,35 @@ const deleteItem = async (id) => {
 }
 
 const getListFaculty = async () => {
-  const facultyApiRes = await FacultyApi.list(defaultFilter)
-  if (facultyApiRes.status === 200) {
-    facultyList.value = facultyApiRes.data.data.data
+  try {
+    const facultyApiRes = await FacultyApi.list(defaultFilter)
+    if (facultyApiRes.status === 200) {
+      facultyList.value = facultyApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const exportExcel = async () => {
-  const a = document.createElement("a");
-  const res = ExcelApi.exportExcelfile('category');
+  const a = document.createElement('a')
+  const res = ExcelApi.exportExcelfile('category')
   a.href = res
-  a.click();
+  a.click()
 }
 
 const fn_tableSizeChange = (limit) => {

@@ -49,7 +49,9 @@ const submitForm = async (formEl) => {
     if (valid) {
       try {
         if (viewMode.value === 'create') {
-          const topicApiRes = await StudentApi.createTopicSuggest({ topicName: formData.value.topicName})
+          const topicApiRes = await StudentApi.createTopicSuggest({
+            topicName: formData.value.topicName,
+          })
           if (topicApiRes.status === 200) {
             ElMessage({
               message: 'Thêm mới thành công.',
@@ -76,6 +78,21 @@ const submitForm = async (formEl) => {
       }
     } else {
       console.log('error submit!', fields)
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.errorMessage
+      ) {
+        ElMessage({
+          type: 'error',
+          message: `${error.response.data.errorMessage}`,
+        })
+        return
+      }
+      ElMessage({
+        type: 'error',
+        message: `Có lỗi xảy ra.`,
+      })
     }
   })
 }
@@ -166,16 +183,52 @@ const deleteItem = async (id) => {
 }
 
 const getListTeacher = async () => {
-  const teacherApiRes = await TeacherApi.list(defaultFilter)
-  if (teacherApiRes.status === 200) {
-    teacherList.value = teacherApiRes.data.data.data
+  try {
+    const teacherApiRes = await TeacherApi.list(defaultFilter)
+    if (teacherApiRes.status === 200) {
+      teacherList.value = teacherApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const getListCategory = async () => {
-  const categoryApiRes = await CategoryApi.list(defaultFilter)
-  if (categoryApiRes.status === 200) {
-    categoryList.value = categoryApiRes.data.data.data
+  try {
+    const categoryApiRes = await CategoryApi.list(defaultFilter)
+    if (categoryApiRes.status === 200) {
+      categoryList.value = categoryApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -361,10 +414,7 @@ onMounted(async () => {
         <b-row>
           <b-col md="12">
             <el-form-item label="Tên đồ án" prop="topicName">
-              <el-input
-                v-model="formData.value.topicName"
-                autocomplete="off"
-              />
+              <el-input v-model="formData.value.topicName" autocomplete="off" />
             </el-form-item>
           </b-col>
         </b-row>

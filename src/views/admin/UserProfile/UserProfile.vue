@@ -98,10 +98,6 @@ const c = async () => {
     formData.value.avatar[0].raw.name,
   )
 
-  console.log('fd', fd)
-  // const fileApiRes = await FileApi.uploadFile(fd)
-  // console.log(fileApiRes)
-
   axios({
     method: 'post',
     url: 'http://localhost:8084/api/v1/users/upload-avatar',
@@ -122,6 +118,21 @@ const c = async () => {
     .catch(function (response) {
       //handle error
       console.log('error', response)
+      if (
+        response.response &&
+        response.response.data &&
+        response.response.data.errorMessage
+      ) {
+        ElMessage({
+          type: 'error',
+          message: `${response.response.data.errorMessage}`,
+        })
+        return
+      }
+      ElMessage({
+        type: 'error',
+        message: `Có lỗi xảy ra.`,
+      })
     })
 }
 
@@ -129,11 +140,29 @@ const submitForm = async (formEl) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      const userProfileApiRes = await auth.editUserInfo(formData.value)
-      if (userProfileApiRes.status == 200) {
+      try {
+        const userProfileApiRes = await auth.editUserInfo(formData.value)
+        if (userProfileApiRes.status == 200) {
+          ElMessage({
+            message: 'Cập nhật thành công.',
+            type: 'success',
+          })
+        }
+      } catch (error) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${error.response.data.errorMessage}`,
+          })
+          return
+        }
         ElMessage({
-          message: 'Cập nhật thành công.',
-          type: 'success',
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
         })
       }
     } else {
@@ -193,16 +222,28 @@ const hexToBase64 = (str) => {
 }
 
 const getUserInfo = async () => {
-  const userProfileApiRes = await auth.getAccount()
-  if (userProfileApiRes.status == 200) {
-    userProfile.value = userProfileApiRes.data.data
-
-    console.log('userProfile', userProfile)
-
-    // imgSrc.value = 'data:image/png;base64,' + _arrayBufferToBase64(fileApiRes.data)
-
-    formData.value = { ...userProfile.value}
-    console.log('userProfile', userProfile)
+  try {
+    const userProfileApiRes = await auth.getAccount()
+    if (userProfileApiRes.status == 200) {
+      userProfile.value = userProfileApiRes.data.data
+      formData.value = { ...userProfile.value }
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 

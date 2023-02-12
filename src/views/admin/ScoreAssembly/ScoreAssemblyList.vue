@@ -78,6 +78,21 @@ const submitForm = async (formEl) => {
         await getList()
       } catch (error) {
         console.log(error)
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${error.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -159,12 +174,6 @@ const handle = async (type, rowData) => {
   }
 }
 
-const getItemById = async (id) => {
-  const topicApiRes = await TopicApi.findById(id)
-  if (topicApiRes.status === 200) {
-  }
-}
-
 const deleteItem = async (id) => {
   ElMessageBox.alert('Bạn có chắc muốn xóa bản ghi này ?', 'Cảnh báo', {
     // if you want to disable its autofocus
@@ -185,16 +194,52 @@ const deleteItem = async (id) => {
 }
 
 const getListTeacher = async () => {
-  const teacherApiRes = await TeacherApi.list(defaultFilter)
-  if (teacherApiRes.status === 200) {
-    teacherList.value = teacherApiRes.data.data.data
+  try {
+    const teacherApiRes = await TeacherApi.list(defaultFilter)
+    if (teacherApiRes.status === 200) {
+      teacherList.value = teacherApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
 const getListCategory = async () => {
-  const categoryApiRes = await CategoryApi.list(defaultFilter)
-  if (categoryApiRes.status === 200) {
-    categoryList.value = categoryApiRes.data.data.data
+  try {
+    const categoryApiRes = await CategoryApi.list(defaultFilter)
+    if (categoryApiRes.status === 200) {
+      categoryList.value = categoryApiRes.data.data.data
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
   }
 }
 
@@ -255,7 +300,7 @@ const beforeRemove = (uploadFile, uploadFiles) => {
 }
 
 const uploadFileToDb = async () => {
-  if (!fileList.value || fileList.value && fileList.value.length == 0) {
+  if (!fileList.value || (fileList.value && fileList.value.length == 0)) {
     ElMessage.warning(`Vui lòng tải lên ít nhất 1 file.`)
     return
   }
@@ -297,10 +342,10 @@ const uploadFileToDb = async () => {
 }
 
 const exportExcel = async () => {
-  const a = document.createElement("a");
-  const res = ExcelApi.exportExcelfile('topic');
+  const a = document.createElement('a')
+  const res = ExcelApi.exportExcelfile('topic')
   a.href = res
-  a.click();
+  a.click()
 }
 
 // const checkRoleToScore = async () => {
@@ -583,7 +628,11 @@ onMounted(async () => {
         <b-row>
           <b-col md="4">
             <el-form-item label="Tên đồ án" prop="name">
-              <el-input v-model="formData.value.name" autocomplete="off" disabled />
+              <el-input
+                v-model="formData.value.name"
+                autocomplete="off"
+                disabled
+              />
             </el-form-item>
           </b-col>
           <b-col md="4">
@@ -631,7 +680,11 @@ onMounted(async () => {
           </b-col>
           <b-col md="4">
             <el-form-item label="Số lượng sinh viên" prop="stdNumber">
-              <el-input v-model="formData.value.stdNumber" autocomplete="off" disabled />
+              <el-input
+                v-model="formData.value.stdNumber"
+                autocomplete="off"
+                disabled
+              />
             </el-form-item>
           </b-col>
           <b-col md="4">
@@ -687,7 +740,8 @@ onMounted(async () => {
               <el-select
                 v-model="formData.value.categoryId"
                 placeholder="chọn"
-                filterable disabled
+                filterable
+                disabled
               >
                 <el-option
                   v-for="item in categoryList.value"
@@ -775,7 +829,9 @@ onMounted(async () => {
             :disabled="viewMode !== 'upload'"
           >
             <template #trigger>
-              <CButton :disabled="viewMode !== 'upload'" color="info">Tải file lên</CButton>
+              <CButton :disabled="viewMode !== 'upload'" color="info"
+                >Tải file lên</CButton
+              >
             </template>
 
             <template #tip>
@@ -788,7 +844,12 @@ onMounted(async () => {
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <CButton v-if="viewMode == 'upload'" color="primary" @click="uploadFileToDb">Cập nhật</CButton>
+          <CButton
+            v-if="viewMode == 'upload'"
+            color="primary"
+            @click="uploadFileToDb"
+            >Cập nhật</CButton
+          >
         </span>
       </template>
     </el-dialog>
