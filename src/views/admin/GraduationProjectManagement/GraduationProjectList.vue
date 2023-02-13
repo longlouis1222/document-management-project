@@ -430,6 +430,46 @@ const exportExcel = async () => {
   a.click()
 }
 
+const downloadFile = async (file) => {
+  try {
+    // const res = await TopicApi.downloadFile(file.id)
+    // if (res.status === 200) {
+    //   console.log(res.data)
+    //   const blob = new Blob([res.data], {
+    //     type: 'application/pdf',
+    //   })
+    //   const a = document.createElement('a')
+    //   a.href = URL.createObjectURL(blob)
+    //   a.target = '_blank'
+    //   a.download = `hihi`
+    //   a.click()
+    //   a.remove()
+
+      axios.post(`http://localhost:8084/api/v1/topics/download/${file.id}`, {
+          'responseType': 'blob' // responseType is a sibling of headers, not a child
+      })
+      .then(response=>{
+          if(response.status == 200){
+            console.log(response)
+              const url = window.URL.createObjectURL(new Blob([response.data]));
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', 'hihi.pdf');
+              document.body.appendChild(link);
+              link.click();
+          }
+      })
+      .catch(error => {
+          console.log(error)
+        })
+  } catch (error) {
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
+  }
+}
+
 onMounted(async () => {
   await getListTeacher()
   await getListCategory()
@@ -641,12 +681,13 @@ onMounted(async () => {
           <template #default="scope">
             <ul class="p-0">
               <li
-                v-for="(item, i) in scope.row.fileNames
-                  ? scope.row.fileNames
+                v-for="(item, i) in scope.row.fileDTOS
+                  ? scope.row.fileDTOS
                   : []"
                 :key="i"
+                @click="downloadFile(item)"
               >
-                - {{ item }}
+                - {{ item.name }}
               </li>
             </ul>
           </template>

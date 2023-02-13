@@ -25,4 +25,7 @@ export default {
   getTopicSuggest(data) {
     return Api().get(!data ? 'topics/get-topic-suggest' : `topics/get-topic-suggest?${data}`)
   },
+  downloadFile(id) {
+    return Api().get(`topics/download/${id}`)
+  }
 }
