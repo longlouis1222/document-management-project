@@ -305,26 +305,85 @@ const beforeRemove = (uploadFile, uploadFiles) => {
   )
 }
 
+// const uploadFileToDb = async () => {
+//   if (!fileList.value || (fileList.value && fileList.value.length == 0)) {
+//     ElMessage.warning(`Vui lòng tải lên ít nhất 1 file.`)
+//     return
+//   }
+//   let fd = new FormData()
+//   fd.append(
+//     'filePath',
+//     'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link',
+//   )
+
+//   for (let i = 0; i < fileList.value.length; i++) {
+//     fd.append('fileUpload', fileList.value[i].raw, fileList.value[i].raw.name)
+//   }
+//   fd.append('shared', true)
+//   fd.append('topicId', topicId.value)
+
+//   axios({
+//     method: 'post',
+//     url: 'http://localhost:8084/api/v1/topics/upload',
+//     data: fd,
+//     headers: {
+//       'Content-Type': 'multipart/form-data',
+//       Authorization:
+//         localStorage.getItem('Token') && localStorage.getItem('uid')
+//           ? 'Bearer ' + localStorage.getItem('Token')
+//           : '',
+//     },
+//   })
+//     .then(async (response) => {
+//       //handle success
+//       console.log('success', response)
+
+//       dialogUpload.value = false
+//       fileList.value = []
+//       await getList()
+//       ElMessage.success(`Tải lên file thành công.`)
+//     })
+//     .catch((response) => {
+//       //handle error
+//       console.log('error', response)
+//       if (
+//         response.response &&
+//         response.response.data &&
+//         response.response.data.errorMessage
+//       ) {
+//         ElMessage({
+//           type: 'error',
+//           message: `${response.response.data.errorMessage}`,
+//         })
+//         return
+//       }
+//       ElMessage({
+//         type: 'error',
+//         message: `Có lỗi xảy ra.`,
+//       })
+//     })
+// }
+
 const uploadFileToDb = async () => {
   if (!fileList.value || (fileList.value && fileList.value.length == 0)) {
     ElMessage.warning(`Vui lòng tải lên ít nhất 1 file.`)
     return
   }
   let fd = new FormData()
-  fd.append(
-    'filePath',
-    'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link',
-  )
+  // fd.append(
+  //   'filePath',
+  //   'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link',
+  // )
 
   for (let i = 0; i < fileList.value.length; i++) {
     fd.append('fileUpload', fileList.value[i].raw, fileList.value[i].raw.name)
   }
-  fd.append('shared', true)
+  // fd.append('shared', true)
   fd.append('topicId', topicId.value)
 
   axios({
     method: 'post',
-    url: 'http://localhost:8084/api/v1/topics/upload',
+    url: 'http://localhost:8084/api/v1/topics/upload-local',
     data: fd,
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -570,14 +629,28 @@ onMounted(async () => {
           label="Điểm kiểm tra tiến độ lần 2"
           min-width="120"
         />
-        <el-table-column prop="status" label="Trạng thái" min-width="100" />
-        <el-table-column
+        <!-- <el-table-column prop="status" label="Trạng thái" min-width="100" /> -->
+        <!-- <el-table-column
           prop="stdNumber"
           label="Số lượng sinh viên"
-          min-width="150"
-        />
+          min-width="100"
+        /> -->
         <el-table-column prop="year" label="Năm" min-width="80" />
-        <el-table-column prop="description" label="Thông tin" min-width="200" />
+        <el-table-column prop="description" label="Thông tin" min-width="150" />
+        <el-table-column label="Tài liệu" min-width="200">
+          <template #default="scope">
+            <ul class="p-0">
+              <li
+                v-for="(item, i) in scope.row.fileNames
+                  ? scope.row.fileNames
+                  : []"
+                :key="i"
+              >
+                - {{ item }}
+              </li>
+            </ul>
+          </template>
+        </el-table-column>
         <el-table-column
           fixed="right"
           align="center"
