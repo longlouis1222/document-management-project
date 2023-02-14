@@ -54,6 +54,18 @@ export default createStore({
         }
       } catch (error) {
         console.log(error)
+        if (
+          response.response &&
+          response.response.data &&
+          response.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${response.response.data.errorMessage}`,
+          })
+          return
+        }
+
         if (error.code) {
           ElMessage({
             message: `${error.message}`,

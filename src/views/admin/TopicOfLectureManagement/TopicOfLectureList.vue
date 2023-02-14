@@ -14,6 +14,8 @@ import modelData from './TopicOfLectureModel'
 
 const defaultFilter = DataService.defaultFilter
 
+const visibledDialogIframe = ref(false)
+const linkIframe = ref()
 const router = useRouter()
 const moduleName = 'Đề tài phản biện'
 const ruleFormRef = ref(FormInstance)
@@ -204,6 +206,48 @@ const getListTeacher = async () => {
   }
 }
 
+const downloadFile = async (file) => {
+  try {
+    const res = await TopicApi.downloadFile(file.id)
+    if (res.status === 200) {
+      const a = document.createElement('a')
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      a.href = url
+      a.download = file.name
+      a.click()
+      window.URL.revokeObjectURL(url)
+      a.remove()
+    }
+  } catch (error) {
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
+  }
+}
+
+const viewFile = async (file) => {
+  try {
+    const res = await TopicApi.downloadFile(file.id)
+    if (res.status === 200) {
+      console.log(res.data)
+      const blob = new Blob([res.data], {
+        type: 'application/pdf'
+      })
+      const url = URL.createObjectURL(blob)
+      console.log(url)
+      visibledDialogIframe.value = true
+      linkIframe.value = url
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage({
+      type: 'error',
+      message: `Tệp không đúng định dạng`,
+    })
+  }
+}
+
 const getListCategory = async () => {
   try {
     const categoryApiRes = await CategoryApi.list(defaultFilter)
@@ -300,7 +344,7 @@ onMounted(async () => {
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
+                <!-- <b-col md="4">
                   <el-form-item label="Trạng thái" prop="status">
                     <el-select
                       v-model="formSearchData.value.status"
@@ -316,7 +360,7 @@ onMounted(async () => {
                       />
                     </el-select>
                   </el-form-item>
-                </b-col>
+                </b-col> -->
                 <b-col md="4">
                   <el-form-item
                     label="Giáo viên phản biện"
@@ -383,7 +427,7 @@ onMounted(async () => {
                     </el-select>
                   </el-form-item>
                 </b-col>
-                <b-col md="12">
+                <b-col md="4">
                   <el-form-item label="Mô tả" prop="description">
                     <el-input
                       v-model="formSearchData.value.description"
@@ -440,14 +484,44 @@ onMounted(async () => {
           label="Điểm kiểm tra tiến độ lần 2"
           min-width="120"
         />
-        <el-table-column prop="status" label="Trạng thái" min-width="100" />
-        <el-table-column
+        <!-- <el-table-column prop="status" label="Trạng thái" min-width="100" /> -->
+        <!-- <el-table-column
           prop="stdNumber"
           label="Số lượng sinh viên"
           min-width="150"
-        />
+        /> -->
         <el-table-column prop="year" label="Năm" min-width="80" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
+        <el-table-column label="Tài liệu" min-width="200">
+          <template #default="scope">
+            <ul class="p-0">
+              <li
+                v-for="(item, i) in scope.row.fileDTOS
+                  ? scope.row.fileDTOS
+                  : []"
+                :key="i"
+                @click="downloadFile(item)"
+              >
+                - {{ item.name }}
+              </li>
+            </ul>
+          </template>
+        </el-table-column>
+        <el-table-column label="Xem tài liệu" min-width="200">
+          <template #default="scope">
+            <ul class="p-0">
+              <li
+                v-for="(item, i) in scope.row.fileDTOS
+                  ? scope.row.fileDTOS
+                  : []"
+                :key="i"
+                @click="viewFile(item)"
+              >
+                - {{ item.name }}
+              </li>
+            </ul>
+          </template>
+        </el-table-column>
         <el-table-column
           fixed="right"
           align="center"
@@ -676,6 +750,20 @@ onMounted(async () => {
       </template>
     </el-dialog>
     <!-- End dialog -->
+
+    <el-dialog
+      v-model="visibledDialogIframe"
+      title="Xem tải liệu đề tài"
+      width="60%"
+      top="2vh"
+    >
+      <iframe
+        :src="linkIframe"
+        frameborder="0"
+        width="100%"
+        height="800px"
+      ></iframe>
+    </el-dialog>
   </div>
 </template>
 

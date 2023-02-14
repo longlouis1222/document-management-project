@@ -23,6 +23,8 @@ const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const formData = reactive({
   value: MethodService.copyObject(modelData.dataForm),
 })
+const visibledDialogIframe = ref(false)
+const linkIframe = ref()
 const formValid = modelData.validForm
 const formSearchData = reactive({
   value: MethodService.copyObject(tableRules.dataSearch.value),
@@ -383,13 +385,13 @@ const downloadFile = async (file) => {
   try {
     const res = await TopicApi.downloadFile(file.id)
     if (res.status === 200) {
-      const a = document.createElement("a");
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        a.href = url;
-        a.download = file.name;
-        a.click();
-        window.URL.revokeObjectURL(url);
-        a.remove();
+      const a = document.createElement('a')
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      a.href = url
+      a.download = file.name
+      a.click()
+      window.URL.revokeObjectURL(url)
+      a.remove()
     }
   } catch (error) {
     ElMessage({
@@ -403,13 +405,20 @@ const viewFile = async (file) => {
   try {
     const res = await TopicApi.downloadFile(file.id)
     if (res.status === 200) {
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        // xử lý đoạn đưa url vào iframe trên popu
+      console.log(res.data)
+      const blob = new Blob([res.data], {
+        type: 'application/pdf'
+      })
+      const url = URL.createObjectURL(blob)
+      console.log(url)
+      visibledDialogIframe.value = true
+      linkIframe.value = url
     }
   } catch (error) {
+    console.log(error)
     ElMessage({
       type: 'error',
-      message: `Có lỗi xảy ra.`,
+      message: `Tệp không đúng định dạng`,
     })
   }
 }
@@ -593,11 +602,11 @@ onMounted(async () => {
           label="Điểm kiểm tra tiến độ lần 2"
           min-width="120"
         />
-        <el-table-column
+        <!-- <el-table-column
           prop="statusTopic"
           label="Trạng thái"
           min-width="100"
-        />
+        /> -->
         <el-table-column prop="year" label="Năm Thực hiện" min-width="120" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
         <el-table-column label="Tài liệu" min-width="200">
@@ -623,7 +632,7 @@ onMounted(async () => {
                   ? scope.row.fileDTOS
                   : []"
                 :key="i"
-                @click="downloadFile(item)"
+                @click="viewFile(item)"
               >
                 - {{ item.name }}
               </li>
@@ -732,6 +741,20 @@ onMounted(async () => {
       </template>
     </el-dialog>
     <!-- End dialog -->
+
+    <el-dialog
+      v-model="visibledDialogIframe"
+      title="Xem tải liệu đề tài"
+      width="60%"
+      top="2vh"
+    >
+      <iframe
+        :src="linkIframe"
+        frameborder="0"
+        width="100%"
+        height="800px"
+      ></iframe>
+    </el-dialog>
   </div>
 </template>
 

@@ -421,7 +421,7 @@ onMounted(async () => {
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
+                <!-- <b-col md="4">
                   <el-form-item label="Trạng thái" prop="status">
                     <el-select
                       v-model="formSearchData.value.status"
@@ -437,7 +437,7 @@ onMounted(async () => {
                       />
                     </el-select>
                   </el-form-item>
-                </b-col>
+                </b-col> -->
                 <b-col md="4">
                   <el-form-item
                     label="Giáo viên phản biện"
@@ -504,7 +504,7 @@ onMounted(async () => {
                     </el-select>
                   </el-form-item>
                 </b-col>
-                <b-col md="12">
+                <b-col md="4">
                   <el-form-item label="Mô tả" prop="description">
                     <el-input
                       v-model="formSearchData.value.description"
@@ -561,12 +561,12 @@ onMounted(async () => {
           label="Điểm kiểm tra tiến độ lần 2"
           min-width="120"
         />
-        <el-table-column prop="status" label="Trạng thái" min-width="100" />
-        <el-table-column
+        <!-- <el-table-column prop="status" label="Trạng thái" min-width="100" /> -->
+        <!-- <el-table-column
           prop="stdNumber"
           label="Số lượng sinh viên"
           min-width="150"
-        />
+        /> -->
         <el-table-column prop="year" label="Năm" min-width="80" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
         <el-table-column

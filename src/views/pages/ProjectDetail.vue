@@ -14,6 +14,8 @@ import { ref, reactive, onMounted } from 'vue'
 const router = useRouter()
 const route = useRoute()
 
+const visibledDialogIframe = ref(false)
+const linkIframe = ref()
 const textSearch = ref('')
 const dialogCategory = ref(false)
 const topicList = reactive({ value: [] })
@@ -103,6 +105,27 @@ const registerProject = async () => {
     })
   }
 }
+const viewFile = async (file) => {
+  try {
+    const res = await TopicApi.downloadFile(file.id)
+    if (res.status === 200) {
+      console.log(res.data)
+      const blob = new Blob([res.data], {
+        type: 'application/pdf',
+      })
+      const url = URL.createObjectURL(blob)
+      console.log(url)
+      visibledDialogIframe.value = true
+      linkIframe.value = url
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage({
+      type: 'error',
+      message: `Tệp không đúng định dạng`,
+    })
+  }
+}
 
 onMounted(async () => {
   await getTopicById()
@@ -133,7 +156,18 @@ onMounted(async () => {
                 {{ topic.lecturerCounterArgumentDTO.fullName }}
               </p>
               <p>Năm thực hiện: {{ new Date(topic.year).getFullYear() }}</p>
-              <p>Bản mềm: <CCardLink>Another link</CCardLink></p>
+              <p>Bản mềm: 
+                <ul class="p-0 list-file">
+                  <li class="item-file"
+                    v-for="(item, i) in topic.fileDTOS
+                      ? topic.fileDTOS
+                      : []"
+                    :key="i"
+                    @click="viewFile(item)">
+                      {{ item.name }}
+                  </li>
+                </ul>
+              </p>
               <p
                 class="text-right"
                 style="width: fit-content"
@@ -217,6 +251,20 @@ onMounted(async () => {
         </CListGroup>
       </CModalBody>
     </CModal>
+
+    <el-dialog
+      v-model="visibledDialogIframe"
+      title="Xem chi tiết tài liệu"
+      width="60%"
+      top="2vh"
+    >
+      <iframe
+        :src="linkIframe"
+        frameborder="0"
+        width="100%"
+        height="800px"
+      ></iframe>
+    </el-dialog>
   </div>
 </template>
 
@@ -224,5 +272,17 @@ onMounted(async () => {
 .card {
   transition: 0.2s ease;
   box-shadow: 0 2px 3px 0px #bebebe;
+}
+
+.list-file {
+  display: inline-flex;
+}
+
+.item-file {
+  margin-left: 20px;
+  padding: 5px 20px;
+  background: #98bc9887;
+  border-radius: 6px;
+  width: 50%;
 }
 </style>
