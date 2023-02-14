@@ -399,6 +399,21 @@ const downloadFile = async (file) => {
   }
 }
 
+const viewFile = async (file) => {
+  try {
+    const res = await TopicApi.downloadFile(file.id)
+    if (res.status === 200) {
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        // xử lý đoạn đưa url vào iframe trên popu
+    }
+  } catch (error) {
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
+  }
+}
+
 onMounted(async () => {
   await getListTeacher()
   await getListCategory()
@@ -586,6 +601,21 @@ onMounted(async () => {
         <el-table-column prop="year" label="Năm Thực hiện" min-width="120" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
         <el-table-column label="Tài liệu" min-width="200">
+          <template #default="scope">
+            <ul class="p-0">
+              <li
+                v-for="(item, i) in scope.row.fileDTOS
+                  ? scope.row.fileDTOS
+                  : []"
+                :key="i"
+                @click="downloadFile(item)"
+              >
+                - {{ item.name }}
+              </li>
+            </ul>
+          </template>
+        </el-table-column>
+        <el-table-column label="Xem tài liệu" min-width="200">
           <template #default="scope">
             <ul class="p-0">
               <li
