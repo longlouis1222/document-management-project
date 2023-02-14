@@ -432,36 +432,16 @@ const exportExcel = async () => {
 
 const downloadFile = async (file) => {
   try {
-    // const res = await TopicApi.downloadFile(file.id)
-    // if (res.status === 200) {
-    //   console.log(res.data)
-    //   const blob = new Blob([res.data], {
-    //     type: 'application/pdf',
-    //   })
-    //   const a = document.createElement('a')
-    //   a.href = URL.createObjectURL(blob)
-    //   a.target = '_blank'
-    //   a.download = `hihi`
-    //   a.click()
-    //   a.remove()
-
-      axios.post(`http://localhost:8084/api/v1/topics/download/${file.id}`, {
-          'responseType': 'blob' // responseType is a sibling of headers, not a child
-      })
-      .then(response=>{
-          if(response.status == 200){
-            console.log(response)
-              const url = window.URL.createObjectURL(new Blob([response.data]));
-              const link = document.createElement('a');
-              link.href = url;
-              link.setAttribute('download', 'hihi.pdf');
-              document.body.appendChild(link);
-              link.click();
-          }
-      })
-      .catch(error => {
-          console.log(error)
-        })
+    const res = await TopicApi.downloadFile(file.id)
+    if (res.status === 200) {
+      const a = document.createElement("a");
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        a.href = url;
+        a.download = file.name;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+    }
   } catch (error) {
     ElMessage({
       type: 'error',
@@ -708,14 +688,14 @@ onMounted(async () => {
                 @click="handle('upload', scope.row)"
                 ><CIcon icon="cilCloudUpload"
               /></CButton>
-              <CButton
+              <!-- <CButton
                 color="info"
                 variant="outline"
                 class="me-2"
                 size="sm"
                 @click="handle('view', scope.row)"
                 ><CIcon icon="cilPaperclip"
-              /></CButton>
+              /></CButton> -->
               <CButton
                 color="info"
                 variant="outline"

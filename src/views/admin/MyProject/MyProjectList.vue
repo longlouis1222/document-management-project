@@ -329,14 +329,9 @@ const uploadFileToDb = async () => {
     return
   }
   let fd = new FormData()
-  fd.append(
-    'filePath',
-    'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link',
-  )
   for (let i = 0; i < fileList.value.length; i++) {
     fd.append('fileUpload', fileList.value[i].raw, fileList.value[i].raw.name)
   }
-  fd.append('shared', true)
   fd.append('topicId', topicId.value)
 
   console.log('fd', fd)
@@ -345,7 +340,7 @@ const uploadFileToDb = async () => {
 
   axios({
     method: 'post',
-    url: 'http://localhost:8084/api/v1/topics/upload',
+    url: 'http://localhost:8084/api/v1/topics/upload-local',
     data: fd,
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -382,6 +377,26 @@ const uploadFileToDb = async () => {
         message: `Có lỗi xảy ra.`,
       })
     })
+}
+
+const downloadFile = async (file) => {
+  try {
+    const res = await TopicApi.downloadFile(file.id)
+    if (res.status === 200) {
+      const a = document.createElement("a");
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        a.href = url;
+        a.download = file.name;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+    }
+  } catch (error) {
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
+  }
 }
 
 onMounted(async () => {
@@ -570,6 +585,21 @@ onMounted(async () => {
         />
         <el-table-column prop="year" label="Năm Thực hiện" min-width="120" />
         <el-table-column prop="description" label="Thông tin" min-width="200" />
+        <el-table-column label="Tài liệu" min-width="200">
+          <template #default="scope">
+            <ul class="p-0">
+              <li
+                v-for="(item, i) in scope.row.fileDTOS
+                  ? scope.row.fileDTOS
+                  : []"
+                :key="i"
+                @click="downloadFile(item)"
+              >
+                - {{ item.name }}
+              </li>
+            </ul>
+          </template>
+        </el-table-column>
         <el-table-column
           fixed="right"
           align="center"
@@ -586,13 +616,13 @@ onMounted(async () => {
                 @click="handle('upload', scope.row)"
                 ><CIcon icon="cilCloudUpload"
               /></CButton>
-              <CButton
+              <!-- <CButton
                 color="info"
                 variant="outline"
                 size="sm"
                 @click="handle('view', scope.row)"
                 ><CIcon icon="cilPaperclip"
-              /></CButton>
+              /></CButton> -->
             </div>
           </template>
         </el-table-column>

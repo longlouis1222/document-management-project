@@ -26,6 +26,8 @@ export default {
     return Api().get(!data ? 'topics/get-topic-suggest' : `topics/get-topic-suggest?${data}`)
   },
   downloadFile(id) {
-    return Api().get(`topics/download/${id}`)
+    return Api().get(`topics/download/${id}`, {
+      responseType: 'blob'
+    })
   }
 }
