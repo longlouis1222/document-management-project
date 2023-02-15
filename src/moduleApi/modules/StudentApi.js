@@ -4,6 +4,12 @@ export default {
   list(data) {
     return Api().get(!data ? 'students' : `students?${data}`)
   },
+  listStudentByLectureGuide(data) {
+    return Api().get(!data ? 'students/students-by-lecture-guide' : `students/students-by-lecture-guide?${data}`)
+  },
+  listStudentByLectureCounterArgument(data) {
+    return Api().get(!data ? 'students/students-by-lecture-counter-argument' : `students/students-by-lecture-counter-argument?${data}`)
+  },
   create(data) {
     return Api().post('students', data)
   },

@@ -111,6 +111,18 @@ export default [
           import('@/views/admin/TopicOfLectureManagement/TopicOfLectureGuideList.vue'),
       },
       {
+        path: '/admin/student-guide-management/student-guide-list',
+        name: 'Quản lý sinh viên hướng dẫn',
+        component: () =>
+          import('@/views/admin/StudentGuideManagement/StudentGuideList.vue'),
+      },
+      {
+        path: '/admin/student-counter-argument-management/student-counter-argument-list',
+        name: 'Quản lý sinh viên phản biện',
+        component: () =>
+          import('@/views/admin/StudentCounterArgumentManagement/StudenCounterArgumentList.vue'),
+      },
+      {
         path: '/admin/topic-of-lecture/topic-student-assign-list',
         name: 'Đề tài sinh viên đăng ký',
         component: () =>
