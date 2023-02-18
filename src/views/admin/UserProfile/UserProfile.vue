@@ -35,7 +35,8 @@ const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const disabled = ref(false)
 const loadImage = ref(false)
-const imgSrc = ref('')
+const imgSrc = ref(require('@/assets/images/avatars/8.jpg'))
+const fileList = ref([])
 
 const handleRemove = (file) => {
   console.log(file)
@@ -47,39 +48,42 @@ const handlePictureCardPreview = (file) => {
   dialogVisible.value = true
 }
 
-const beforeAvatarUpload = (rawFile, file) => {
-  console.log('rawFile', rawFile)
-  console.log('file', file)
-  // if (rawFile.type !== 'image/jpg' || rawFile.type !== 'image/jpeg' || rawFile.type !== 'image/png') {
-  //   ElMessage({
-  //     title: 'Info',
-  //     message: 'Ảnh phải có định dạng là .jpg, .jpeg, .png',
-  //     type: 'info',
-  //     duration: 3000,
-  //   })
-  //   return false
-  // }
-  //  else if (rawFile.size / 1024 / 1024 > 2) {
-  //   ElMessage.error('Avatar picture size can not exceed 2MB!')
-  //   return false
-  // }
-  return true
+const handleExceed = (files, uploadFiles) => {
+  ElMessage.warning(`Giới hạn file tải lên là ${files.length}`)
 }
+// const beforeAvatarUpload = (rawFile, file) => {
+//   console.log('rawFile', rawFile)
+//   console.log('file', file)
+//   // if (rawFile.type !== 'image/jpg' || rawFile.type !== 'image/jpeg' || rawFile.type !== 'image/png') {
+//   //   ElMessage({
+//   //     title: 'Info',
+//   //     message: 'Ảnh phải có định dạng là .jpg, .jpeg, .png',
+//   //     type: 'info',
+//   //     duration: 3000,
+//   //   })
+//   //   return false
+//   // }
+//   //  else if (rawFile.size / 1024 / 1024 > 2) {
+//   //   ElMessage.error('Avatar picture size can not exceed 2MB!')
+//   //   return false
+//   // }
+//   return true
+// }
 
-const handleAvatarSuccess = async (response, uploadFile) => {
-  console.log('ZOO')
-  console.log('response', response)
-  console.log('uploadFile', uploadFile)
-  // imageUrl.value = URL.createObjectURL(uploadFile.raw)
-  // let fd = new FormData()
-  // fd.append('image', uploadFile[0].raw, uploadFile[0].raw.name)
-  // console.log(fd)
-  // const fileApiRes = await FileApi.uploadFile(fd)
-  // console.log(fileApiRes)
-}
+// const handleAvatarSuccess = async (response, uploadFile) => {
+//   console.log('ZOO')
+//   console.log('response', response)
+//   console.log('uploadFile', uploadFile)
+//   // imageUrl.value = URL.createObjectURL(uploadFile.raw)
+//   // let fd = new FormData()
+//   // fd.append('image', uploadFile[0].raw, uploadFile[0].raw.name)
+//   // console.log(fd)
+//   // const fileApiRes = await FileApi.uploadFile(fd)
+//   // console.log(fileApiRes)
+// }
 
 const c = async () => {
-  console.log('formData.value.avatar', formData.value.avatar[0].raw.name)
+  console.log('formData.value.avatar', fileList.value[0].raw.name)
   let fd = new FormData()
   // fd.append(
   //   'filePath',
@@ -92,11 +96,7 @@ const c = async () => {
   // )
   // fd.append('shared', true)
 
-  fd.append(
-    'file',
-    formData.value.avatar[0].raw,
-    formData.value.avatar[0].raw.name,
-  )
+  fd.append('fileUpload', fileList.value[0].raw, fileList.value[0].raw.name)
 
   axios({
     method: 'post',
@@ -114,6 +114,8 @@ const c = async () => {
       //handle success
       console.log('success', response)
       // loadImage.value = true
+
+      getAvt(response.data.data)
     })
     .catch(function (response) {
       //handle error
@@ -134,6 +136,37 @@ const c = async () => {
         message: `Có lỗi xảy ra.`,
       })
     })
+}
+
+const getAvt = async (id) => {
+  try {
+    const res = await FileApi.getFileById(id)
+    if (res.status === 200) {
+      const blob = new Blob([res.data], {
+        type: 'image/png',
+      })
+      const url = URL.createObjectURL(blob)
+      console.log('url >', url)
+      imgSrc.value = url
+    }
+  } catch (error) {
+    console.log(error)
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      type: 'error',
+      message: `Có lỗi xảy ra.`,
+    })
+  }
 }
 
 const submitForm = async (formEl) => {
@@ -226,7 +259,9 @@ const getUserInfo = async () => {
     const userProfileApiRes = await auth.getAccount()
     if (userProfileApiRes.status == 200) {
       userProfile.value = userProfileApiRes.data.data
-      formData.value = { ...userProfile.value }
+      formData.value = { ...formData.value, ...userProfile.value }
+      console.log('userProfile.value', userProfile.value)
+      getAvt(formData.value.avatar)
     }
   } catch (error) {
     if (
@@ -270,7 +305,7 @@ onMounted(() => {
         status-icon
       >
         <b-row>
-          <b-col md="6">
+          <b-col md="8">
             <el-form-item label="Địa chỉ email" prop="">
               <el-input v-model="formData.value.email" disabled />
             </el-form-item>
@@ -315,10 +350,15 @@ onMounted(() => {
               </el-radio-group>
             </el-form-item>
           </b-col>
-          <b-col md="6" class="mb-3">
-            <!-- <img :src="imgSrc" alt="" class="avatar__image me-4" /> -->
-            <!-- <div class="d-flex flex-row align-items-center">
-              <el-upload
+          <b-col md="4" class="mb-3 text-center">
+            <img
+              v-if="imgSrc"
+              :src="imgSrc"
+              alt=""
+              class="avatar__image me-4 text-center"
+            />
+            <div class="text-center">
+              <!-- <el-upload
                 v-model:file-list="formData.value.avatar"
                 action
                 list-type="picture-card"
@@ -355,26 +395,42 @@ onMounted(() => {
                     </span>
                   </div>
                 </template>
+              </el-upload> -->
+              <el-upload
+                v-model:file-list="fileList"
+                class="upload-demo"
+                action
+                multiple
+                :on-remove="handleRemove"
+                :limit="1"
+                :on-exceed="handleExceed"
+                :auto-upload="false"
+              >
+                <template #trigger>
+                  <CButton color="info" class="ms-2 me-3"
+                    >Tải lên ảnh đại diện</CButton
+                  >
+                </template>
+
+                <template #tip>
+                  <div class="el-upload__tip ms-3">
+                    Dạng file .jpg, .jpeg, .png <br />
+                    dung lượng tối đa là 300KB <br />
+                    và kích thước tối thiểu 300x300 pixel.
+                  </div>
+                </template>
               </el-upload>
-
-              <div class="el-upload__tip ms-3">
-                Dạng file .jpg, .jpeg, .png <br />
-                dung lượng tối đa là 300KB <br />
-                và kích thước tối thiểu 300x300 pixel.
-              </div>
+              <CButton
+                v-if="fileList && fileList.length > 0"
+                color="primary"
+                @click="c()"
+                >Cập nhật ảnh đại diện</CButton
+              >
             </div>
-
-            <el-button
-              v-if="formData.value.avatar && formData.value.avatar.length > 0"
-              class="mt-3"
-              type="primary"
-              @click="c()"
-              >Cập nhật ảnh đại diện</el-button
-            >
 
             <el-dialog v-model="dialogVisible">
               <img w-full :src="dialogImageUrl" alt="Preview Image" />
-            </el-dialog> -->
+            </el-dialog>
           </b-col>
         </b-row>
 
@@ -389,6 +445,15 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+:deep .avatar__image {
+  width: 150px;
+  height: 150px;
+  border: 1px solid #bebebe;
+  border-radius: 8px;
+  box-shadow: 0px 1px 4px 2px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
+  margin-left: 10px;
+}
 ::v-deep .avatar-uploader .avatar {
   width: 120px;
   height: 120px;
