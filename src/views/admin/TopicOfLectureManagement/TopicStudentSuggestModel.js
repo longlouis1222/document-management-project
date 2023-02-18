@@ -4,10 +4,14 @@ let model = {}
 // dữ liệu form
 model.dataForm = {
   topicName: null,
+  year: null,
+  description: null
 }
 
 // validation form
 model.validForm = {
+  description: [ValidService.required],
+  year: [ValidService.requiredChange],
   topicName: [ValidService.required],
 }
 
