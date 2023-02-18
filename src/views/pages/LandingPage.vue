@@ -178,9 +178,9 @@ onMounted(() => {
             >
               <CCard>
                 <CCardBody>
-                  <CCardTitle class="text-overflow">{{ i + 1 }}. {{ item.name }}</CCardTitle>
-                  <CCardText class="text-overflow">Chủ đề: {{ item.categoryName }}</CCardText>
-                  <CCardText class="text-overflow">Mô tả: {{ item.description }}</CCardText>
+                  <CCardTitle class="text-overflow">{{ i + 1 }}. {{ item.name ? item.name : '' }}</CCardTitle>
+                  <CCardText class="text-overflow">Chủ đề: {{ item.categoryName ? item.categoryName : '' }}</CCardText>
+                  <CCardText class="text-overflow">Mô tả: {{ item.description ? item.description : '' }}</CCardText>
                   <CCardText
                     >Năm thực hiện:
                     {{ new Date(item.year).getFullYear() }}</CCardText
