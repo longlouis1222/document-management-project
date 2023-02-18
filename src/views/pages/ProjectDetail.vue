@@ -144,19 +144,19 @@ onMounted(async () => {
         <b-col md="8" v-if="topic">
           <CCard>
             <CCardHeader component="h5"
-              >Chi tiết đồ án: {{ topic.name }}</CCardHeader
+              >Chi tiết đồ án: {{ topic.name ? topic.name : '' }}</CCardHeader
             >
             <CCardBody>
-              <p>Chủ đề: {{ topic.categoryName }}</p>
-              <p>Mô tả: {{ topic.description }}</p>
-              <p>Sinh viên thực hiện: {{ topic.stdNumber }}</p>
-              <p>Giảng viên hướng dẫn: {{ topic.lecturerGuideDTO.fullName }}</p>
+              <p>Chủ đề: {{ topic.categoryName ? topic.categoryName : '' }}</p>
+              <p>Mô tả: {{ topic.description ? topic.description : '' }}</p>
+              <p>Sinh viên thực hiện: {{ topic.stdNumber ? topic.stdNumber : '' }}</p>
+              <p>Giảng viên hướng dẫn: {{ topic.lecturerGuideDTO && topic.lecturerGuideDTO.fullName ? topic.lecturerGuideDTO.fullName : '' }}</p>
               <p>
                 Giảng viên phản biện:
-                {{ topic.lecturerCounterArgumentDTO.fullName }}
+                {{ topic.lecturerCounterArgumentDTO && topic.lecturerCounterArgumentDTO.fullName ? topic.lecturerCounterArgumentDTO.fullName : '' }}
               </p>
-              <p>Năm thực hiện: {{ new Date(topic.year).getFullYear() }}</p>
-              <p>Bản mềm: 
+              <p>Năm thực hiện: {{ topic.year ? new Date(topic.year).getFullYear() : '' }}</p>
+              <p v-if="topic.fileDTOS && topic.fileDTOS.length > 0">Bản mềm:
                 <ul class="p-0 list-file">
                   <li class="item-file"
                     v-for="(item, i) in topic.fileDTOS
