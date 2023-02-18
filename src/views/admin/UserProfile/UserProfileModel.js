@@ -22,7 +22,7 @@ model.dataForm = {
 model.validForm = {
   address: [ValidService.required],
   authorities: [],
-  avatar: [ValidService.requiredChange],
+  // avatar: [ValidService.requiredChange],
   dateOfBirth: [ValidService.requiredChange],
   email: [ValidService.required, ValidService.checkEmail],
   fullName: [ValidService.required],
