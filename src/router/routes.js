@@ -112,13 +112,13 @@ export default [
       },
       {
         path: '/admin/student-guide-management/student-guide-list',
-        name: 'Quản lý sinh viên hướng dẫn',
+        name: 'Sinh viên hướng dẫn',
         component: () =>
           import('@/views/admin/StudentGuideManagement/StudentGuideList.vue'),
       },
       {
         path: '/admin/student-counter-argument-management/student-counter-argument-list',
-        name: 'Quản lý sinh viên phản biện',
+        name: 'Sinh viên phản biện',
         component: () =>
           import('@/views/admin/StudentCounterArgumentManagement/StudenCounterArgumentList.vue'),
       },

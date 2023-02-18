@@ -68,14 +68,14 @@ export default [
   },
   {
     component: 'CNavItem',
-    name: 'Quản lý sinh viên hướng dẫn',
+    name: 'Sinh viên hướng dẫn',
     to: '/admin/student-guide-management/student-guide-list',
     icon: 'cilMoodGood',
     role: ['LECTURE']
   },
   {
     component: 'CNavItem',
-    name: 'Quản lý sinh viên phản biện',
+    name: 'Sinh viên phản biện',
     to: '/admin/student-counter-argument-management/student-counter-argument-list',
     icon: 'cilMoodGood',
     role: ['LECTURE']
