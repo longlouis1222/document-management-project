@@ -3,32 +3,18 @@ let model = {}
 
 // dữ liệu form
 model.dataForm = {
-  description: null,
-  fileId: null,
-  name: null,
-  scoreCounterArgument: null,
-  scoreGuide: null,
-  status: null,
-  stdNumber: null,
-  year: null,
-  scoreProcessOne: null,
-  scoreProcessTwo: null,
-  categoryId: null,
+  nameClass: '',
+  nameStudent: '',
+  nameTopic: '',
+  topicYear: '',
 }
 
 // validation form
 model.validForm = {
-  description: [ValidService.required],
-  fileId: [ValidService.requiredChange],
-  lecturerId: [ValidService.requiredChange],
-  name: [ValidService.required],
-  scoreCounterArgument: [ValidService.required],
-  scoreGuide: [ValidService.required],
-  status: [ValidService.requiredChange],
-  stdNumber: [ValidService.required],
-  year: [ValidService.requiredChange],
-  scoreProcessOne: [ValidService.required],
-  scoreProcessTwo: [ValidService.required],
+  nameClass: [ValidService.required],
+  nameStudent: [ValidService.required],
+  nameTopic: [ValidService.required],
+  topicYear: [ValidService.required]
 }
 
 model.tableRules = {
@@ -49,28 +35,18 @@ model.tableRules = {
   recordSelected: [],
   dataSearch: {
     value: {
-      description: '',
-      lecturerGuideId: '',
-      lecturerCounterArgumentId: '',
-      name: '',
-      status: '',
-      year: '',
-      scoreProcessOne: '',
-      scoreProcessTwo: '',
-      categoryId: '',
+      nameClass: '',
+      nameStudent: '',
+      nameTopic: '',
+      topicYear: '',
     },
     valid: {
     },
     operator: {
-      description: '',
-      lecturerGuideId: '',
-      lecturerCounterArgumentId: '',
-      name: '',
-      status: '',
-      year: '',
-      scoreProcessOne: '',
-      scoreProcessTwo: '',
-      categoryId: '',
+      nameClass: '',
+      nameStudent: '',
+      nameTopic: '',
+      topicYear: '',
     },
   },
 }

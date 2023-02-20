@@ -55,13 +55,13 @@ export default createStore({
       } catch (error) {
         console.log(error)
         if (
-          response.response &&
-          response.response.data &&
-          response.response.data.errorMessage
+          error.response &&
+          error.response.data &&
+          error.response.data.message
         ) {
           ElMessage({
             type: 'error',
-            message: `${response.response.data.errorMessage}`,
+            message: `${error.response.data.message}`,
           })
           return
         }

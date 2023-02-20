@@ -156,7 +156,11 @@ const deleteItem = async (rowData) => {
 
 const exportExcel = async () => {
   const a = document.createElement("a");
-  const res = ExcelApi.exportExcelfile('workplace');
+  let dataFilter = {
+    ...tableRules.filters,
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const res = ExcelApi.exportExcelfile('workplace', filter);
   a.href = res
   a.click();
 }

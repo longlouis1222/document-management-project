@@ -118,8 +118,8 @@ const getList = async () => {
       ...dataFilter,
     },
   })
-  // const filter = MethodService.filterTable(JSON.stringify(dataFilter))
-  const topicApiRes = await TopicApi.getStatisticalScore()
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const topicApiRes = await TopicApi.getStatisticalScore(filter)
   if (topicApiRes.status === 200) {
     tableRules.data = topicApiRes.data.data.data
     tableRules.total = topicApiRes.data.data.totalElements
@@ -212,7 +212,7 @@ const fn_tableSortChange = (column, tableSort) => {
 const exportExcel = async () => {
   const a = document.createElement('a')
   let dataFilter = {
-    ...tableRules.filters
+    ...tableRules.filters,
   }
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
   const res = ExcelApi.exportExcelfile('statistical', filter)
@@ -270,34 +270,36 @@ onMounted(async () => {
             >
               <b-row>
                 <b-col md="3">
-                  <el-form-item label="Tên đơn vị" prop="name">
+                  <el-form-item label="Tên lớp" prop="">
                     <el-input
-                      v-model="formSearchData.name"
+                      v-model="formSearchData.nameClass"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
                 <b-col md="3">
-                  <el-form-item label="Email" prop="email">
+                  <el-form-item label="Tên sinh viên" prop="">
                     <el-input
-                      v-model="formSearchData.email"
+                      v-model="formSearchData.nameStudent"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
                 <b-col md="3">
-                  <el-form-item label="Số điện thoại" prop="phoneNumber">
+                  <el-form-item label="Tên đề tài" prop="">
                     <el-input
-                      v-model="formSearchData.phoneNumber"
+                      v-model="formSearchData.nameTopic"
                       autocomplete="off"
                     />
                   </el-form-item>
                 </b-col>
                 <b-col md="3">
-                  <el-form-item label="Địa chỉ" prop="address">
-                    <el-input
-                      v-model="formSearchData.address"
-                      autocomplete="off"
+                  <el-form-item label="Năm" prop="">
+                    <el-date-picker
+                      v-model="formSearchData.topicYear"
+                      type="year"
+                      format="YYYY"
+                      placeholder="Chọn"
                     />
                   </el-form-item>
                 </b-col>

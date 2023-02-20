@@ -99,12 +99,24 @@ const registerProject = async () => {
       await getTopicById()
     }
   } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
     ElMessage({
       type: 'error',
       message: `${error}.`,
     })
   }
 }
+
 const viewFile = async (file) => {
   try {
     const res = await TopicApi.downloadFile(file.id)
