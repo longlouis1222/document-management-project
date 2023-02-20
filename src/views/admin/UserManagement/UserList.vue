@@ -14,6 +14,7 @@ import ExcelApi from '@/moduleApi/modules/ExcelApi'
 import { FormInstance } from 'element-plus'
 
 import modelData from './UserModel'
+import { fill } from 'lodash'
 
 const defaultFilter = DataService.defaultFilter
 const router = useRouter()
@@ -217,9 +218,25 @@ const deleteItem = async (rowData) => {
 
 const exportExcel = async () => {
   const a = document.createElement('a')
-  const res = ExcelApi.exportExcelfile('user')
+  let dataFilter = {
+    ...tableRules.filters
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const res = ExcelApi.exportExcelfile('user', filter)
   a.href = res
   a.click()
+}
+
+const fillStudentCodeOrLectureCode = () => {
+  console.log(formData.value.studentOrLectureId)
+  console.log("test >>", formData.value.type == 'LECTURE' ? 'Giáo viên' : 'Sinh viên')
+
+  const o = dynamicList.value.find(item => item.id == formData.value.studentOrLectureId)
+  if (formData.value.type == 'LECTURE') {
+    formData.value.username = o && o.codeLecture ? o.codeLecture : ''
+  } else {
+    formData.value.username = o && o.codeStudent ? o.codeStudent : ''
+  }
 }
 
 const fn_tableSizeChange = (limit) => {
@@ -524,6 +541,7 @@ onMounted(async () => {
                 v-model="formData.value.studentOrLectureId"
                 placeholder="chọn"
                 filterable
+                @change="fillStudentCodeOrLectureCode()"
               >
                 <el-option
                   v-for="item in dynamicList.value"
@@ -541,7 +559,7 @@ onMounted(async () => {
           </b-col>
           <b-col md="12">
             <el-form-item label="Tên người dùng" prop="username">
-              <el-input v-model="formData.value.username" autocomplete="off" />
+              <el-input v-model="formData.value.username" autocomplete="off" disabled />
             </el-form-item>
           </b-col>
           <b-col md="12">

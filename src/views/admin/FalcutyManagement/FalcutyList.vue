@@ -233,7 +233,11 @@ const getListWorkplace = async () => {
 
 const exportExcel = async () => {
   const a = document.createElement('a')
-  const res = ExcelApi.exportExcelfile('faculty')
+  let dataFilter = {
+    ...tableRules.filters
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const res = ExcelApi.exportExcelfile('faculty', filter)
   a.href = res
   a.click()
 }

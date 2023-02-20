@@ -425,7 +425,11 @@ const uploadFileToDb = async () => {
 
 const exportExcel = async () => {
   const a = document.createElement('a')
-  const res = ExcelApi.exportExcelfile('topic')
+  let dataFilter = {
+    ...tableRules.filters
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const res = ExcelApi.exportExcelfile('topic', filter)
   a.href = res
   a.click()
 }

@@ -3,28 +3,37 @@ let model = {}
 
 // dữ liệu form
 model.dataForm = {
+  description: null,
+  fileId: null,
   name: null,
-  email: null,
-  phoneNumber: null,
-  address: null,
+  scoreCounterArgument: null,
+  scoreGuide: null,
+  status: null,
+  stdNumber: null,
+  year: null,
+  scoreProcessOne: null,
+  scoreProcessTwo: null,
+  categoryId: null,
 }
 
 // validation form
 model.validForm = {
+  description: [ValidService.required],
+  fileId: [ValidService.requiredChange],
+  lecturerId: [ValidService.requiredChange],
   name: [ValidService.required],
-  email: [ValidService.required, ValidService.checkEmail],
-  phoneNumber: [ValidService.required],
-  address: [ValidService.required],
+  scoreCounterArgument: [ValidService.required],
+  scoreGuide: [ValidService.required],
+  status: [ValidService.requiredChange],
+  stdNumber: [ValidService.required],
+  year: [ValidService.requiredChange],
+  scoreProcessOne: [ValidService.required],
+  scoreProcessTwo: [ValidService.required],
 }
-
-model.dataFormOther = {}
-
-// validation các form khác
-model.validFormOther = {}
 
 model.tableRules = {
   data: [],
-  lengthMenu: [10, 20, 50, 100],
+  lengthMenu: [9, 18, 27, 36],
   allowPaging: true,
   allowSorting: true,
   allowSelect: false,
@@ -35,27 +44,33 @@ model.tableRules = {
   limit: 10,
   skip: 0,
   sort: '',
-  defaultSort: ['status_order', 'ascending'],
+  defaultSort: ['', 'ascending'],
   filters: '',
   recordSelected: [],
   dataSearch: {
     value: {
+      description: '',
+      lecturerGuideId: '',
+      lecturerCounterArgumentId: '',
       name: '',
-      email: '',
-      phoneNumber: '',
-      address: '',
+      status: '',
+      year: '',
+      scoreProcessOne: '',
+      scoreProcessTwo: '',
+      categoryId: '',
     },
     valid: {
-      name: [],
-      email: [],
-      phoneNumber: [],
-      address: [],
     },
     operator: {
+      description: '',
+      lecturerGuideId: '',
+      lecturerCounterArgumentId: '',
       name: '',
-      email: '',
-      phoneNumber: '',
-      address: '',
+      status: '',
+      year: '',
+      scoreProcessOne: '',
+      scoreProcessTwo: '',
+      categoryId: '',
     },
   },
 }

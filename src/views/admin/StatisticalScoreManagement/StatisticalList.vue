@@ -211,7 +211,11 @@ const fn_tableSortChange = (column, tableSort) => {
 
 const exportExcel = async () => {
   const a = document.createElement('a')
-  const res = ExcelApi.exportExcelfile('statistical')
+  let dataFilter = {
+    ...tableRules.filters
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const res = ExcelApi.exportExcelfile('statistical', filter)
   a.href = res
   a.click()
 }
@@ -228,15 +232,10 @@ onMounted(async () => {
         <div class="card-header">
           <div class="d-flex justify-content-between">
             <h4>Danh sách Thống kê điểm</h4>
-            <!-- <div>
+            <div>
               <CButton color="primary" class="me-2" @click="toggleSearchBox"
                 ><CIcon icon="cilSearch" class="me-2" /> Tra cứu</CButton
               >
-              <CButton color="primary" @click="openDialogAddItem"
-                >Thêm mới</CButton
-              >
-            </div> -->
-            <div>
               <CButton
                 color="info"
                 variant="outline"
@@ -244,6 +243,9 @@ onMounted(async () => {
                 @click="exportExcel"
                 ><CIcon icon="cilCloudDownload"
               /></CButton>
+              <!-- <CButton color="primary" @click="openDialogAddItem"
+                >Thêm mới</CButton
+              > -->
             </div>
           </div>
         </div>
@@ -264,6 +266,7 @@ onMounted(async () => {
               label-position="top"
               class="demo-ruleForm"
               status-icon
+              @submit.prevent="submitFormSearch(ruleFormRef)"
             >
               <b-row>
                 <b-col md="3">
