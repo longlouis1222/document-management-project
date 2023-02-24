@@ -162,11 +162,35 @@ const updateItem = async (rowData) => {
   formData.username = rowData.username
   formData.email = rowData.email
   formData.status = formData.status == 1 ? -1 : 1
-  const userApiRes = await UserApi.update(formData.value)
-  if (userApiRes.status === 200) {
-    await getList()
-    componentKey.value++
-    viewMode.value = 'create'
+
+  try {
+    const userApiRes = await UserApi.update(formData.value)
+    if (userApiRes.status === 200) {
+      ElMessage({
+        type: 'success',
+        message: `Cập nhật thành công`,
+      })
+
+      await getList()
+      componentKey.value++
+      viewMode.value = 'create'
+    }
+  } catch (response) {
+    if (
+      response.response &&
+      response.response.data &&
+      response.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${response.response.data.errorMessage}`,
+      })
+      return
+    }
+    ElMessage({
+      message: `${response.message}`,
+      type: 'error',
+    })
   }
 }
 
@@ -202,16 +226,34 @@ const deleteItem = async (rowData) => {
     // autofocus: false,
     confirmButtonText: 'Đồng ý',
     callback: async () => {
-      const userApiRes = await UserApi.delete(rowData.id)
-      if (userApiRes.status === 200) {
-        await getList()
-        console.log(userApiRes)
-      }
+      try {
+        const userApiRes = await UserApi.delete(rowData.id)
+        if (userApiRes.status === 200) {
+          await getList()
+          console.log(userApiRes)
+        }
 
-      ElMessage({
-        type: 'success',
-        message: `Xóa thành công`,
-      })
+        ElMessage({
+          type: 'success',
+          message: `Xóa thành công`,
+        })
+      } catch (response) {
+        if (
+          response.response &&
+          response.response.data &&
+          response.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${response.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          message: `${response.message}`,
+          type: 'error',
+        })
+      }
     },
   })
 }
@@ -219,7 +261,7 @@ const deleteItem = async (rowData) => {
 const exportExcel = async () => {
   const a = document.createElement('a')
   let dataFilter = {
-    ...tableRules.filters
+    ...tableRules.filters,
   }
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
   const res = ExcelApi.exportExcelfile('user', filter)
@@ -229,9 +271,14 @@ const exportExcel = async () => {
 
 const fillStudentCodeOrLectureCode = () => {
   console.log(formData.value.studentOrLectureId)
-  console.log("test >>", formData.value.type == 'LECTURE' ? 'Giáo viên' : 'Sinh viên')
+  console.log(
+    'test >>',
+    formData.value.type == 'LECTURE' ? 'Giáo viên' : 'Sinh viên',
+  )
 
-  const o = dynamicList.value.find(item => item.id == formData.value.studentOrLectureId)
+  const o = dynamicList.value.find(
+    (item) => item.id == formData.value.studentOrLectureId,
+  )
   if (formData.value.type == 'LECTURE') {
     formData.value.username = o && o.codeLecture ? o.codeLecture : ''
   } else {
@@ -303,6 +350,17 @@ const changeAccountStatus = async (rowData) => {
     }
   } catch (error) {
     console.log(error)
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
     ElMessage({
       message: `${error.message}`,
       type: 'error',
@@ -530,7 +588,7 @@ onMounted(async () => {
               </el-select>
             </el-form-item>
           </b-col>
-          <b-col md="12" v-if="formData.value.type">
+          <b-col md="12" v-if="formData.value.type !== 'OTHER'">
             <el-form-item
               :label="
                 formData.value.type == 'LECTURE' ? 'Giáo viên' : 'Sinh viên'
@@ -559,7 +617,7 @@ onMounted(async () => {
           </b-col>
           <b-col md="12">
             <el-form-item label="Tên người dùng" prop="username">
-              <el-input v-model="formData.value.username" autocomplete="off" disabled />
+              <el-input v-model="formData.value.username" autocomplete="off" />
             </el-form-item>
           </b-col>
           <b-col md="12">
