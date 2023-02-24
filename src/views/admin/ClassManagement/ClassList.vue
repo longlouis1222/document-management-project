@@ -4,7 +4,7 @@ import DataService from '@/service/DataService'
 import FacultyApi from '@/moduleApi/modules/FacultyApi'
 import ClassApi from '@/moduleApi/modules/ClassApi'
 import ExcelApi from '@/moduleApi/modules/ExcelApi'
-import ExcelApi from '@/moduleApi/modules/ImportExcelApi'
+import ImportExcelApi from '@/moduleApi/modules/ImportExcelApi'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
