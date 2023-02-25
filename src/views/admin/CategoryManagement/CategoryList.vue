@@ -225,7 +225,11 @@ const getListFaculty = async () => {
 
 const exportExcel = async () => {
   const a = document.createElement('a')
-  const res = ExcelApi.exportExcelfile('category')
+  let dataFilter = {
+    ...tableRules.filters
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const res = ExcelApi.exportExcelfile('category', filter)
   a.href = res
   a.click()
 }

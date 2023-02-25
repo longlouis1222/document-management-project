@@ -16,8 +16,8 @@ export default {
   delete(id) {
     return Api().delete(`topics/${id}`)
   },
-  getStatisticalScore() {
-    return Api().get(`topics/statistical-score`)
+  getStatisticalScore(data) {
+    return Api().get(!data ? 'topics/statistical-score' : `topics/statistical-score?${data}`)
   },
   getListTopicSuggest(data) {
     return Api().get(!data ? 'topics/get-list-topic-suggest' : `topics/get-list-topic-suggest?${data}`)

@@ -168,14 +168,32 @@ const deleteItem = async (id) => {
     // autofocus: false,
     confirmButtonText: 'Đồng ý',
     callback: async () => {
-      const topicApiRes = await TopicApi.delete(id)
-      if (topicApiRes.status === 200) {
+      try {
+        const topicApiRes = await TopicApi.delete(id)
+        if (topicApiRes.status === 200) {
+          ElMessage({
+            type: 'success',
+            message: `Xóa thành công`,
+          })
+          await getList()
+          viewMode.value = 'create'
+        }
+      } catch (response) {
+        if (
+          response.response &&
+          response.response.data &&
+          response.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${response.response.data.errorMessage}`,
+          })
+          return
+        }
         ElMessage({
-          type: 'success',
-          message: `Xóa thành công`,
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
         })
-        await getList()
-        viewMode.value = 'create'
       }
     },
   })
@@ -425,7 +443,11 @@ const uploadFileToDb = async () => {
 
 const exportExcel = async () => {
   const a = document.createElement('a')
-  const res = ExcelApi.exportExcelfile('topic')
+  let dataFilter = {
+    ...tableRules.filters,
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const res = ExcelApi.exportExcelfile('topic', filter)
   a.href = res
   a.click()
 }
@@ -434,15 +456,26 @@ const downloadFile = async (file) => {
   try {
     const res = await TopicApi.downloadFile(file.id)
     if (res.status === 200) {
-      const a = document.createElement("a");
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        a.href = url;
-        a.download = file.name;
-        a.click();
-        window.URL.revokeObjectURL(url);
-        a.remove();
+      const a = document.createElement('a')
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      a.href = url
+      a.download = file.name
+      a.click()
+      window.URL.revokeObjectURL(url)
+      a.remove()
     }
   } catch (error) {
+    if (
+      response.response &&
+      response.response.data &&
+      response.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${response.response.data.errorMessage}`,
+      })
+      return
+    }
     ElMessage({
       type: 'error',
       message: `Có lỗi xảy ra.`,

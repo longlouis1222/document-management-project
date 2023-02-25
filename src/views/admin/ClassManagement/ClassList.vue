@@ -4,6 +4,7 @@ import DataService from '@/service/DataService'
 import FacultyApi from '@/moduleApi/modules/FacultyApi'
 import ClassApi from '@/moduleApi/modules/ClassApi'
 import ExcelApi from '@/moduleApi/modules/ExcelApi'
+import ImportExcelApi from '@/moduleApi/modules/ImportExcelApi'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -225,7 +226,11 @@ const getListFaculty = async () => {
 
 const exportExcel = async () => {
   const a = document.createElement('a')
-  const res = ExcelApi.exportExcelfile('class')
+  let dataFilter = {
+    ...tableRules.filters
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const res = ExcelApi.exportExcelfile('class', filter)
   a.href = res
   a.click()
 }
@@ -272,6 +277,9 @@ onMounted(async () => {
             >
             <CButton color="primary" @click="openDialogAddItem"
               >Thêm mới</CButton
+            >
+            <CButton color="primary" @click="openDialogAddItem"
+              >Import Excel</CButton
             >
             <CButton
               color="info"

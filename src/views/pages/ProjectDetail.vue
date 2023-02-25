@@ -99,12 +99,24 @@ const registerProject = async () => {
       await getTopicById()
     }
   } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorMessage
+    ) {
+      ElMessage({
+        type: 'error',
+        message: `${error.response.data.errorMessage}`,
+      })
+      return
+    }
     ElMessage({
       type: 'error',
       message: `${error}.`,
     })
   }
 }
+
 const viewFile = async (file) => {
   try {
     const res = await TopicApi.downloadFile(file.id)
@@ -180,7 +192,7 @@ onMounted(async () => {
                 size="sm"
                 @click="registerProject"
                 v-if="!topic.studentRegistry"
-                >Chưa đăng ký đề tài</CButton
+                >Chưa có sinh viên đăng ký đề tài</CButton
               >
               <CButton
                 color="success"
@@ -188,7 +200,7 @@ onMounted(async () => {
                 @click="registerProject"
                 :disabled="topic.studentRegistry"
                 v-if="topic.studentRegistry"
-                >Đã đăng ký đề tài</CButton
+                >Đã có sinh viên đăng ký đề tài</CButton
               >
             </CCardBody>
           </CCard>

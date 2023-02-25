@@ -185,22 +185,22 @@ onMounted(() => {
                     >Năm thực hiện:
                     {{ new Date(item.year).getFullYear() }}</CCardText
                   >
-                  <CButton color="light" size="sm" @click="goToDetail(item.id)"
+                  <CButton class="text-overflow" color="light" size="sm" @click="goToDetail(item.id)"
                     >Xem chi tiết</CButton
                   >
                   <CButton
-                    class="btn-registry"
+                    class="mt-2 text-overflow"
                     color="success"
                     size="sm"
                     v-if="item.studentRegistry"
-                    >Đã đăng ký</CButton
+                    >Đã có sinh viên đăng ký</CButton
                   >
                   <CButton
-                    class="btn-registry"
+                    class="mt-2 text-overflow"
                     color="info"
                     size="sm"
                     v-if="!item.studentRegistry"
-                    >Chưa đăng ký</CButton
+                    >Chưa có sinh viên đăng ký</CButton
                   >
                 </CCardBody>
               </CCard>

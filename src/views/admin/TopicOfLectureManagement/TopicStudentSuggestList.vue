@@ -51,6 +51,8 @@ const submitForm = async (formEl) => {
         if (viewMode.value === 'create') {
           const topicApiRes = await StudentApi.createTopicSuggest({
             topicName: formData.value.topicName,
+            year: formData.value.year,
+            description: formData.value.description,
           })
           if (topicApiRes.status === 200) {
             ElMessage({
@@ -303,6 +305,24 @@ onMounted(async () => {
                     />
                   </el-form-item>
                 </b-col>
+                <!-- <b-col md="4">
+                  <el-form-item label="Năm thực hiện" prop="">
+                    <el-date-picker
+                      v-model="formData.value.year"
+                      type="year"
+                      format="YYYY"
+                      placeholder="Chọn"
+                    />
+                  </el-form-item>
+                </b-col>
+                <b-col md="4">
+                  <el-form-item label="Mô tả" prop="">
+                    <el-input
+                      v-model="formData.value.description"
+                      autocomplete="off"
+                    />
+                  </el-form-item>
+                </b-col> -->
               </b-row>
               <div class="text-center">
                 <CButton color="primary" @click="submitFormSearch(ruleFormRef)"
@@ -352,9 +372,9 @@ onMounted(async () => {
           prop="stdNumber"
           label="Số lượng sinh viên"
           min-width="150"
-        />
-        <el-table-column prop="year" label="Năm" min-width="80" />
-        <el-table-column prop="description" label="Thông tin" min-width="200" /> -->
+        /> -->
+        <el-table-column prop="year" label="Năm thực hiện" min-width="80" />
+        <el-table-column prop="description" label="Thông tin" min-width="200" />
         <!-- <el-table-column
           fixed="right"
           align="center"
@@ -412,9 +432,27 @@ onMounted(async () => {
         @submit.prevent
       >
         <b-row>
-          <b-col md="12">
+          <b-col md="4">
             <el-form-item label="Tên đồ án" prop="topicName">
               <el-input v-model="formData.value.topicName" autocomplete="off" />
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Năm thực hiện" prop="year">
+              <el-date-picker
+                v-model="formData.value.year"
+                type="year"
+                format="YYYY"
+                placeholder="Chọn"
+              />
+            </el-form-item>
+          </b-col>
+          <b-col md="4">
+            <el-form-item label="Mô tả" prop="description">
+              <el-input
+                v-model="formData.value.description"
+                autocomplete="off"
+              />
             </el-form-item>
           </b-col>
         </b-row>

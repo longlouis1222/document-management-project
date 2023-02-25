@@ -17,7 +17,7 @@ import modelData from './StudentCounterArgumentModel'
 const defaultFilter = DataService.defaultFilter
 
 const router = useRouter()
-const moduleName = 'Quản lý sinh viên phản biện'
+const moduleName = 'Sinh viên phản biện'
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const formData = reactive({

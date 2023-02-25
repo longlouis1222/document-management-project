@@ -3,28 +3,23 @@ let model = {}
 
 // dữ liệu form
 model.dataForm = {
-  name: null,
-  email: null,
-  phoneNumber: null,
-  address: null,
+  nameClass: '',
+  nameStudent: '',
+  nameTopic: '',
+  topicYear: '',
 }
 
 // validation form
 model.validForm = {
-  name: [ValidService.required],
-  email: [ValidService.required, ValidService.checkEmail],
-  phoneNumber: [ValidService.required],
-  address: [ValidService.required],
+  nameClass: [ValidService.required],
+  nameStudent: [ValidService.required],
+  nameTopic: [ValidService.required],
+  topicYear: [ValidService.required]
 }
-
-model.dataFormOther = {}
-
-// validation các form khác
-model.validFormOther = {}
 
 model.tableRules = {
   data: [],
-  lengthMenu: [10, 20, 50, 100],
+  lengthMenu: [9, 18, 27, 36],
   allowPaging: true,
   allowSorting: true,
   allowSelect: false,
@@ -35,27 +30,23 @@ model.tableRules = {
   limit: 10,
   skip: 0,
   sort: '',
-  defaultSort: ['status_order', 'ascending'],
+  defaultSort: ['', 'ascending'],
   filters: '',
   recordSelected: [],
   dataSearch: {
     value: {
-      name: '',
-      email: '',
-      phoneNumber: '',
-      address: '',
+      nameClass: '',
+      nameStudent: '',
+      nameTopic: '',
+      topicYear: '',
     },
     valid: {
-      name: [],
-      email: [],
-      phoneNumber: [],
-      address: [],
     },
     operator: {
-      name: '',
-      email: '',
-      phoneNumber: '',
-      address: '',
+      nameClass: '',
+      nameStudent: '',
+      nameTopic: '',
+      topicYear: '',
     },
   },
 }

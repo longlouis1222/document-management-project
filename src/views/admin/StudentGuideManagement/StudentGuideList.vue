@@ -17,7 +17,7 @@ import modelData from './StudentGuideModel'
 const defaultFilter = DataService.defaultFilter
 
 const router = useRouter()
-const moduleName = 'Quản lý sinh viên hướng dẫn'
+const moduleName = 'Sinh viên hướng dẫn'
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const formData = reactive({
