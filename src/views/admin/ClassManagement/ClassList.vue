@@ -4,7 +4,6 @@ import DataService from '@/service/DataService'
 import FacultyApi from '@/moduleApi/modules/FacultyApi'
 import ClassApi from '@/moduleApi/modules/ClassApi'
 import ExcelApi from '@/moduleApi/modules/ExcelApi'
-import ImportExcelApi from '@/moduleApi/modules/ImportExcelApi'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -12,6 +11,10 @@ import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
 import modelData from './ClassModel'
+import axios from 'axios'
+
+const dialogUpload = ref(false)
+const fileList = ref([])
 
 const defaultFilter = DataService.defaultFilter
 const router = useRouter()
@@ -259,6 +262,64 @@ const fn_tableSortChange = (column, tableSort) => {
   // getService();
 }
 
+const importExcel = async () => {
+  fileList.value = []
+  dialogUpload.value = true
+}
+
+const uploadFileToDb = async () => {
+  if (!fileList.value || (fileList.value && fileList.value.length == 0)) {
+    ElMessage.warning(`Vui lòng tải lên ít nhất 1 file.`)
+    return
+  }
+  let fd = new FormData()
+
+  for (let i = 0; i < fileList.value.length; i++) {
+    fd.append('fileUpload', fileList.value[i].raw, fileList.value[i].raw.name)
+  }
+
+  axios({
+    method: 'post',
+    url: 'http://localhost:8084/api/v1/import-excel/class',
+    data: fd,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization:
+        localStorage.getItem('Token') && localStorage.getItem('uid')
+          ? 'Bearer ' + localStorage.getItem('Token')
+          : '',
+    },
+  })
+    .then(async (response) => {
+      //handle success
+      console.log('success', response)
+
+      dialogUpload.value = false
+      fileList.value = []
+      await getList()
+      ElMessage.success(`Tải lên file thành công.`)
+    })
+    .catch((response) => {
+      //handle error
+      console.log('error', response)
+      if (
+        response.response &&
+        response.response.data &&
+        response.response.data.errorMessage
+      ) {
+        ElMessage({
+          type: 'error',
+          message: `${response.response.data.errorMessage}`,
+        })
+        return
+      }
+      ElMessage({
+        type: 'error',
+        message: `Có lỗi xảy ra.`,
+      })
+    })
+}
+
 onMounted(async () => {
   await getListFaculty()
   await getList()
@@ -278,15 +339,19 @@ onMounted(async () => {
             <CButton color="primary" @click="openDialogAddItem"
               >Thêm mới</CButton
             >
-            <CButton color="primary" @click="openDialogAddItem"
-              >Import Excel</CButton
-            >
             <CButton
               color="info"
               variant="outline"
               class="ms-2"
               @click="exportExcel"
               ><CIcon icon="cilCloudDownload"
+            /></CButton>
+            <CButton
+              color="info"
+              variant="outline"
+              class="ms-2"
+              @click="importExcel"
+              ><CIcon icon="cilCloudUpload"
             /></CButton>
           </div>
         </div>
@@ -472,6 +537,65 @@ onMounted(async () => {
       </template>
     </el-dialog>
     <!-- End dialog -->
+
+    <!-- Start dialog Upload -->
+    <el-dialog
+      v-model="dialogUpload"
+      title="Thêm file đính kèm"
+      :close-on-click-modal="false"
+      :close-on-press-escape="true"
+      width="30%"
+      @close="resetForm(ruleFormRef)"
+    >
+      <el-form
+        ref="ruleFormRef"
+        :model="formData.value"
+        :rules="formValid"
+        label-width="140px"
+        label-position="top"
+        class="demo-ruleForm"
+        status-icon
+      >
+        <div class="text-center">
+          <el-upload
+            v-model:file-list="fileList"
+            class="upload-demo"
+            action
+            multiple
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            :limit="5"
+            :on-exceed="handleExceed"
+            :auto-upload="false"
+            accept=".xlsx"
+          >
+            <template #trigger>
+              <CButton color="info"
+                >Tải file lên</CButton
+              >
+            </template>
+
+            <template #tip>
+              <div class="el-upload__tip">
+                File tải lên có dung lượng tối đa 500kb
+              </div>
+            </template>
+          </el-upload>
+        </div>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <CButton
+            v-if="fileList && fileList.length > 0"
+            color="primary"
+            @click="uploadFileToDb"
+            >Cập nhật</CButton
+          >
+        </span>
+      </template>
+    </el-dialog>
+    <!-- End dialog upload -->
   </div>
 </template>
 

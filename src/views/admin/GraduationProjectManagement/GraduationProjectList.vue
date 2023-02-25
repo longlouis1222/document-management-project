@@ -37,6 +37,8 @@ const dialogModel = ref(false)
 const viewMode = ref('create')
 const teacherList = reactive({ value: [] })
 const categoryList = reactive({ value: [] })
+const dialogUploadExcel = ref(false)
+const fileListExcel = ref([])
 
 const dialogUpload = ref(false)
 const fileList = ref([])
@@ -483,6 +485,64 @@ const downloadFile = async (file) => {
   }
 }
 
+const importExcel = async () => {
+  fileListExcel.value = []
+  dialogUploadExcel.value = true
+}
+
+const uploadFileExcelToDb = async () => {
+  if (!fileListExcel.value || (fileListExcel.value && fileListExcel.value.length == 0)) {
+    ElMessage.warning(`Vui lòng tải lên ít nhất 1 file.`)
+    return
+  }
+  let fd = new FormData()
+
+  for (let i = 0; i < fileListExcel.value.length; i++) {
+    fd.append('fileUpload', fileListExcel.value[i].raw, fileListExcel.value[i].raw.name)
+  }
+
+  axios({
+    method: 'post',
+    url: 'http://localhost:8084/api/v1/import-excel/topic',
+    data: fd,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization:
+        localStorage.getItem('Token') && localStorage.getItem('uid')
+          ? 'Bearer ' + localStorage.getItem('Token')
+          : '',
+    },
+  })
+    .then(async (response) => {
+      //handle success
+      console.log('success', response)
+
+      dialogUploadExcel.value = false
+      fileListExcel.value = []
+      await getList()
+      ElMessage.success(`Tải lên file thành công.`)
+    })
+    .catch((response) => {
+      //handle error
+      console.log('error', response)
+      if (
+        response.response &&
+        response.response.data &&
+        response.response.data.errorMessage
+      ) {
+        ElMessage({
+          type: 'error',
+          message: `${response.response.data.errorMessage}`,
+        })
+        return
+      }
+      ElMessage({
+        type: 'error',
+        message: `Có lỗi xảy ra.`,
+      })
+    })
+}
+
 onMounted(async () => {
   await getListTeacher()
   await getListCategory()
@@ -511,6 +571,13 @@ onMounted(async () => {
                 @click="exportExcel"
                 ><CIcon icon="cilCloudDownload"
               /></CButton>
+              <CButton
+              color="info"
+              variant="outline"
+              class="ms-2"
+              @click="importExcel"
+              ><CIcon icon="cilCloudUpload"
+            /></CButton>
             </div>
           </div>
         </div>
@@ -991,6 +1058,63 @@ onMounted(async () => {
             v-if="viewMode == 'upload'"
             color="primary"
             @click="uploadFileToDb"
+            >Cập nhật</CButton
+          >
+        </span>
+      </template>
+    </el-dialog>
+    <!-- End dialog upload -->
+
+    <!-- Start dialog Upload Excel-->
+    <el-dialog
+      v-model="dialogUploadExcel"
+      title="Thêm file đính kèm"
+      :close-on-click-modal="false"
+      :close-on-press-escape="true"
+      width="30%"
+      @close="resetForm(ruleFormRef)"
+    >
+      <el-form
+        ref="ruleFormRef"
+        :model="formData.value"
+        :rules="formValid"
+        label-width="140px"
+        label-position="top"
+        class="demo-ruleForm"
+        status-icon
+      >
+        <div class="text-center">
+          <el-upload
+            v-model:file-list="fileListExcel"
+            class="upload-demo"
+            action
+            multiple
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            :limit="5"
+            :on-exceed="handleExceed"
+            :auto-upload="false"
+            accept=".xlsx"
+          >
+            <template #trigger>
+              <CButton color="info">Tải file lên</CButton>
+            </template>
+
+            <template #tip>
+              <div class="el-upload__tip">
+                File tải lên có dung lượng tối đa 500kb
+              </div>
+            </template>
+          </el-upload>
+        </div>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <CButton
+            v-if="fileListExcel && fileListExcel.length > 0"
+            color="primary"
+            @click="uploadFileExcelToDb"
             >Cập nhật</CButton
           >
         </span>
