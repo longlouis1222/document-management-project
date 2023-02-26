@@ -75,8 +75,22 @@ const submitForm = async (formEl) => {
         }
         resetForm(formEl)
         await getList()
-      } catch (error) {
-        console.log(error)
+      } catch (response) {
+        if (
+          response.response &&
+          response.response.data &&
+          response.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${response.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -193,14 +207,33 @@ const deleteItem = async (id) => {
     // autofocus: false,
     confirmButtonText: 'Đồng ý',
     callback: async () => {
-      const assemblyApiRes = await AssemblyApi.delete(id)
-      if (assemblyApiRes.status === 200) {
+      try {
+        const assemblyApiRes = await AssemblyApi.delete(id)
+        if (assemblyApiRes.status === 200) {
+          ElMessage({
+            type: 'success',
+            message: `Xóa thành công`,
+          })
+          await getList()
+          viewMode.value = 'create'
+        }
+      } catch (response) {
+        console.log('error', response)
+        if (
+          response.response &&
+          response.response.data &&
+          response.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${response.response.data.errorMessage}`,
+          })
+          return
+        }
         ElMessage({
-          type: 'success',
-          message: `Xóa thành công`,
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
         })
-        await getList()
-        viewMode.value = 'create'
       }
     },
   })
@@ -259,7 +292,7 @@ const getTopicList = async () => {
 const exportExcel = async () => {
   const a = document.createElement('a')
   let dataFilter = {
-    ...tableRules.filters
+    ...tableRules.filters,
   }
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
   const res = ExcelApi.exportExcelfile('assembly', filter)
@@ -707,9 +740,7 @@ onMounted(async () => {
             accept=".xlsx"
           >
             <template #trigger>
-              <CButton color="info"
-                >Tải file lên</CButton
-              >
+              <CButton color="info">Tải file lên</CButton>
             </template>
 
             <template #tip>

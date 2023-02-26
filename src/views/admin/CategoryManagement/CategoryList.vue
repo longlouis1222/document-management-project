@@ -189,14 +189,32 @@ const deleteItem = async (id) => {
     // autofocus: false,
     confirmButtonText: 'Đồng ý',
     callback: async () => {
-      const categoryApiRes = await CategoryApi.delete(id)
-      if (categoryApiRes.status === 200) {
+      try {
+        const categoryApiRes = await CategoryApi.delete(id)
+        if (categoryApiRes.status === 200) {
+          ElMessage({
+            type: 'success',
+            message: `Xóa thành công`,
+          })
+          await getList()
+          viewMode.value = 'create'
+        }
+      } catch (response) {
+        if (
+          response.response &&
+          response.response.data &&
+          response.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${response.response.data.errorMessage}`,
+          })
+          return
+        }
         ElMessage({
-          type: 'success',
-          message: `Xóa thành công`,
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
         })
-        await getList()
-        viewMode.value = 'create'
       }
     },
   })

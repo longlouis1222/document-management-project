@@ -80,8 +80,22 @@ const submitForm = async (formEl) => {
         }
         resetForm(formEl)
         await getList()
-      } catch (error) {
-        console.log(error)
+      } catch (response) {
+        if (
+          response.response &&
+          response.response.data &&
+          response.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${response.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -491,14 +505,21 @@ const importExcel = async () => {
 }
 
 const uploadFileExcelToDb = async () => {
-  if (!fileListExcel.value || (fileListExcel.value && fileListExcel.value.length == 0)) {
+  if (
+    !fileListExcel.value ||
+    (fileListExcel.value && fileListExcel.value.length == 0)
+  ) {
     ElMessage.warning(`Vui lòng tải lên ít nhất 1 file.`)
     return
   }
   let fd = new FormData()
 
   for (let i = 0; i < fileListExcel.value.length; i++) {
-    fd.append('fileUpload', fileListExcel.value[i].raw, fileListExcel.value[i].raw.name)
+    fd.append(
+      'fileUpload',
+      fileListExcel.value[i].raw,
+      fileListExcel.value[i].raw.name,
+    )
   }
 
   axios({
@@ -572,12 +593,12 @@ onMounted(async () => {
                 ><CIcon icon="cilCloudDownload"
               /></CButton>
               <CButton
-              color="info"
-              variant="outline"
-              class="ms-2"
-              @click="importExcel"
-              ><CIcon icon="cilCloudUpload"
-            /></CButton>
+                color="info"
+                variant="outline"
+                class="ms-2"
+                @click="importExcel"
+                ><CIcon icon="cilCloudUpload"
+              /></CButton>
             </div>
           </div>
         </div>
@@ -609,7 +630,7 @@ onMounted(async () => {
                     />
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
+                <!-- <b-col md="4">
                   <el-form-item label="Trạng thái" prop="status">
                     <el-select
                       v-model="formSearchData.value.status"
@@ -625,7 +646,7 @@ onMounted(async () => {
                       />
                     </el-select>
                   </el-form-item>
-                </b-col>
+                </b-col> -->
                 <b-col md="4">
                   <el-form-item
                     label="Giáo viên phản biện"
@@ -692,7 +713,7 @@ onMounted(async () => {
                     </el-select>
                   </el-form-item>
                 </b-col>
-                <b-col md="12">
+                <b-col md="4">
                   <el-form-item label="Mô tả" prop="description">
                     <el-input
                       v-model="formSearchData.value.description"
@@ -857,7 +878,7 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Điểm phản biện" prop="scoreCounterArgument">
+            <el-form-item label="Điểm phản biện" prop="">
               <el-input
                 v-model="formData.value.scoreCounterArgument"
                 autocomplete="off"
@@ -865,7 +886,7 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Điểm hội đồng" prop="scoreAssembly">
+            <el-form-item label="Điểm hội đồng" prop="">
               <el-input
                 v-model="formData.value.scoreAssembly"
                 autocomplete="off"
@@ -873,14 +894,14 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Điểm hướng dẫn" prop="scoreGuide">
+            <el-form-item label="Điểm hướng dẫn" prop="">
               <el-input
                 v-model="formData.value.scoreGuide"
                 autocomplete="off"
               />
             </el-form-item>
           </b-col>
-          <b-col md="4">
+          <!-- <b-col md="4">
             <el-form-item label="Trạng thái" prop="status">
               <el-select
                 v-model="formData.value.status"
@@ -895,9 +916,9 @@ onMounted(async () => {
                 />
               </el-select>
             </el-form-item>
-          </b-col>
+          </b-col> -->
           <b-col md="4">
-            <el-form-item label="Số lượng sinh viên" prop="stdNumber">
+            <el-form-item label="Số lượng sinh viên" prop="">
               <el-input v-model="formData.value.stdNumber" autocomplete="off" />
             </el-form-item>
           </b-col>
@@ -920,7 +941,7 @@ onMounted(async () => {
           <b-col md="4">
             <el-form-item
               label="Giáo viên phản biện"
-              prop="lecturerCounterArgumentId"
+              prop=""
             >
               <el-select
                 v-model="formData.value.lecturerCounterArgumentId"
@@ -947,7 +968,7 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Chủ đề" prop="categoryId">
+            <el-form-item label="Chủ đề" prop="">
               <el-select
                 v-model="formData.value.categoryId"
                 placeholder="chọn"
@@ -965,7 +986,7 @@ onMounted(async () => {
           <b-col md="4">
             <el-form-item
               label="Điểm kiểm tra tiến độ lần 1"
-              prop="scoreProcessOne"
+              prop=""
             >
               <el-input
                 v-model="formData.value.scoreProcessOne"
@@ -977,7 +998,7 @@ onMounted(async () => {
           <b-col md="4">
             <el-form-item
               label="Điểm kiểm tra tiến độ lần 2"
-              prop="scoreProcessTwo"
+              prop=""
             >
               <el-input
                 v-model="formData.value.scoreProcessTwo"
@@ -986,8 +1007,8 @@ onMounted(async () => {
               />
             </el-form-item>
           </b-col>
-          <b-col md="12">
-            <el-form-item label="Mô tả" prop="description">
+          <b-col md="4">
+            <el-form-item label="Mô tả" prop="">
               <el-input
                 v-model="formData.value.description"
                 autocomplete="off"

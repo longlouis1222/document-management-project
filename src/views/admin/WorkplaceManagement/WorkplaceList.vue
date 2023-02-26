@@ -60,8 +60,23 @@ const submitForm = async (formEl) => {
         }
         resetForm(formEl)
         await getList()
-      } catch (error) {
-        console.log(error)
+      } catch (response) {
+        console.log(response)
+        if (
+          response.response &&
+          response.response.data &&
+          response.response.data.errorMessage
+        ) {
+          ElMessage({
+            type: 'error',
+            message: `${response.response.data.errorMessage}`,
+          })
+          return
+        }
+        ElMessage({
+          type: 'error',
+          message: `Có lỗi xảy ra.`,
+        })
       }
     } else {
       console.log('error submit!', fields)
@@ -278,12 +293,12 @@ onMounted(async () => {
                 ><CIcon icon="cilCloudDownload"
               /></CButton>
               <CButton
-              color="info"
-              variant="outline"
-              class="ms-2"
-              @click="importExcel"
-              ><CIcon icon="cilCloudUpload"
-            /></CButton>
+                color="info"
+                variant="outline"
+                class="ms-2"
+                @click="importExcel"
+                ><CIcon icon="cilCloudUpload"
+              /></CButton>
             </div>
           </div>
         </div>
