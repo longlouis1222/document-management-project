@@ -96,7 +96,7 @@ onMounted(() => {
           </template>
         </CWidgetStatsC>
       </CCol>
-      <CCol :xs="4">
+      <!-- <CCol :xs="4">
         <CWidgetStatsC
           class="mb-3"
           inverse
@@ -127,7 +127,7 @@ onMounted(() => {
             </div>
           </template>
         </CWidgetStatsC>
-      </CCol>
+      </CCol> -->
       <CCol :xs="4">
         <CWidgetStatsC
           class="mb-3"
@@ -144,7 +144,7 @@ onMounted(() => {
           </template>
         </CWidgetStatsC>
       </CCol>
-      <CCol :xs="4">
+      <!-- <CCol :xs="4">
         <CWidgetStatsC
           class="mb-3"
           inverse
@@ -175,7 +175,7 @@ onMounted(() => {
             </div>
           </template>
         </CWidgetStatsC>
-      </CCol>
+      </CCol> -->
     </CRow>
   </CRow>
 </template>
