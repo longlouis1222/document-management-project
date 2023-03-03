@@ -923,10 +923,11 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Giáo viên hướng dẫn" prop="lecturerGuideId">
+            <el-form-item label="Giáo viên hướng dẫn" prop="">
               <el-select
                 v-model="formData.value.lecturerGuideId"
                 placeholder="chọn"
+                clearable
                 filterable
               >
                 <el-option
@@ -939,13 +940,11 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item
-              label="Giáo viên phản biện"
-              prop=""
-            >
+            <el-form-item label="Giáo viên phản biện" prop="">
               <el-select
                 v-model="formData.value.lecturerCounterArgumentId"
                 placeholder="chọn"
+                clearable
                 filterable
               >
                 <el-option
@@ -984,10 +983,7 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item
-              label="Điểm kiểm tra tiến độ lần 1"
-              prop=""
-            >
+            <el-form-item label="Điểm kiểm tra tiến độ lần 1" prop="">
               <el-input
                 v-model="formData.value.scoreProcessOne"
                 type="text"
@@ -996,10 +992,7 @@ onMounted(async () => {
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item
-              label="Điểm kiểm tra tiến độ lần 2"
-              prop=""
-            >
+            <el-form-item label="Điểm kiểm tra tiến độ lần 2" prop="">
               <el-input
                 v-model="formData.value.scoreProcessTwo"
                 type="text"
