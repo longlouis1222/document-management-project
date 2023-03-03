@@ -78,7 +78,7 @@ const submitForm = async (formEl) => {
             dialogModel.value = false
           }
         }
-        resetForm(formEl)
+        await resetForm(formEl)
         await getList()
       } catch (response) {
         if (
@@ -106,6 +106,7 @@ const submitForm = async (formEl) => {
 const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
+  formData.value = MethodService.copyObject(modelData.dataForm)
   viewMode.value = 'create'
 }
 
@@ -158,12 +159,20 @@ const changeData = (data) => {
   return data
 }
 
+const getItemById = async (rowData) => {
+  const topicApiRes = await TopicApi.findById(rowData.id)
+  if (topicApiRes.status === 200) {
+    formData.value = topicApiRes.data.data
+  }
+}
+
 const handle = async (type, rowData) => {
   viewMode.value = type
   if (type == 'update') {
     dialogModel.value = true
-    formData.value = rowData
-    formData.value.status = rowData.status == 'Đạt' ? true : false
+    // formData.value = rowData
+    // formData.value.status = rowData.status == 'Đạt' ? true : false
+    await getItemById(rowData)
     formData.value.year = new Date().setFullYear(rowData.year)
   } else if (type == 'delete') {
     deleteItem(rowData.id)

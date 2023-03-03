@@ -58,7 +58,7 @@ const submitForm = async (formEl) => {
             dialogModel.value = false
           }
         }
-        resetForm(formEl)
+        await resetForm(formEl)
         await getList()
       } catch (response) {
         console.log(response)
@@ -87,6 +87,7 @@ const submitForm = async (formEl) => {
 const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
+  formData.value = MethodService.copyObject(modelData.dataForm)
   viewMode.value = 'create'
 }
 
